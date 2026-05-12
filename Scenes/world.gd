@@ -19,6 +19,7 @@ extends Node2D
 @onready var bank_system: Node = $BankSystem
 @onready var overlay_system: Node = $OverlaySystem
 @onready var player_controller_system: PlayerControllerSystem = $PlayerControllerSystem
+@onready var stalking_system: StalkingSystem = $StalkingSystem
 
 
 var player_spawned: bool = false
@@ -49,6 +50,7 @@ func _process(delta: float) -> void:
 	camera.update()
 	homing_system.update(delta)
 	
+	stalking_system.update()
 	movement_system.update(delta)
 	
 	count_down_system.update(delta)

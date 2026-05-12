@@ -5,10 +5,12 @@ func generate_texture_for(render_profile: RenderProfile):
 		Enums.SHAPE_TYPES.CIRCLE:
 			return await generate_circle_texture(render_profile)
 		Enums.SHAPE_TYPES.SQUARE:
-			return await generate_square_texture(render_profile)
+			return await generate_rect_texture(render_profile)
+		Enums.SHAPE_TYPES.RECTANGLE:
+			return await generate_rect_texture(render_profile)
 
 func generate_circle_texture(render_profile: RenderProfile) -> ImageTexture:
-	var radius = render_profile.size
+	var radius = render_profile.width
 	var color = render_profile.core_color
 	var border_width = render_profile.border_width
 	
@@ -42,14 +44,15 @@ func generate_circle_texture(render_profile: RenderProfile) -> ImageTexture:
 	
 	return texture
 
-func generate_square_texture(render_profile: RenderProfile) -> ImageTexture:
-	var width = render_profile.size
+func generate_rect_texture(render_profile: RenderProfile) -> ImageTexture:
+	var width = render_profile.width
+	var height = render_profile.height
 	var color = render_profile.core_color
 	var border_width = render_profile.border_width
 	
 	# 1. Setup a Viewport (the "Canvas")
 	var viewport = SubViewport.new()
-	viewport.size = Vector2i(width, width)
+	viewport.size = Vector2i(width, height)
 	viewport.transparent_bg = true
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	
@@ -57,7 +60,7 @@ func generate_square_texture(render_profile: RenderProfile) -> ImageTexture:
 	var drawer = Node2D.new()
 	drawer.draw.connect(func(): 
 		var is_filled = not render_profile.is_hollow
-		drawer.draw_rect(Rect2(0, 0, width, width), color, is_filled, border_width)
+		drawer.draw_rect(Rect2(0, 0, width, height), color, is_filled, border_width)
 	)
 	
 	# 3. Add to scene tree so it can render
@@ -76,12 +79,13 @@ func generate_square_texture(render_profile: RenderProfile) -> ImageTexture:
 	
 	return texture
 	
-static func create_render_profile(shape_type: Enums.SHAPE_TYPES, border_width: int, core_color: Color,  size: int, is_hollow: bool):
+static func create_render_profile(shape_type: Enums.SHAPE_TYPES, border_width: int, core_color: Color,  width: int, height: int, is_hollow: bool):
 	var render_profile = RenderProfile.new()
 	
 	render_profile.border_width = border_width
 	render_profile.core_color = core_color
-	render_profile.size = size
+	render_profile.width = width
+	render_profile.height = height
 	render_profile.shape_type = shape_type
 	render_profile.is_hollow = is_hollow
 	

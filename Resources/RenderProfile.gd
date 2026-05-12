@@ -6,4 +6,5 @@ class_name RenderProfile
 @export var glow_color: Color
 @export var is_hollow: bool
 @export var border_width: int
-@export var size: int
+@export var width: int
+@export var height: int

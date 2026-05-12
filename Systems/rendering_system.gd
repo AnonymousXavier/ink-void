@@ -43,10 +43,7 @@ func _draw() -> void:
 		var core_scale = render_data.rendering_scale * zoom
 		var bloom_scale = core_scale * 1.125
 		
-		# ---------------------------------------------------------
-		# The Center-Shift Math
-		# We must pull the bloom backward so its center perfectly aligns with the core's center
-		# ---------------------------------------------------------
+		# pull the bloom backward so its center perfectly aligns with the core's center
 		var scale_difference = 1.125 - 1.0 # 12.5% larger
 		var center_of_texture = offset + (texture.get_size() / 2.0)
 		var bloom_shift = center_of_texture * core_scale * scale_difference

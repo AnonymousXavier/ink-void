@@ -31,7 +31,6 @@ func create_player(spawn_pos: Vector2) -> int:
 	entity_manager.player_id = id
 	entity_manager.player_input_data = PlayerInputData.new()
 	
-	print(id,entity_manager.velocity_components)
 	SceneInstances.entity_manager.next_entity_id += 1
 	
 	return id
@@ -47,12 +46,16 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	var countdown_data = CountDownData.new()
 	var goldvalue_data = GoldValueData.new()
 	var alignment_data = AlignmentData.new()
+	var velocity_data = VelocityData.new()
+	var stalker_data = StalkerData.new()
 	
+	velocity_data.speed = 100.0
 	render_data.texture = Cache.textures_dict[type]
 	countdown_data.wait_time = 1 / meele_data.fire_rate
 	countdown_data.action = Enums.COUNTDOWN_ACTIONS.ATTACK
 	transform_data.position = pos
 	alignment_data.alignment = Enums.ALIGNMENTS.ENEMY
+	stalker_data.target_id = SceneInstances.entity_manager.player_id
 	
 	entity_manager.meele_components[id] = meele_data
 	entity_manager.render_components[id] = render_data
@@ -61,6 +64,8 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	entity_manager.countdown_components[id] = countdown_data
 	entity_manager.gold_value_components[id] = goldvalue_data
 	entity_manager.alignment_components[id] = alignment_data
+	entity_manager.velocity_components[id] = velocity_data
+	entity_manager.stalker_components[id] = stalker_data
 	
 	entity_manager.active_entities.append(id)
 	entity_manager.is_an_enemy[id] = true

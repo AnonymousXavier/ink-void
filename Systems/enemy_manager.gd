@@ -13,7 +13,6 @@ func update() -> void:
 	
 	enemies_currently_alive = len(SceneInstances.entity_manager.is_an_enemy)
 	handle_enemy_spawning()
-	process_enemies()
 	
 func get_enemies_expected_on_screen(secs_passed: int):
 	var minimum_enemies_expected = 5
@@ -23,19 +22,6 @@ func handle_enemy_spawning():
 	var secs_passed = (Time.get_ticks_msec() - start_time) / 1000
 	if get_enemies_expected_on_screen(secs_passed) > enemies_currently_alive:
 		spawn_enemy()
-
-func process_enemies():
-	var entity_manager = SceneInstances.entity_manager
-	for enemy_id in entity_manager.is_an_enemy:
-		if enemy_id not in entity_manager.velocity_components: # Isnt Currently in Motion
-			var velocity_data = VelocityData.new()
-			var transform_data = entity_manager.transform_components.get(enemy_id)
-			var movement_event = {"type": Enums.EVENT_TYPES.MOVEMENT, "id": enemy_id}
-			
-			velocity_data.direction = (SceneInstances.camera.position - transform_data.position).normalized()
-			velocity_data.speed = 100.0
-			entity_manager.velocity_components[enemy_id] = velocity_data
-			SceneInstances.events_manager.add_event(movement_event)
 
 func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at a random coord outside screen boundaries
 	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY

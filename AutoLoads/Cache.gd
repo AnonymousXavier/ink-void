@@ -9,12 +9,12 @@ var is_ready: bool
 func _ready() -> void:
 	render_info = {
 		# ENEMY
-		Enums.ENTITY_TYPES.NORMAL_ENEMY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 8, Color.RED, Constants.TILE_SIZE * 0.3, true),
+		Enums.ENTITY_TYPES.NORMAL_ENEMY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 8, Color.RED, Constants.TILE_SIZE, Constants.TILE_SIZE, true),
 		# PROJECTILES
-		Enums.ENTITY_TYPES.BULLET: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 0, Color.RED, Constants.TILE_SIZE * 0.1, false),
+		Enums.ENTITY_TYPES.BULLET: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 0, Color.RED, Constants.TILE_SIZE * 0.1, Constants.TILE_SIZE * 0.1, false),
 		# UI
-		Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.SQUARE, 11, Color.GRAY, Constants.TILE_SIZE, true),
-		Enums.ENTITY_TYPES.PLAYER: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.SQUARE, 0, Color.WHITE, Constants.TILE_SIZE, false)
+		Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.SQUARE, 11, Color.GRAY, Constants.TILE_SIZE, Constants.TILE_SIZE, true),
+		Enums.ENTITY_TYPES.PLAYER: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.RECTANGLE, 0, Color.WHITE, Constants.TILE_SIZE * 0.2, Constants.TILE_SIZE * 0.5,  false)
 	}
 	textures_dict = {
 		Enums.ENTITY_TYPES.NORMAL_ENEMY: await ImageGenerator.generate_texture_for(render_info[Enums.ENTITY_TYPES.NORMAL_ENEMY]),
