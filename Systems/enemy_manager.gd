@@ -7,7 +7,7 @@ var enemies_currently_alive = 0
 func _ready() -> void:
 	start_time = Time.get_ticks_msec()
 	
-func _process(_delta: float) -> void:
+func update() -> void:
 	if not Cache.is_ready:
 		return
 	
@@ -32,10 +32,9 @@ func process_enemies():
 			var transform_data = entity_manager.transform_components.get(enemy_id)
 			var movement_event = {"type": Enums.EVENT_TYPES.MOVEMENT, "id": enemy_id}
 			
-			velocity_data.direction = SceneInstances.camera.position - transform_data.position
-			
+			velocity_data.direction = (SceneInstances.camera.position - transform_data.position).normalized()
+			velocity_data.speed = 100.0
 			entity_manager.velocity_components[enemy_id] = velocity_data
-			
 			SceneInstances.events_manager.add_event(movement_event)
 
 func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at a random coord outside screen boundaries

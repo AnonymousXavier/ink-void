@@ -15,7 +15,7 @@ func get_size() -> Vector2:
 func get_camera_rect() -> Rect2:
 	return Rect2(_top_left, get_size())
 
-func _process(_delta: float) -> void:
+func update() -> void:
 	if SceneInstances.entity_manager.player_id != -1:
 		var player_trasnform_data = SceneInstances.entity_manager.transform_components[SceneInstances.entity_manager.player_id]
 		position = player_trasnform_data.position

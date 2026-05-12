@@ -1,6 +1,6 @@
 extends Node
 
-func _process(_delta: float) -> void:
+func update(_delta: float) -> void:
 	for event in SceneInstances.events_manager.events:
 		if event["type"] == Enums.EVENT_TYPES.MOUSE_MOTION and Cache.is_ready :
 			var transform_data = SceneInstances.entity_manager.transform_components[SceneInstances.entity_manager.cell_overlay_id]

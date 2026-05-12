@@ -1,7 +1,7 @@
 extends Node
 class_name MovementSystem
 
-func _physics_process(delta: float) -> void:
+func update(delta: float) -> void:
 	var entity_manager = SceneInstances.entity_manager
 	
 	# Optional: Get screen bounds to clean up bullets as you suggested!
@@ -16,7 +16,7 @@ func _physics_process(delta: float) -> void:
 			var old_pos = transform.position
 			
 			# Apply the continuous action vector!
-			transform.position += velocity.direction.normalized() * velocity.speed * delta
+			transform.position += velocity.direction * velocity.speed * delta
 			
 			# Update your highly optimized spatial hash
 			entity_manager.update_chunk_map_for(old_pos, id)

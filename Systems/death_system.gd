@@ -6,7 +6,7 @@ func _ready() -> void:
 	get_tree().process_frame.connect(delete_entities)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame
-func _process(_delta: float) -> void:
+func update(_delta: float) -> void:
 	for event in SceneInstances.events_manager.events:
 		if event.type == Enums.EVENT_TYPES.ENTITY_KILLED:
 			enemies_to_delete.append(event["id"])

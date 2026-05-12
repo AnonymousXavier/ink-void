@@ -3,7 +3,7 @@ class_name EventsManager
 
 var events: Array = []
 
-func _process(delta: float) -> void:
+func update(delta: float) -> void:
 	call_deferred("clear_events_queue")
 	
 func add_event(event: Dictionary):

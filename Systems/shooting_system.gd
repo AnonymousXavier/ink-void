@@ -1,7 +1,7 @@
 extends Node
 class_name ShootingSystem
 
-func _process(_delta: float) -> void:
+func update(_delta: float) -> void:
 	var entity_manager = SceneInstances.entity_manager
 	var transform_components = entity_manager.transform_components
 	var weapon_components = entity_manager.projectile_weopon_components

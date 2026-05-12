@@ -1,7 +1,7 @@
 extends Node
 class_name CountDownSystem
 
-func _process(delta: float) -> void:
+func update(delta: float) -> void:
 	for timer_id in SceneInstances.entity_manager.countdown_components:
 		var countdown_data: CountDownData = SceneInstances.entity_manager.countdown_components[timer_id]
 		

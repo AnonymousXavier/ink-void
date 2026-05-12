@@ -1,7 +1,7 @@
 extends Node
 class_name HomingSystem
 
-func _process(_delta: float) -> void:
+func update(_delta: float) -> void:
 	var entity_manager = SceneInstances.entity_manager
 	# Loop through every bullet that has a homing component
 	for bullet_id in entity_manager.homing_components.keys():

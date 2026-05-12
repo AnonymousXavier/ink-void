@@ -1,6 +1,6 @@
 extends Node
 
-func _process(_delta):
+func update(_delta):
 	for event in SceneInstances.events_manager.events:
 		if event["type"] == Enums.EVENT_TYPES.ENTITY_KILLED:
 			if SceneInstances.entity_manager.gold_value_components.has(event["id"]):

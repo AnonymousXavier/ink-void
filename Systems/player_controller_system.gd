@@ -1,7 +1,7 @@
 extends Node
 class_name PlayerControllerSystem
 
-func _process(delta: float) -> void:
+func update(delta: float) -> void:
 	var entity_manager = SceneInstances.entity_manager
 	var player_id = entity_manager.player_id
 	

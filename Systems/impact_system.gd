@@ -1,6 +1,6 @@
 extends Node
 
-func _process(_delta: float) -> void:
+func update(_delta: float) -> void:
 	for event in SceneInstances.events_manager.events:
 		if event["type"] == Enums.EVENT_TYPES.TARGET_REACHED:
 			var id = event["id"]
