@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b6o7mjqdgqg0g"]
+
+[ext_resource type="Script" uid="uid://r7q7tyi3lhjl" path="res://Systems/shooting_system.gd" id="1_vf4ab"]
+
+[node name="ShootingSystem" type="Node" unique_id=1477786816]
+script = ExtResource("1_vf4ab")

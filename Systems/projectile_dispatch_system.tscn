@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dmugqf7yj65ev"]
+
+[ext_resource type="Script" uid="uid://bsgc7wha1sco2" path="res://Systems/projectile_dispatch_system.gd" id="1_qp01l"]
+
+[node name="ProjectileDispatchSystem" type="Node" unique_id=1183635141]
+script = ExtResource("1_qp01l")

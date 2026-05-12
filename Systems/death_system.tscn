@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c6ldh5b4kbqfu"]
+
+[ext_resource type="Script" uid="uid://b3s2mh7kmteg2" path="res://Systems/death_system.gd" id="1_280o6"]
+
+[node name="DeathSystem" type="Node" unique_id=1666883461]
+script = ExtResource("1_280o6")

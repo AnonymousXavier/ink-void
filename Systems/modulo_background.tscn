@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cyvgpheoid87g"]
+
+[ext_resource type="Shader" uid="uid://v56ql88ekg" path="res://Shaders/modulo_background.gdshader" id="1_30nv3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qkynx"]
+shader = ExtResource("1_30nv3")
+shader_parameter/cell_width = 64.0
+shader_parameter/camera_zoom = 1.0
+shader_parameter/camera_position = Vector2(0, 0)
+shader_parameter/screen_center = Vector2(576, 324)
+shader_parameter/border_size = 1.5
+shader_parameter/draw_border = true
+shader_parameter/background_color = Color(0.08627451, 0.078431375, 0.11764706, 1)
+shader_parameter/border_color = Color(0, 0, 2.4822042, 0.03137255)
+shader_parameter/bloom_intensity = 1.0
+
+[node name="BG" type="ColorRect" unique_id=459772523]
+material = SubResource("ShaderMaterial_qkynx")
+offset_right = 40.0
+offset_bottom = 40.0

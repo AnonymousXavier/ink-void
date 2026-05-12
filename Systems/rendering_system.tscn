@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://24qg8cd7lcay"]
+
+[ext_resource type="Script" uid="uid://cg0pp75g5ercp" path="res://Systems/rendering_system.gd" id="1_axn8d"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_axn8d"]
+blend_mode = 1
+
+[node name="RenderingSystem" type="Node2D" unique_id=1992715885]
+material = SubResource("CanvasItemMaterial_axn8d")
+script = ExtResource("1_axn8d")
