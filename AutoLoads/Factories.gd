@@ -1,5 +1,34 @@
 extends Node
 
+func create_player(spawn_pos: Vector2) -> int:
+	var entity_manager = SceneInstances.entity_manager
+	var id = entity_manager.next_entity_id
+	
+	var transform_data = TransformData.new()
+	var render_data = RenderingData.new()
+	var velocity_data = VelocityData.new()    
+	var health_data = HealthData.new()
+	var alignment_data = AlignmentData.new()
+	var countdown_data = CountDownData.new()
+	
+	transform_data.position = spawn_pos
+	render_data.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER]
+	health_data.health = 1
+	health_data.maxHealth = 1
+	alignment_data.alignment = Enums.ALIGNMENTS.PLAYER
+	velocity_data.speed = 400.0 # High base speed for action gameplay
+	
+	entity_manager.render_components[id] = render_data
+	entity_manager.transform_components[id] = transform_data
+	entity_manager.health_components[id] = health_data
+	entity_manager.countdown_components[id] = countdown_data
+	entity_manager.alignment_components[id] = alignment_data
+	
+	entity_manager.active_entities.append(id)
+	entity_manager.player_id = id
+	SceneInstances.entity_manager.next_entity_id += id
+	return id
+
 func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	var id = SceneInstances.entity_manager.next_entity_id
 	var entity_manager: EntityManager = SceneInstances.entity_manager
@@ -59,7 +88,7 @@ func spawn_bullet(pos: Vector2, target: Vector2, damage: float, target_id: int, 
 	var velocityData: VelocityData
 	var homingData: HomingData
 	
-	if bullet_id != null: 
+	if bullet_id != null:
 		transformData = entity_manager.inactive_bullet_transform_components[bullet_id]
 		renderingData = entity_manager.inactive_bullet_render_components[bullet_id]
 		meeleData = entity_manager.inactive_bullet_meele_components [bullet_id]
