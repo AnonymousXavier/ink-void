@@ -15,6 +15,7 @@ func _ready() -> void:
 	SceneInstances.BG = bg_color_rect
 	SceneInstances.events_manager = events_manager
 	SceneInstances.entity_manager = entity_manager
+	SceneInstances.rendering_system = rendering_system
 	
 	Factories.create_bullet_pool()
 	

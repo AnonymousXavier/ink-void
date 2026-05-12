@@ -29,9 +29,11 @@ func process_enemies():
 	for enemy_id in entity_manager.is_an_enemy:
 		if enemy_id not in entity_manager.velocity_components: # Isnt Currently in Motion
 			var velocity_data = VelocityData.new()
+			var transform_data = entity_manager.transform_components.get(enemy_id)
 			var movement_event = {"type": Enums.EVENT_TYPES.MOVEMENT, "id": enemy_id}
 			
-			velocity_data.target = SceneInstances.camera.get_center()
+			velocity_data.direction = SceneInstances.camera.position - transform_data.position
+			
 			entity_manager.velocity_components[enemy_id] = velocity_data
 			
 			SceneInstances.events_manager.add_event(movement_event)
@@ -40,7 +42,7 @@ func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at 
 	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY
 	var camera = SceneInstances.camera
 	
-	var cam_center = camera.get_center()
+	var cam_center = camera.position
 	var cam_size = camera.get_size()
 	
 	var direction = Vector2i(1 if Constants.RNG.randi_range(0, 1) else -1, 1 if Constants.RNG.randi_range(0, 1) else -1)

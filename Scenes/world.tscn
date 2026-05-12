@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://jutcggmjp4ip" path="res://Systems/health_system.tscn" id="18_no8kt"]
 [ext_resource type="PackedScene" uid="uid://pw2blkx23hsd" path="res://Systems/overlay_system.tscn" id="19_axeuq"]
 [ext_resource type="PackedScene" uid="uid://c6ldh5b4kbqfu" path="res://Systems/death_system.tscn" id="19_xbk3s"]
+[ext_resource type="PackedScene" uid="uid://6fcj0cfrcyg2" path="res://Systems/player_controller_system.tscn" id="20_1cojt"]
 [ext_resource type="PackedScene" uid="uid://ccoeuqpwxg76x" path="res://Systems/bank_system.tscn" id="20_i4fjy"]
 [ext_resource type="PackedScene" uid="uid://b4xgsftrx1h8o" path="res://Systems/homing_system.tscn" id="21_yq1aw"]
 
@@ -62,3 +63,5 @@ offset_bottom = 654.0
 [node name="BankSystem" parent="." unique_id=185438664 instance=ExtResource("20_i4fjy")]
 
 [node name="OverlaySystem" parent="." unique_id=915206206 instance=ExtResource("19_axeuq")]
+
+[node name="PlayerControllerSystem" parent="." unique_id=428568490 instance=ExtResource("20_1cojt")]

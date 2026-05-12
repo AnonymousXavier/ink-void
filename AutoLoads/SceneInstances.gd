@@ -4,3 +4,4 @@ extends Node
 @onready var camera: Camera
 @onready var BG: ColorRect
 @onready var events_manager: EventsManager
+@onready var rendering_system: RenderingSystem

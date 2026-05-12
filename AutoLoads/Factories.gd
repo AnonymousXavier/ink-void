@@ -10,6 +10,7 @@ func create_player(spawn_pos: Vector2) -> int:
 	var health_data = HealthData.new()
 	var alignment_data = AlignmentData.new()
 	var countdown_data = CountDownData.new()
+	var parry_data = ParryData.new()
 	
 	transform_data.position = spawn_pos
 	render_data.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER]
@@ -23,10 +24,16 @@ func create_player(spawn_pos: Vector2) -> int:
 	entity_manager.health_components[id] = health_data
 	entity_manager.countdown_components[id] = countdown_data
 	entity_manager.alignment_components[id] = alignment_data
+	entity_manager.parry_components[id] = parry_data
+	entity_manager.velocity_components[id] = velocity_data
 	
 	entity_manager.active_entities.append(id)
 	entity_manager.player_id = id
-	SceneInstances.entity_manager.next_entity_id += id
+	entity_manager.player_input_data = PlayerInputData.new()
+	
+	print(id,entity_manager.velocity_components)
+	SceneInstances.entity_manager.next_entity_id += 1
+	
 	return id
 
 func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):

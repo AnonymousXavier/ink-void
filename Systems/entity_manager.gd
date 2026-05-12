@@ -17,13 +17,16 @@ var gold_value_components: Dictionary[int, GoldValueData] = {}
 var homing_components: Dictionary[int, HomingData] = {}
 var grid_footprint_components: Dictionary[int, GridFootprintData] = {}
 var alignment_components: Dictionary[int, AlignmentData] = {}
+var parry_components: Dictionary[int, ParryData] = {}
 
 # Tags
 var is_an_enemy: Dictionary[int, bool] = {}
 var is_a_bullet: Dictionary[int, bool] = {}
-var player_id: int
+var player_id: int = -1
 var cell_overlay_id: int
+
 var bank_data: BankData
+var player_input_data: PlayerInputData
 
 # Inactive Components - For memeory management
 var inactive_bullet_entities: Array[int] = [] 
