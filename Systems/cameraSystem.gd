@@ -5,7 +5,7 @@ var _top_left: Vector2 = Vector2.ZERO:
 	get():
 		return position - get_size() / 2
 		
-var zoom: float = 0.5  # 1.0 is default, 2.0 is zoomed in, 0.5 is zoomed out
+var zoom: float = 1  # 1.0 is default, 2.0 is zoomed in, 0.5 is zoomed out
 var speed: int = 400
 var position: Vector2 # Camera's Center
 

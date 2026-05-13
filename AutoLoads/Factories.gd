@@ -130,7 +130,6 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	# entity_manager.homing_components[bullet_id] = homingData
 	
 	# Delete them
-	entity_manager.inactive_bullet_entities.erase(bullet_id)
 	entity_manager.inactive_bullet_transform_components.erase(bullet_id)
 	entity_manager.inactive_bullet_render_components.erase(bullet_id)
 	entity_manager.inactive_bullet_meele_components.erase(bullet_id)

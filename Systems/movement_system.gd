@@ -8,8 +8,6 @@ func update(delta: float) -> void:
 	screen_rect.size = screen_rect.size / SceneInstances.camera.zoom
 	screen_rect.position = SceneInstances.camera._top_left
 	
-	print(screen_rect, SceneInstances.camera._top_left)
-	
 	for id in entity_manager.velocity_components:
 		var transform = entity_manager.transform_components.get(id)
 		var velocity = entity_manager.velocity_components.get(id)

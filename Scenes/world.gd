@@ -64,5 +64,3 @@ func _process(delta: float) -> void:
 	
 	bank_system.update(delta)
 	
-		
-	
