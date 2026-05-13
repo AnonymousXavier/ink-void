@@ -48,6 +48,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	var alignment_data = AlignmentData.new()
 	var velocity_data = VelocityData.new()
 	var stalker_data = StalkerData.new()
+	var projectile_weapon_data = Stats.projectile_weapon_datas[type]
 	
 	velocity_data.speed = 100.0
 	render_data.texture = Cache.textures_dict[type]
@@ -66,6 +67,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	entity_manager.alignment_components[id] = alignment_data
 	entity_manager.velocity_components[id] = velocity_data
 	entity_manager.stalker_components[id] = stalker_data
+	entity_manager.projectile_weopon_components[id] = projectile_weapon_data
 	
 	entity_manager.active_entities.append(id)
 	entity_manager.is_an_enemy[id] = true
@@ -88,7 +90,7 @@ func create_overlay_effect():
 	entity_manager.cell_overlay_id = id
 	return id
 	
-func spawn_bullet(pos: Vector2, target: Vector2, damage: float, target_id: int, speed: float):
+func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float):
 	var entity_manager = SceneInstances.entity_manager
 	
 	# Fetch Bullet from inactive list or create new data
@@ -98,21 +100,21 @@ func spawn_bullet(pos: Vector2, target: Vector2, damage: float, target_id: int, 
 	var renderingData: RenderingData
 	var meeleData: MeeleData
 	var velocityData: VelocityData
-	var homingData: HomingData
+	# var homingData: HomingData
 	
 	if bullet_id != null:
 		transformData = entity_manager.inactive_bullet_transform_components[bullet_id]
 		renderingData = entity_manager.inactive_bullet_render_components[bullet_id]
 		meeleData = entity_manager.inactive_bullet_meele_components [bullet_id]
 		velocityData = entity_manager.inactive_bullet_velocity_components[bullet_id]
-		homingData = entity_manager.inactive_bullet_homing_components[bullet_id]
+		# homingData = entity_manager.inactive_bullet_homing_components[bullet_id]
 	else:
 		bullet_id = SceneInstances.entity_manager.next_entity_id
 		transformData = TransformData.new()
 		renderingData = RenderingData.new()
 		meeleData = MeeleData.new()
 		velocityData = VelocityData.new()
-		homingData = HomingData.new()
+		# homingData = HomingData.new()
 		
 		SceneInstances.entity_manager.next_entity_id += 1
 	
@@ -125,7 +127,7 @@ func spawn_bullet(pos: Vector2, target: Vector2, damage: float, target_id: int, 
 	entity_manager.render_components[bullet_id] = renderingData
 	entity_manager.meele_components[bullet_id] = meeleData
 	entity_manager.velocity_components[bullet_id] = velocityData
-	entity_manager.homing_components[bullet_id] = homingData
+	# entity_manager.homing_components[bullet_id] = homingData
 	
 	# Delete them
 	entity_manager.inactive_bullet_entities.erase(bullet_id)
@@ -133,15 +135,15 @@ func spawn_bullet(pos: Vector2, target: Vector2, damage: float, target_id: int, 
 	entity_manager.inactive_bullet_render_components.erase(bullet_id)
 	entity_manager.inactive_bullet_meele_components.erase(bullet_id)
 	entity_manager.inactive_bullet_velocity_components.erase(bullet_id)
-	entity_manager.inactive_bullet_homing_components.erase(bullet_id)
+	# entity_manager.inactive_bullet_homing_components.erase(bullet_id)
 	
 	# Modify the data
 	transformData.position = pos
-	velocityData.target = target
+	velocityData.direction = direction
 	velocityData.speed = speed
 	meeleData.damage = damage
 	meeleData.target_id = target_id
-	homingData.target_id = target_id
+	# homingData.target_id = target_id
 	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
 	
 func despawn_bullet(bullet_id: int):
