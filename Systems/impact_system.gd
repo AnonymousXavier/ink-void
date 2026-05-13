@@ -27,12 +27,15 @@ func update(_delta: float) -> void:
 				# --- COLLISION DETECTED ---
 				if player_parry.current_state == ParryData.State.PARRYING:
 					# 1. THE CATCH IS SUCCESSFUL
-					SceneInstances.time_scale = 0.0 # DEAD STOP EVERYTHING
+					SceneInstances.time_scale = 0.1 # DEAD STOP EVERYTHING
 					player_parry.current_state = ParryData.State.FROZEN_AIMING
 					player_parry.hijacked_bullet_id = bullet_id
 					
 					# Snap the bullet perfectly to the player's center for visual feedback
 					bullet_transform.position = player_transform.position
+					var bullet_velocity_data = SceneInstances.entity_manager.velocity_components.get(bullet_id)
+					if bullet_velocity_data:
+						bullet_velocity_data.speed = 0.0
 					
 					print("CATCH SUCCESSFUL! TIME FROZEN!")
 					break # Break out because we only want to catch ONE bullet per frame

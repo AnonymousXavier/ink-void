@@ -8,13 +8,25 @@ var is_ready: bool
 
 func _ready() -> void:
 	render_info = {
-		# ENEMY
-		Enums.ENTITY_TYPES.NORMAL_ENEMY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 8, Color.RED, Constants.TILE_SIZE, Constants.TILE_SIZE, true),
-		# PROJECTILES
-		Enums.ENTITY_TYPES.BULLET: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.CIRCLE, 0, Color.RED, Constants.TILE_SIZE * 0.1, Constants.TILE_SIZE * 0.1, false),
+		# ENEMY: Hollow, aggressive neon crimson. Scaled to 0.8 so clustered swarms don't perfectly overlap into a single blob.
+		Enums.ENTITY_TYPES.NORMAL_ENEMY: ImageGenerator.create_render_profile(
+			Enums.SHAPE_TYPES.CIRCLE, 6, Color("ff2244"), Constants.TILE_SIZE * 0.8, Constants.TILE_SIZE * 0.8, true
+		),
+		
+		# PROJECTILES: Filled, hyper-visible. Slightly larger than before (0.15) for fairness in dodging.
+		Enums.ENTITY_TYPES.BULLET: ImageGenerator.create_render_profile(
+			Enums.SHAPE_TYPES.CIRCLE, 0, Color("ff0033"), Constants.TILE_SIZE * 0.15, Constants.TILE_SIZE * 0.15, false
+		),
+		
+		# PLAYER: Pure white, filled. A symmetrical 0.4 square (approx 25x25 px) for a perfectly predictable dodge hitbox.
+		Enums.ENTITY_TYPES.PLAYER: ImageGenerator.create_render_profile(
+			Enums.SHAPE_TYPES.SQUARE, 0, Color.WHITE, Constants.TILE_SIZE * 0.4, Constants.TILE_SIZE * 0.4, false
+		),
+		
 		# UI
-		Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.SQUARE, 11, Color.GRAY, Constants.TILE_SIZE, Constants.TILE_SIZE, true),
-		Enums.ENTITY_TYPES.PLAYER: ImageGenerator.create_render_profile(Enums.SHAPE_TYPES.RECTANGLE, 0, Color.WHITE, Constants.TILE_SIZE * 0.2, Constants.TILE_SIZE * 0.5,  false)
+		Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY: ImageGenerator.create_render_profile(
+			Enums.SHAPE_TYPES.SQUARE, 4, Color("444455"), Constants.TILE_SIZE, Constants.TILE_SIZE, true
+		)
 	}
 	textures_dict = {
 		Enums.ENTITY_TYPES.NORMAL_ENEMY: await ImageGenerator.generate_texture_for(render_info[Enums.ENTITY_TYPES.NORMAL_ENEMY]),

@@ -4,8 +4,6 @@ class_name RenderingSystem
 var screen_center: Vector2
 var has_spawned_overlay: bool
 
-
-
 func _process(_delta: float) -> void:
 	if not has_spawned_overlay and Cache.is_ready:
 		Factories.create_overlay_effect()
@@ -34,26 +32,22 @@ func _draw() -> void:
 		var transform_data = SceneInstances.entity_manager.transform_components[entity_id]
 			
 		var texture: Texture2D = render_data.texture
-			# 1. Calculate true world distance, then scale it by zoom
+		
+		# 1. Calculate true world distance, then scale it by zoom
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
-			
-			# 2. Lock it to the center of the physical screen
 		var final_screen_pos = screen_center + distance_from_cam
-		var offset = Vector2.ZERO
+		
+		# 2. THE SECRET MATH: Offset by negative half the size to draw perfectly from the center
+		var offset = -texture.get_size() / 2.0 
 		var core_scale = render_data.rendering_scale * zoom
-		var bloom_scale = core_scale * 1.125
 		
-		# pull the bloom backward so its center perfectly aligns with the core's center
-		var scale_difference = 1.125 - 1.0 # 12.5% larger
-		var center_of_texture = offset + (texture.get_size() / 2.0)
-		var bloom_shift = center_of_texture * core_scale * scale_difference
+		# Optional: Check if entity has FlashData here to override color!
+		var draw_color = Color.WHITE
 		
-		var bloom_screen_pos = final_screen_pos - bloom_shift
-			
-		# Draw Bloom (Shifted backward, scaled up)
-		draw_set_transform(bloom_screen_pos, transform_data.rotation, bloom_scale)
-		draw_texture(texture, offset, Color(1, 1, 1, 0.2))
+		# 3. Draw Bloom (Scales perfectly from center!)
+		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale * 1.3)
+		draw_texture(texture, offset, Color(draw_color.r, draw_color.g, draw_color.b, 0.15))
 
-		# Draw Core (Normal position, normal scale)
+		# 4. Draw Core
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
-		draw_texture(texture, offset)
+		draw_texture(texture, offset, draw_color)
