@@ -91,7 +91,7 @@ func create_overlay_effect():
 	return id
 	
 func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float):
-	var entity_manager = SceneInstances.entity_manager
+	var entity_manager: EntityManager = SceneInstances.entity_manager
 	
 	# Fetch Bullet from inactive list or create new data
 	var bullet_id = entity_manager.inactive_bullet_entities.pop_back()
@@ -101,6 +101,7 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	var meeleData: MeeleData
 	var velocityData: VelocityData
 	# var homingData: HomingData
+	var alignment_dta: AlignmentData
 	
 	if bullet_id != null:
 		transformData = entity_manager.inactive_bullet_transform_components[bullet_id]
@@ -108,6 +109,7 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 		meeleData = entity_manager.inactive_bullet_meele_components [bullet_id]
 		velocityData = entity_manager.inactive_bullet_velocity_components[bullet_id]
 		# homingData = entity_manager.inactive_bullet_homing_components[bullet_id]
+		alignment_dta = entity_manager.inactive_bullet_alignment_components[bullet_id]
 	else:
 		bullet_id = SceneInstances.entity_manager.next_entity_id
 		transformData = TransformData.new()
@@ -115,6 +117,7 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 		meeleData = MeeleData.new()
 		velocityData = VelocityData.new()
 		# homingData = HomingData.new()
+		alignment_dta = AlignmentData.new()
 		
 		SceneInstances.entity_manager.next_entity_id += 1
 	
@@ -128,12 +131,14 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	entity_manager.meele_components[bullet_id] = meeleData
 	entity_manager.velocity_components[bullet_id] = velocityData
 	# entity_manager.homing_components[bullet_id] = homingData
+	entity_manager.alignment_components[bullet_id] = alignment_dta
 	
 	# Delete them
 	entity_manager.inactive_bullet_transform_components.erase(bullet_id)
 	entity_manager.inactive_bullet_render_components.erase(bullet_id)
 	entity_manager.inactive_bullet_meele_components.erase(bullet_id)
 	entity_manager.inactive_bullet_velocity_components.erase(bullet_id)
+	entity_manager.inactive_bullet_alignment_components.erase(bullet_id)
 	# entity_manager.inactive_bullet_homing_components.erase(bullet_id)
 	
 	# Modify the data
@@ -153,11 +158,13 @@ func despawn_bullet(bullet_id: int):
 	var meeleData = entity_manager.meele_components[bullet_id]
 	var velocityData = entity_manager.velocity_components.get(bullet_id)
 	var homingData = entity_manager.homing_components.get(bullet_id)
+	var alignmentData = entity_manager.alignment_components.get(bullet_id)
 	
 	# Transfer them to the inactive dict
 	entity_manager.inactive_bullet_entities.append(bullet_id)
 	entity_manager.inactive_bullet_transform_components[bullet_id] = transformData
 	entity_manager.inactive_bullet_render_components[bullet_id] = renderingData
+	entity_manager.inactive_bullet_alignment_components[bullet_id] = alignmentData
 	entity_manager.inactive_bullet_meele_components[bullet_id] = meeleData
 	entity_manager.inactive_bullet_homing_components[bullet_id] = homingData if homingData else HomingData.new()
 	entity_manager.inactive_bullet_velocity_components[bullet_id] = velocityData if velocityData else VelocityData.new()
@@ -170,6 +177,7 @@ func despawn_bullet(bullet_id: int):
 	entity_manager.meele_components.erase(bullet_id)
 	entity_manager.velocity_components.erase(bullet_id)
 	entity_manager.homing_components.erase(bullet_id)
+	entity_manager.alignment_components.erase(bullet_id)
 	
 	SceneInstances.entity_manager.rmeove_entity_from_chunk(transformData.position, bullet_id)
 	
@@ -186,7 +194,9 @@ func create_bullet_pool():
 		var renderingData: RenderingData = RenderingData.new()
 		var meeleData: MeeleData = MeeleData.new()
 		var velocityData: VelocityData = VelocityData.new()
-		var homingData: HomingData = HomingData.new()
+		var alignmentData: AlignmentData = AlignmentData.new()
+		
+		alignmentData.alignment = Enums.ALIGNMENTS.PLAYER
 		
 		# Add them to the inactive pool
 		entity_manager.inactive_bullet_entities.append(current_bullet_id)
@@ -194,6 +204,6 @@ func create_bullet_pool():
 		entity_manager.inactive_bullet_render_components[current_bullet_id] = renderingData
 		entity_manager.inactive_bullet_transform_components[current_bullet_id] = transformData
 		entity_manager.inactive_bullet_velocity_components[current_bullet_id] = velocityData
-		entity_manager.inactive_bullet_homing_components[current_bullet_id] = homingData
+		entity_manager.inactive_bullet_alignment_components[current_bullet_id] = alignmentData
 		
 	entity_manager.next_entity_id += number_of_bullets

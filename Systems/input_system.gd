@@ -12,8 +12,8 @@ func update(delta: float) -> void:
 	
 	if input_data:
 		# Keyboard
-		input_data.direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-		input_data.parry_pressed = Input.is_action_just_pressed("ui_accept")
+		input_data.direction = Input.get_vector("left", "right", "up", "down")
+		input_data.parry_pressed = Input.is_action_just_pressed("parry")
 		
 		# Mouse (Replaces the old EventsManager push)
 		input_data.aim_position = SceneInstances.rendering_system.get_global_mouse_position()

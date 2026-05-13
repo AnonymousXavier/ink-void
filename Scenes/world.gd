@@ -20,6 +20,7 @@ extends Node2D
 @onready var overlay_system: Node = $OverlaySystem
 @onready var player_controller_system: PlayerControllerSystem = $PlayerControllerSystem
 @onready var stalking_system: StalkingSystem = $StalkingSystem
+@onready var parry_system: ParrySystem = $ParrySystem
 
 
 var player_spawned: bool = false
@@ -44,6 +45,7 @@ func _process(delta: float) -> void:
 	
 	input_system.update(delta)
 	
+	parry_system.update(delta)
 	player_controller_system.update(delta)
 	
 	enemy_manager.update()

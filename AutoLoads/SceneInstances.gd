@@ -5,3 +5,5 @@ extends Node
 @onready var BG: ColorRect
 @onready var events_manager: EventsManager
 @onready var rendering_system: RenderingSystem
+
+var time_scale: float = 1.0

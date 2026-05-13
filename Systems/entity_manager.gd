@@ -36,6 +36,7 @@ var inactive_bullet_render_components: Dictionary[int, RenderingData] = {}
 var inactive_bullet_meele_components: Dictionary[int, MeeleData] = {} 
 var inactive_bullet_velocity_components: Dictionary[int, VelocityData] = {} 
 var inactive_bullet_homing_components: Dictionary[int, HomingData] = {} 
+var inactive_bullet_alignment_components: Dictionary[int, AlignmentData] = {}
 
 
 func add_entity_to_a_chunk(pos: Vector2i, id: int):
