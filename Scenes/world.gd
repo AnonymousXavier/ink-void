@@ -22,6 +22,7 @@ extends Node2D
 @onready var stalking_system: StalkingSystem = $StalkingSystem
 @onready var parry_system: ParrySystem = $ParrySystem
 @onready var splatter_canvas: SplatterCanvas = $SplatterCanvas
+@onready var camera_shake_system: CameraShakeSystem = $CameraShakeSystem
 
 
 var player_spawned: bool = false
@@ -51,6 +52,7 @@ func _process(delta: float) -> void:
 	player_controller_system.update(delta)
 	
 	enemy_manager.update()
+	camera_shake_system.update(delta)
 	camera.update()
 	homing_system.update(delta)
 	

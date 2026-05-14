@@ -1,6 +1,8 @@
 extends Node
 class_name Camera
 
+var offset: Vector2 = Vector2.ZERO # For Screen Shake
+
 var _top_left: Vector2 = Vector2.ZERO:
 	get():
 		return position - get_size() / 2
@@ -21,4 +23,5 @@ func get_camera_rect() -> Rect2:
 func update() -> void:
 	if SceneInstances.entity_manager.player_id != -1:
 		var player_trasnform_data = SceneInstances.entity_manager.transform_components[SceneInstances.entity_manager.player_id]
-		position = player_trasnform_data.position
+		# Apply the chaos on top of the strict player lock
+		position = player_trasnform_data.position + offset

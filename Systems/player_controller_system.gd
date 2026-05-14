@@ -54,3 +54,5 @@ func update(_delta: float) -> void:
 				parry.hijacked_bullet_id = -1
 				
 				print("BULLET RELEASED AT MOUSE!")
+				# Kick the screen with 80% maximum trauma to sell the 1200 speed!
+				SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.8})
