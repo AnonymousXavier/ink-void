@@ -20,7 +20,7 @@ func update(_delta: float) -> void:
 	
 		if not bullet_transform or not alignment or not bullet_meele: continue
 		
-		# BULLET TARGETS PLAYER (Enemy Fire)
+		# BULLET TARGETS PLAYER
 		if alignment.alignment == Enums.ALIGNMENTS.PLAYER:
 			if player_transform.position.distance_to(bullet_transform.position) <= Constants.PARRY_RADIUS:
 				
@@ -42,7 +42,7 @@ func update(_delta: float) -> void:
 					Factories.despawn_bullet(bullet_id)
 					break
 					
-		# BULLET TARGETS ENEMIES (Hijacked Fire)
+		# BULLET TARGETS ENEMIES 
 		elif alignment.alignment == Enums.ALIGNMENTS.ENEMY:
 			var bullet_hit_enemy = false
 			

@@ -27,7 +27,6 @@ func update(_delta: float) -> void:
 	elif parry.current_state == ParryData.State.FROZEN_AIMING:
 		velocity.direction = Vector2.ZERO # Lock movement
 		
-		# 1. Poll the absolute world position we already calculated!
 		var mouse_pos = input.aim_position
 		
 		if input.fire_pressed and parry.hijacked_bullet_id != -1:
@@ -38,21 +37,16 @@ func update(_delta: float) -> void:
 			
 			if bullet_vel and bullet_align and p_transform:
 				
-				# 2. Calculate the exact vector from your core to the mouse
 				var aim_dir = p_transform.position.direction_to(mouse_pos)
 				
-				# 3. Apply the hyper-speed return fire
 				bullet_vel.direction = aim_dir
 				bullet_vel.speed = 1200.0
 				
-				# 4. THE CRITICAL FIX: Flip the target so it attacks enemies!
 				bullet_align.alignment = Enums.ALIGNMENTS.ENEMY
 				
-				# 5. Restore the engine state
+				# Restore the engine state
 				SceneInstances.time_scale = 1.0
 				parry.current_state = ParryData.State.READY
 				parry.hijacked_bullet_id = -1
-				
-				print("BULLET RELEASED AT MOUSE!")
-				# Kick the screen with 80% maximum trauma to sell the 1200 speed!
+
 				SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.8})

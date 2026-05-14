@@ -12,7 +12,7 @@ func update(delta: float) -> void:
 	
 	if not parry or not input: return
 	
-	# 1. Handle Active Timers (Unscaled delta so parry recovers even if time is frozen!)
+	# Handle Active Timers (Unscaled delta so parry recovers even if time is frozen)
 	if parry.current_state == ParryData.State.PARRYING or parry.current_state == ParryData.State.RECOVERING:
 		parry.timer -= delta
 		
@@ -25,7 +25,7 @@ func update(delta: float) -> void:
 				# Recovery finished
 				parry.current_state = ParryData.State.READY
 				
-	# 2. Handle Initiation Trigger
+	# Handle Initiation Trigger
 	if parry.current_state == ParryData.State.READY and input.parry_pressed:
 		parry.current_state = ParryData.State.PARRYING
 		parry.timer = 1.0

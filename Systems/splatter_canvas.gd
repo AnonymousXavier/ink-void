@@ -6,9 +6,6 @@ var blood_count: int = 0
 var max_blood: int = 5000
 
 func _ready() -> void:
-	# Guarantee the Autoload is pointing to this exact node
-	SceneInstances.splatter_canvas = self 
-
 	graveyard_multimesh = MultiMesh.new()
 	graveyard_multimesh.mesh = QuadMesh.new() # The 1x1 geometry
 	graveyard_multimesh.transform_format = MultiMesh.TRANSFORM_2D
@@ -20,7 +17,6 @@ func _ready() -> void:
 		graveyard_multimesh.set_instance_transform_2d(i, Transform2D(0, Vector2.ZERO, 0, Vector2.ZERO))
 
 func _process(_delta: float) -> void:
-	# THE PULSE: This forces the GPU to update the canvas position every frame!
 	call_deferred("queue_redraw")
 
 func stamp(world_pos: Vector2) -> void:
