@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://b6o7mjqdgqg0g" path="res://Systems/shooting_system.tscn" id="10_ikia7"]
 [ext_resource type="PackedScene" uid="uid://bt2axsqndrvv3" path="res://Systems/count_down_system.tscn" id="11_7yui6"]
 [ext_resource type="PackedScene" uid="uid://dmugqf7yj65ev" path="res://Systems/projectile_dispatch_system.tscn" id="15_1cojt"]
+[ext_resource type="PackedScene" uid="uid://cn45jwmqc474h" path="res://Systems/flash_system.tscn" id="16_i4fjy"]
 [ext_resource type="PackedScene" uid="uid://2k0panhim2xs" path="res://Systems/damage_system.tscn" id="16_yq1aw"]
 [ext_resource type="PackedScene" uid="uid://b58leycdhhxnx" path="res://Systems/impact_system.tscn" id="17_pyn1s"]
 [ext_resource type="PackedScene" uid="uid://jutcggmjp4ip" path="res://Systems/health_system.tscn" id="18_no8kt"]
@@ -59,6 +60,8 @@ offset_bottom = 654.0
 [node name="ProjectileDispatchSystem" parent="." unique_id=1183635141 instance=ExtResource("15_1cojt")]
 
 [node name="ImpactSystem" parent="." unique_id=2015396842 instance=ExtResource("17_pyn1s")]
+
+[node name="FlashSystem" parent="." unique_id=1255499260 instance=ExtResource("16_i4fjy")]
 
 [node name="DamageSystem" parent="." unique_id=519552959 instance=ExtResource("16_yq1aw")]
 

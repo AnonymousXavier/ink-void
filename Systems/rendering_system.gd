@@ -22,6 +22,9 @@ func _draw() -> void:
 	# 2. Find the bullet we are holding (so we don't turn it gray!)
 	var player_id = SceneInstances.entity_manager.player_id
 	var hijacked_id = -1
+	
+	var core_color = Color.WHITE
+	
 	if is_frozen and player_id != -1:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		if parry:
@@ -60,6 +63,11 @@ func _draw() -> void:
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale * 1.3)
 		draw_texture(active_texture, offset, Color(1.0, 1.0, 1.0, 0.15))
 
+		# Flash
+		# If the entity is currently screaming in pain, overdrive the glow!
+		if SceneInstances.entity_manager.flash_components.has(entity_id):
+			core_color = Color(8.0, 8.0, 8.0, 1.0) # Overblown pure white
+			
 		# Core
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
-		draw_texture(active_texture, offset)
+		draw_texture(active_texture, offset, core_color)

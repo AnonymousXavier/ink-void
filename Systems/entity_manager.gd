@@ -19,6 +19,7 @@ var grid_footprint_components: Dictionary[int, GridFootprintData] = {}
 var alignment_components: Dictionary[int, AlignmentData] = {}
 var parry_components: Dictionary[int, ParryData] = {}
 var stalker_components: Dictionary[int, StalkerData] = {}
+var flash_components: Dictionary[int, FlashData] = {}
 
 # Tags
 var is_an_enemy: Dictionary[int, bool] = {}

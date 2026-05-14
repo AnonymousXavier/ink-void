@@ -23,6 +23,7 @@ extends Node2D
 @onready var parry_system: ParrySystem = $ParrySystem
 @onready var splatter_canvas: SplatterCanvas = $SplatterCanvas
 @onready var camera_shake_system: CameraShakeSystem = $CameraShakeSystem
+@onready var flash_system: FlashSystem = $FlashSystem
 
 
 var player_spawned: bool = false
@@ -64,6 +65,7 @@ func _process(delta: float) -> void:
 	shooting_system.update(delta)
 	projectile_dispatch_system.update(delta)
 	impact_system.update(delta)
+	flash_system.update(delta)
 	damage_system.update()
 	health_system.update()
 	
