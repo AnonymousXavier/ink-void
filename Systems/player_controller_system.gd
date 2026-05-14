@@ -25,7 +25,10 @@ func update(_delta: float) -> void:
 		
 	# 2. TIME FREEZE & RELEASE STATE
 	elif parry.current_state == ParryData.State.FROZEN_AIMING:
-		velocity.direction = Vector2.ZERO # Locked!
+		velocity.direction = Vector2.ZERO # Lock movement
+		
+		# 1. Poll the absolute world position of the mouse cursor
+		var mouse_pos = SceneInstances.rendering_system.get_global_mouse_position()
 		
 		if input.fire_pressed and parry.hijacked_bullet_id != -1:
 			var bullet_id = parry.hijacked_bullet_id
@@ -34,14 +37,20 @@ func update(_delta: float) -> void:
 			var p_transform = entity_manager.transform_components.get(player_id)
 			
 			if bullet_vel and bullet_align and p_transform:
-				var aim_dir = (input.aim_position - p_transform.position).normalized()
 				
+				# 2. Calculate the exact vector from your core to the mouse
+				var aim_dir = p_transform.position.direction_to(mouse_pos)
+				
+				# 3. Apply the hyper-speed return fire
 				bullet_vel.direction = aim_dir
-				bullet_vel.speed = 1200.0 # High-speed return fire
-				bullet_align.alignment = Enums.ALIGNMENTS.PLAYER
+				bullet_vel.speed = 1200.0
 				
-				# Restore time and state
+				# 4. THE CRITICAL FIX: Flip the target so it attacks enemies!
+				bullet_align.alignment = Enums.ALIGNMENTS.ENEMY
+				
+				# 5. Restore the engine state
 				SceneInstances.time_scale = 1.0
 				parry.current_state = ParryData.State.READY
 				parry.hijacked_bullet_id = -1
-				print("BULLET RELEASED!")
+				
+				print("BULLET RELEASED AT MOUSE!")

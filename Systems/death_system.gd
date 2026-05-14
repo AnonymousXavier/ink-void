@@ -43,5 +43,4 @@ func delete_entity(id: int):
 	entity_manager.alignment_components.erase(id)
 	
 	entity_manager.is_an_enemy.erase(id)
-	entity_manager.is_a_tower.erase(id)
 	entity_manager.is_a_bullet.erase(id)

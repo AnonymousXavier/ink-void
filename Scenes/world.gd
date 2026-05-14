@@ -61,7 +61,7 @@ func _process(delta: float) -> void:
 	projectile_dispatch_system.update(delta)
 	impact_system.update(delta)
 	damage_system.update(delta)
-	health_system.update(delta)
+	health_system.update()
 	death_system.update(delta)
 	
 	bank_system.update(delta)

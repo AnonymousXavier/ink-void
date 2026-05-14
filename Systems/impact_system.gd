@@ -13,38 +13,52 @@ func update(_delta: float) -> void:
 	
 	if not player_transform or not player_parry or not player_health: return
 	
-	# Loop through ONLY the bullets
 	for bullet_id in entity_manager.is_a_bullet.keys():
 		var bullet_transform = entity_manager.transform_components.get(bullet_id)
 		var alignment = entity_manager.alignment_components.get(bullet_id)
+		var bullet_meele = entity_manager.meele_components.get(bullet_id)
 	
-		if not bullet_transform or not alignment: continue
+		if not bullet_transform or not alignment or not bullet_meele: continue
 		
-		# We only check ENEMY bullets against the PLAYER
+		# BULLET TARGETS PLAYER (Enemy Fire)
 		if alignment.alignment == Enums.ALIGNMENTS.PLAYER:
-			# fast distance check
 			if player_transform.position.distance_to(bullet_transform.position) <= Constants.PARRY_RADIUS:
-				# --- COLLISION DETECTED ---
+				
 				if player_parry.current_state == ParryData.State.PARRYING:
-					# 1. THE CATCH IS SUCCESSFUL
-					SceneInstances.time_scale = 0.1 # DEAD STOP EVERYTHING
+					SceneInstances.time_scale = 0.1 
 					player_parry.current_state = ParryData.State.FROZEN_AIMING
 					player_parry.hijacked_bullet_id = bullet_id
 					
-					# Snap the bullet perfectly to the player's center for visual feedback
 					bullet_transform.position = player_transform.position
-					var bullet_velocity_data = SceneInstances.entity_manager.velocity_components.get(bullet_id)
+					var bullet_velocity_data = entity_manager.velocity_components.get(bullet_id)
 					if bullet_velocity_data:
 						bullet_velocity_data.speed = 0.0
 					
-					print("CATCH SUCCESSFUL! TIME FROZEN!")
-					break # Break out because we only want to catch ONE bullet per frame
+					break 
 					
 				elif player_parry.current_state != ParryData.State.FROZEN_AIMING:
-					# 2. THE WHIFF (Player takes a hit)
-					player_health.health -= 1
+					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": player_id, "amount": bullet_meele.damage})
 					print("PLAYER HIT! HP: ", player_health.health)
-					
-					# Destroy the bullet that hit us
 					Factories.despawn_bullet(bullet_id)
 					break
+					
+		# BULLET TARGETS ENEMIES (Hijacked Fire)
+		elif alignment.alignment == Enums.ALIGNMENTS.ENEMY:
+			var bullet_hit_enemy = false
+			
+			for enemy_id in entity_manager.is_an_enemy.keys():
+				var enemy_transform = entity_manager.transform_components.get(enemy_id)
+				var enemy_health = entity_manager.health_components.get(enemy_id)
+				
+				if not enemy_transform or not enemy_health: continue
+				
+				if bullet_transform.position.distance_to(enemy_transform.position) <= Constants.PARRY_RADIUS * 1.5:
+					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": enemy_id, "amount": bullet_meele.damage})
+					print("ENEMY HIT! HP: ", enemy_health.health)
+					
+					Factories.despawn_bullet(bullet_id)
+					bullet_hit_enemy = true
+					break 
+			
+			if bullet_hit_enemy:
+				continue

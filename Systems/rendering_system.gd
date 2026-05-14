@@ -16,38 +16,50 @@ func _draw() -> void:
 	var camera_pos = SceneInstances.camera.position
 	var zoom = SceneInstances.camera.zoom
 	
-	# Bridge the ECS data to the Shader
+	# 1. Check if the world is frozen
+	var is_frozen = SceneInstances.time_scale < 1.0
+	
+	# 2. Find the bullet we are holding (so we don't turn it gray!)
+	var player_id = SceneInstances.entity_manager.player_id
+	var hijacked_id = -1
+	if is_frozen and player_id != -1:
+		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
+		if parry:
+			hijacked_id = parry.hijacked_bullet_id
+	
+	# 3. Handle the Background Grid Shader
 	var bg_material = SceneInstances.BG.material as ShaderMaterial
 	if bg_material:
-		bg_material.set_shader_parameter("camera_position", camera_pos)
-		bg_material.set_shader_parameter("camera_zoom", zoom)
-		bg_material.set_shader_parameter("screen_center", screen_center)
-		bg_material.set_shader_parameter("cell_width", Constants.TILE_SIZE)
+		# If frozen, shift the grid lines to a dead gray. If normal, neon violet!
+		var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
+		bg_material.set_shader_parameter("border_color", grid_color)
+		# ... (keep your existing camera_pos and zoom bindings here)
 		
+	# 4. The Entity Loop
 	for entity_id in SceneInstances.entity_manager.render_components:
-		if entity_id not in SceneInstances.entity_manager.transform_components:
-			continue
+		if entity_id not in SceneInstances.entity_manager.transform_components: continue
 				
 		var render_data = SceneInstances.entity_manager.render_components[entity_id]
 		var transform_data = SceneInstances.entity_manager.transform_components[entity_id]
 			
-		var texture: Texture2D = render_data.texture
+		# --- THE TEXTURE SWAP ---
+		var active_texture = render_data.texture
 		
-		# 1. Calculate true world distance, then scale it by zoom
+		# If time is frozen, and this ISN'T the player, and this ISN'T the hijacked bullet...
+		if is_frozen and entity_id != player_id and entity_id != hijacked_id:
+			if render_data.frozen_texture:
+				active_texture = render_data.frozen_texture # Turn it dead gray!
+		
+		# Now draw using the active_texture (with the Double-Draw center math from before!)
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
 		var final_screen_pos = screen_center + distance_from_cam
-		
-		# 2. THE SECRET MATH: Offset by negative half the size to draw perfectly from the center
-		var offset = -texture.get_size() / 2.0 
+		var offset = -active_texture.get_size() / 2.0 
 		var core_scale = render_data.rendering_scale * zoom
 		
-		# Optional: Check if entity has FlashData here to override color!
-		var draw_color = Color.WHITE
-		
-		# 3. Draw Bloom (Scales perfectly from center!)
+		# Halo
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale * 1.3)
-		draw_texture(texture, offset, Color(draw_color.r, draw_color.g, draw_color.b, 0.15))
+		draw_texture(active_texture, offset, Color(1.0, 1.0, 1.0, 0.15))
 
-		# 4. Draw Core
+		# Core
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
-		draw_texture(texture, offset, draw_color)
+		draw_texture(active_texture, offset)

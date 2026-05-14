@@ -1,7 +1,7 @@
 extends Node
 class_name InputSystem
 
-func update(delta: float) -> void:
+func update(_delta: float) -> void:
 	var entity_manager = SceneInstances.entity_manager
 	var player_id = entity_manager.player_id
 	
@@ -15,6 +15,12 @@ func update(delta: float) -> void:
 		input_data.direction = Input.get_vector("left", "right", "up", "down")
 		input_data.parry_pressed = Input.is_action_just_pressed("parry")
 		
-		# Mouse (Replaces the old EventsManager push)
-		input_data.aim_position = SceneInstances.rendering_system.get_global_mouse_position()
+		# --- THE REVERSE TRANSLATION ---
+		var screen_mouse_pos = get_viewport().get_mouse_position()
+		var screen_center = get_viewport().get_visible_rect().size / 2.0
+		var camera_pos = SceneInstances.camera.position
+		var zoom = SceneInstances.camera.zoom
+		
+		# Translate screen pixel back into the ECS coordinate system
+		input_data.aim_position = ((screen_mouse_pos - screen_center) / zoom) + camera_pos
 		input_data.fire_pressed = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)

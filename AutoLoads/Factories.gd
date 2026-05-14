@@ -52,6 +52,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	
 	velocity_data.speed = 100.0
 	render_data.texture = Cache.textures_dict[type]
+	render_data.frozen_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.NORMAL_ENEMY]
 	countdown_data.wait_time = 1 / meele_data.fire_rate
 	countdown_data.action = Enums.COUNTDOWN_ACTIONS.ATTACK
 	transform_data.position = pos
@@ -125,6 +126,8 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	entity_manager.active_entities.append(bullet_id)
 	SceneInstances.entity_manager.add_entity_to_a_chunk(pos, bullet_id)
 	
+	# Do the exact same thing inside create_enemy() using NORMAL_ENEMY!
+	
 	entity_manager.is_a_bullet[bullet_id] = true
 	entity_manager.transform_components[bullet_id] = transformData
 	entity_manager.render_components[bullet_id] = renderingData
@@ -132,6 +135,9 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	entity_manager.velocity_components[bullet_id] = velocityData
 	# entity_manager.homing_components[bullet_id] = homingData
 	entity_manager.alignment_components[bullet_id] = alignment_dta
+	
+	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
+	renderingData.frozen_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.BULLET]
 	
 	# Delete them
 	entity_manager.inactive_bullet_transform_components.erase(bullet_id)

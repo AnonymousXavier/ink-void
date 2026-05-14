@@ -1,7 +1,7 @@
 extends Node
 class_name HealthSystem
 
-func update(_delta: float) -> void:
+func update() -> void:
 	for event in SceneInstances.events_manager.events:
 		if event["type"] == Enums.EVENT_TYPES.DAMAGE_CONFIRMED:
 			if apply_damage(event["id"], event["amount"]) <= 0:

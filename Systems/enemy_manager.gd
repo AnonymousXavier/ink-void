@@ -15,8 +15,8 @@ func update() -> void:
 	handle_enemy_spawning()
 	
 func get_enemies_expected_on_screen(secs_passed: int):
-	var minimum_enemies_expected = 5
-	return sin(deg_to_rad(secs_passed))* 10 + minimum_enemies_expected
+	var minimum_enemies_expected = 0
+	return sin(deg_to_rad(secs_passed)) * 3 + minimum_enemies_expected
 	
 func handle_enemy_spawning():
 	var secs_passed = (Time.get_ticks_msec() - start_time) / 1000
