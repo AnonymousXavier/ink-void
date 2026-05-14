@@ -21,6 +21,7 @@ extends Node2D
 @onready var player_controller_system: PlayerControllerSystem = $PlayerControllerSystem
 @onready var stalking_system: StalkingSystem = $StalkingSystem
 @onready var parry_system: ParrySystem = $ParrySystem
+@onready var splatter_canvas: SplatterCanvas = $SplatterCanvas
 
 
 var player_spawned: bool = false
@@ -32,6 +33,7 @@ func _ready() -> void:
 	SceneInstances.events_manager = events_manager
 	SceneInstances.entity_manager = entity_manager
 	SceneInstances.rendering_system = rendering_system
+	SceneInstances.splatter_canvas = splatter_canvas
 	
 	Factories.create_bullet_pool()
 	
@@ -60,9 +62,9 @@ func _process(delta: float) -> void:
 	shooting_system.update(delta)
 	projectile_dispatch_system.update(delta)
 	impact_system.update(delta)
-	damage_system.update(delta)
+	damage_system.update()
 	health_system.update()
-	death_system.update(delta)
 	
+	death_system.update()
 	bank_system.update(delta)
 	

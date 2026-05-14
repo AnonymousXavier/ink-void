@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://dof1bne68ykv6" path="res://Systems/enemy_manager.tscn" id="1_go701"]
 [ext_resource type="PackedScene" uid="uid://24qg8cd7lcay" path="res://Systems/rendering_system.tscn" id="2_5a7ea"]
 [ext_resource type="PackedScene" uid="uid://hldy7tbb0e0e" path="res://Systems/input_system.tscn" id="2_c5t2i"]
-[ext_resource type="PackedScene" uid="uid://bxtyicw8un52b" path="res://Systems/splatter_canvas.tscn" id="3_no8kt"]
 [ext_resource type="PackedScene" uid="uid://cyvgpheoid87g" path="res://Systems/modulo_background.tscn" id="4_8j60k"]
 [ext_resource type="PackedScene" uid="uid://cy0yr5ch4wrdd" path="res://Systems/camera.tscn" id="5_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://dr3yrc8wkgbmx" path="res://Systems/events_manager.tscn" id="6_5ukr8"]
@@ -32,8 +31,6 @@ offset_left = -10.0
 offset_top = -10.0
 offset_right = 1159.0
 offset_bottom = 654.0
-
-[node name="SplatterCanvas" parent="." unique_id=97424432 instance=ExtResource("3_no8kt")]
 
 [node name="RenderingSystem" parent="." unique_id=1992715885 instance=ExtResource("2_5a7ea")]
 

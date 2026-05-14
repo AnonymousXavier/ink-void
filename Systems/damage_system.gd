@@ -1,7 +1,7 @@
 extends Node
 class_name DamageSystem
 
-func update(_delta: float) -> void:
+func update() -> void:
 	var events_manager = SceneInstances.events_manager
 	for event in events_manager.events:
 		if event["type"] == Enums.EVENT_TYPES.DAMAGE_ATTEMPT:

@@ -5,11 +5,17 @@ var enemies_to_delete: Array = []
 func _ready() -> void:
 	get_tree().process_frame.connect(delete_entities)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame
-func update(_delta: float) -> void:
+func update() -> void:
 	for event in SceneInstances.events_manager.events:
 		if event.type == Enums.EVENT_TYPES.ENTITY_KILLED:
-			enemies_to_delete.append(event["id"])
+			var id = event["id"]
+			enemies_to_delete.append(id)
+			
+			# Fetch the position BEFORE it gets deleted
+			var transform_data = SceneInstances.entity_manager.transform_components.get(id)
+			if transform_data and SceneInstances.splatter_canvas:
+				print("Stamt")
+				SceneInstances.splatter_canvas.stamp(transform_data.position)
 			
 func delete_entities():
 	for id in enemies_to_delete:
