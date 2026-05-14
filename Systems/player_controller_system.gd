@@ -27,8 +27,8 @@ func update(_delta: float) -> void:
 	elif parry.current_state == ParryData.State.FROZEN_AIMING:
 		velocity.direction = Vector2.ZERO # Lock movement
 		
-		# 1. Poll the absolute world position of the mouse cursor
-		var mouse_pos = SceneInstances.rendering_system.get_global_mouse_position()
+		# 1. Poll the absolute world position we already calculated!
+		var mouse_pos = input.aim_position
 		
 		if input.fire_pressed and parry.hijacked_bullet_id != -1:
 			var bullet_id = parry.hijacked_bullet_id

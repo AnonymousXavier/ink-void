@@ -153,6 +153,7 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	velocityData.speed = speed
 	meeleData.damage = damage
 	meeleData.target_id = target_id
+	alignment_dta.alignment = Enums.ALIGNMENTS.PLAYER
 	# homingData.target_id = target_id
 	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
 	
