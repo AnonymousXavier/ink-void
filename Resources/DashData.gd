@@ -1,0 +1,12 @@
+extends Resource
+class_name DashData
+
+var is_dashing: bool = false
+var dash_duration: float = 0.15 
+var dash_time_left: float = 0.0
+
+var cooldown: float = 3.0
+var cooldown_time_left: float = 0.0
+
+var dash_speed: float = 1800.0
+var dash_direction: Vector2 = Vector2.ZERO

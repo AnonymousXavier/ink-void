@@ -14,7 +14,6 @@ func update() -> void:
 			# Fetch the position BEFORE it gets deleted
 			var transform_data = SceneInstances.entity_manager.transform_components.get(id)
 			if transform_data and SceneInstances.splatter_canvas:
-				print("Stamt")
 				SceneInstances.splatter_canvas.stamp(transform_data.position)
 			
 func delete_entities():

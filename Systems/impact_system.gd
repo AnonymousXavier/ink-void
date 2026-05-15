@@ -22,6 +22,12 @@ func update(_delta: float) -> void:
 		
 		# BULLET TARGETS PLAYER
 		if alignment.alignment == Enums.ALIGNMENTS.PLAYER:
+			# Dash Invincibility
+			var dash = entity_manager.dash_components.get(player_id)
+			if dash and dash.is_dashing:
+				continue 
+			
+			# Isnt Dashing
 			if player_transform.position.distance_to(bullet_transform.position) <= Constants.PARRY_RADIUS:
 				
 				if player_parry.current_state == ParryData.State.PARRYING:

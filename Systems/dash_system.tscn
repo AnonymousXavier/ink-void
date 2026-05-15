@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cdvtb1ybevw4u"]
+
+[ext_resource type="Script" uid="uid://bdjs7i11ftmdf" path="res://Systems/dash_system.gd" id="1_knu5b"]
+
+[node name="DashSystem" type="Node" unique_id=1688808366]
+script = ExtResource("1_knu5b")

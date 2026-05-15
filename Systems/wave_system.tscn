@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b8jm22ncqfjk6"]
+
+[ext_resource type="Script" uid="uid://cqrp47yjq87ld" path="res://Systems/wave_system.gd" id="1_m45pp"]
+
+[node name="WaveSystem" type="Node" unique_id=593217246]
+script = ExtResource("1_m45pp")

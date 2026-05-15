@@ -23,8 +23,6 @@ func _draw() -> void:
 	var player_id = SceneInstances.entity_manager.player_id
 	var hijacked_id = -1
 	
-	var core_color = Color.WHITE
-	
 	if is_frozen and player_id != -1:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		if parry:
@@ -45,7 +43,7 @@ func _draw() -> void:
 		var render_data = SceneInstances.entity_manager.render_components[entity_id]
 		var transform_data = SceneInstances.entity_manager.transform_components[entity_id]
 			
-		# --- THE TEXTURE SWAP ---
+		var core_color = render_data.modulate
 		var active_texture = render_data.texture
 		
 		# If time is frozen, and this ISN'T the player, and this ISN'T the hijacked bullet...
@@ -64,7 +62,7 @@ func _draw() -> void:
 		draw_texture(active_texture, offset, Color(1.0, 1.0, 1.0, 0.15))
 
 		# Flash
-		# If the entity is currently screaming in pain, overdrive the glow!
+		# If the entity is currently screaming in pain, overdrive the glow
 		if SceneInstances.entity_manager.flash_components.has(entity_id):
 			core_color = Color(8.0, 8.0, 8.0, 1.0) # Overblown pure white
 			

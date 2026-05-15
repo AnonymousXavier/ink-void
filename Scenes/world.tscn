@@ -25,6 +25,8 @@
 [ext_resource type="PackedScene" uid="uid://b4xgsftrx1h8o" path="res://Systems/homing_system.tscn" id="21_yq1aw"]
 [ext_resource type="PackedScene" uid="uid://rljh4s2ck0x2" path="res://Systems/parry_system.tscn" id="22_pyn1s"]
 [ext_resource type="PackedScene" uid="uid://d4kqveox4ovyr" path="res://Systems/camera_shake.tscn" id="24_xbk3s"]
+[ext_resource type="PackedScene" uid="uid://bycgoalg77hlp" path="res://Systems/shockwave_system.tscn" id="26_hmc15"]
+[ext_resource type="PackedScene" uid="uid://b8jm22ncqfjk6" path="res://Systems/wave_system.tscn" id="27_dt0r1"]
 
 [node name="World" type="Node2D" unique_id=626846320]
 script = ExtResource("1_a02cp")
@@ -80,3 +82,7 @@ offset_bottom = 654.0
 [node name="ParrySystem" parent="." unique_id=1664932608 instance=ExtResource("22_pyn1s")]
 
 [node name="CameraShakeSystem" parent="." unique_id=1927096119 instance=ExtResource("24_xbk3s")]
+
+[node name="ShockwaveSystem" parent="." unique_id=2077640000 instance=ExtResource("26_hmc15")]
+
+[node name="WaveSystem" parent="." unique_id=593217246 instance=ExtResource("27_dt0r1")]

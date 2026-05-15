@@ -10,6 +10,9 @@ func _ready() -> void:
 func update() -> void:
 	if not Cache.is_ready:
 		return
+
+	if not SceneInstances.wave_system.is_wave_active:
+		return 
 	
 	enemies_currently_alive = len(SceneInstances.entity_manager.is_an_enemy)
 	handle_enemy_spawning()

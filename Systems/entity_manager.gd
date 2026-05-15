@@ -20,6 +20,8 @@ var alignment_components: Dictionary[int, AlignmentData] = {}
 var parry_components: Dictionary[int, ParryData] = {}
 var stalker_components: Dictionary[int, StalkerData] = {}
 var flash_components: Dictionary[int, FlashData] = {}
+var shockwave_components: Dictionary [int, ShockWaveData] = {}
+var dash_components: Dictionary[int, DashData] = {}
 
 # Tags
 var is_an_enemy: Dictionary[int, bool] = {}

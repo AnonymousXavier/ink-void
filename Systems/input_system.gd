@@ -14,8 +14,8 @@ func update(_delta: float) -> void:
 		# Keyboard
 		input_data.direction = Input.get_vector("left", "right", "up", "down")
 		input_data.parry_pressed = Input.is_action_just_pressed("parry")
+		input_data.dash_pressed = Input.is_action_just_pressed("dash")
 		
-		# --- THE REVERSE TRANSLATION ---
 		var screen_mouse_pos = get_viewport().get_mouse_position()
 		var screen_center = get_viewport().get_visible_rect().size / 2.0
 		var camera_pos = SceneInstances.camera.position

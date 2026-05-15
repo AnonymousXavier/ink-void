@@ -10,10 +10,22 @@ func update(_delta: float) -> void:
 	var input = entity_manager.player_input_data
 	var velocity = entity_manager.velocity_components.get(player_id)
 	var parry = entity_manager.parry_components.get(player_id)
+	var health = entity_manager.health_components.get(player_id)
 	
 	if not input or not velocity or not parry: return
 	
-	# 1. MOVEMENT STATES
+	# THE DEATH OVERRIDE
+	if health and health.health <= 0:
+		velocity.direction = Vector2.ZERO # Stop sliding
+		
+		# Change texture to a dead/shattered version (if you have one)
+		var render: RenderingData = entity_manager.render_components.get(player_id)
+		if render:
+			render.modulate = Color(0.2, 0.2, 0.2, 0.5) # Ghostly dark gray
+			
+		return # Completely lock out all player input and actions!
+	
+	# MOVEMENT STATES
 	if parry.current_state == ParryData.State.READY:
 		velocity.direction = input.direction
 		
@@ -23,7 +35,7 @@ func update(_delta: float) -> void:
 	elif parry.current_state == ParryData.State.RECOVERING:
 		velocity.direction = Vector2.ZERO # Locked!
 		
-	# 2. TIME FREEZE & RELEASE STATE
+	# TIME FREEZE & RELEASE STATE
 	elif parry.current_state == ParryData.State.FROZEN_AIMING:
 		velocity.direction = Vector2.ZERO # Lock movement
 		
@@ -50,3 +62,12 @@ func update(_delta: float) -> void:
 				parry.hijacked_bullet_id = -1
 
 				SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.8})
+				
+		var dash = entity_manager.dash_components.get(player_id)
+	
+		# Dash
+		if not dash or not dash.is_dashing:
+			if input.direction != Vector2.ZERO:
+				velocity.direction = input.direction.normalized()
+			else:
+				velocity.direction = Vector2.ZERO
