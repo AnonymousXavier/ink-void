@@ -26,6 +26,7 @@ extends Node2D
 @onready var flash_system: FlashSystem = $FlashSystem
 @onready var dash_system: DashSystem = $DashSystem
 @onready var wave_system: WaveSystem = $WaveSystem
+@onready var shockwave_system: ShockwaveSystem = $ShockwaveSystem
 
 
 var player_spawned: bool = false
@@ -59,6 +60,7 @@ func _process(delta: float) -> void:
 	enemy_manager.update()
 	
 	wave_system.update(delta)
+	shockwave_system.update(delta)
 	camera_shake_system.update(delta)
 	camera.update()
 	

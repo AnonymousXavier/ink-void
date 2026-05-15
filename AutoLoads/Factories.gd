@@ -11,6 +11,7 @@ func create_player(spawn_pos: Vector2) -> int:
 	var alignment_data = AlignmentData.new()
 	var countdown_data = CountDownData.new()
 	var parry_data = ParryData.new()
+	var dash_data = DashData.new()
 	
 	transform_data.position = spawn_pos
 	render_data.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER]
@@ -26,6 +27,7 @@ func create_player(spawn_pos: Vector2) -> int:
 	entity_manager.alignment_components[id] = alignment_data
 	entity_manager.parry_components[id] = parry_data
 	entity_manager.velocity_components[id] = velocity_data
+	entity_manager.dash_components[id] = dash_data
 	
 	entity_manager.active_entities.append(id)
 	entity_manager.player_id = id

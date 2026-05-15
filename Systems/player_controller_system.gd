@@ -25,16 +25,20 @@ func update(_delta: float) -> void:
 			
 		return # Completely lock out all player input and actions!
 	
+	var dash = entity_manager.dash_components.get(player_id)
+	var is_dashing = dash and dash.is_dashing
+
 	# MOVEMENT STATES
-	if parry.current_state == ParryData.State.READY:
-		velocity.direction = input.direction
-		
-	elif parry.current_state == ParryData.State.PARRYING:
-		velocity.direction = input.direction * 0.5 # Slowed during active frames
-		
-	elif parry.current_state == ParryData.State.RECOVERING:
-		velocity.direction = Vector2.ZERO # Locked!
-		
+	if not is_dashing:
+		if parry.current_state == ParryData.State.READY:
+			velocity.direction = input.direction
+			
+		elif parry.current_state == ParryData.State.PARRYING:
+			velocity.direction = input.direction * 0.5 # Slowed during active frames
+			
+		elif parry.current_state == ParryData.State.RECOVERING:
+			velocity.direction = Vector2.ZERO # Locked!
+			
 	# TIME FREEZE & RELEASE STATE
 	elif parry.current_state == ParryData.State.FROZEN_AIMING:
 		velocity.direction = Vector2.ZERO # Lock movement
@@ -63,11 +67,10 @@ func update(_delta: float) -> void:
 
 				SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.8})
 				
-		var dash = entity_manager.dash_components.get(player_id)
-	
-		# Dash
-		if not dash or not dash.is_dashing:
-			if input.direction != Vector2.ZERO:
-				velocity.direction = input.direction.normalized()
-			else:
-				velocity.direction = Vector2.ZERO
+
+	# DAHS
+	if not dash or not dash.is_dashing:
+		if input.direction != Vector2.ZERO:
+			velocity.direction = input.direction.normalized()
+		else:
+			velocity.direction = Vector2.ZERO
