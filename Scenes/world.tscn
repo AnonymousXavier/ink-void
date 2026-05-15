@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://d4kqveox4ovyr" path="res://Systems/camera_shake.tscn" id="24_xbk3s"]
 [ext_resource type="PackedScene" uid="uid://bycgoalg77hlp" path="res://Systems/shockwave_system.tscn" id="26_hmc15"]
 [ext_resource type="PackedScene" uid="uid://b8jm22ncqfjk6" path="res://Systems/wave_system.tscn" id="27_dt0r1"]
+[ext_resource type="PackedScene" uid="uid://cdvtb1ybevw4u" path="res://Systems/dash_system.tscn" id="28_dt0r1"]
 
 [node name="World" type="Node2D" unique_id=626846320]
 script = ExtResource("1_a02cp")
@@ -86,3 +87,5 @@ offset_bottom = 654.0
 [node name="ShockwaveSystem" parent="." unique_id=2077640000 instance=ExtResource("26_hmc15")]
 
 [node name="WaveSystem" parent="." unique_id=593217246 instance=ExtResource("27_dt0r1")]
+
+[node name="DashSystem" parent="." unique_id=1688808366 instance=ExtResource("28_dt0r1")]

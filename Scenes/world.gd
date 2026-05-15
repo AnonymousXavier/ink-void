@@ -24,6 +24,8 @@ extends Node2D
 @onready var splatter_canvas: SplatterCanvas = $SplatterCanvas
 @onready var camera_shake_system: CameraShakeSystem = $CameraShakeSystem
 @onready var flash_system: FlashSystem = $FlashSystem
+@onready var dash_system: DashSystem = $DashSystem
+@onready var wave_system: WaveSystem = $WaveSystem
 
 
 var player_spawned: bool = false
@@ -50,12 +52,18 @@ func _process(delta: float) -> void:
 	input_system.update(delta)
 	
 	parry_system.update(delta)
+	dash_system.update(delta)
+	
 	player_controller_system.update(delta)
 	
 	enemy_manager.update()
+	
+	wave_system.update(delta)
 	camera_shake_system.update(delta)
 	camera.update()
+	
 	homing_system.update(delta)
+
 	
 	stalking_system.update()
 	movement_system.update(delta)
