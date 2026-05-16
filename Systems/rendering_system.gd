@@ -69,3 +69,19 @@ func _draw() -> void:
 		# Core
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
 		draw_texture(active_texture, offset, core_color)
+		
+		# --- THE SHOCKWAVE (WHOOSH) ---
+	
+	# Shockwave
+	for wave_id in SceneInstances.entity_manager.shockwave_components.keys():
+		var wave_data = SceneInstances.entity_manager.shockwave_components[wave_id]
+		var transform_data = SceneInstances.entity_manager.transform_components[wave_id]
+		
+		var distance_from_cam = (transform_data.position - camera_pos) * zoom
+		var final_screen_pos = screen_center + distance_from_cam
+		
+		# Draw a massive, additive pure white circle that fades out as it expands
+		var fade_ratio = 1.0 - (wave_data.radius / wave_data.max_radius)
+		var flash_color = Color(2.0, 2.0, 2.0, fade_ratio) # Overdriven white that fades to transparent
+		
+		draw_circle(final_screen_pos, wave_data.radius * zoom, flash_color)

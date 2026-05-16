@@ -18,7 +18,7 @@ func create_player(spawn_pos: Vector2) -> int:
 	health_data.health = 1
 	health_data.maxHealth = 1
 	alignment_data.alignment = Enums.ALIGNMENTS.PLAYER
-	velocity_data.speed = 400.0 # High base speed for action gameplay
+	velocity_data.speed = 400.0
 	
 	entity_manager.render_components[id] = render_data
 	entity_manager.transform_components[id] = transform_data
