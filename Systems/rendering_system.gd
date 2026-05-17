@@ -71,6 +71,8 @@ func _draw() -> void:
 		draw_texture(active_texture, offset, core_color)
 		
 		# --- THE SHOCKWAVE (WHOOSH) ---
+
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE) # Reset the transforms for shockwaves
 	
 	# Shockwave
 	for wave_id in SceneInstances.entity_manager.shockwave_components.keys():
@@ -80,8 +82,12 @@ func _draw() -> void:
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
 		var final_screen_pos = screen_center + distance_from_cam
 		
-		# Draw a massive, additive pure white circle that fades out as it expands
 		var fade_ratio = 1.0 - (wave_data.radius / wave_data.max_radius)
-		var flash_color = Color(2.0, 2.0, 2.0, fade_ratio) # Overdriven white that fades to transparent
+		var flash_color = Color(3.0, 3.0, 3.0, fade_ratio) 
 		
-		draw_circle(final_screen_pos, wave_data.radius * zoom, flash_color)
+		# Dynamic thickness: Erupts at 80px thick, thins out to 0px as it expands
+		var ring_thickness = Constants.TILE_SIZE * fade_ratio * zoom 
+		
+		# draw_arc(center, radius, start_angle, end_angle, point_count, color, width, antialiased)
+		# We use 64 points to keep it perfectly smooth but highly optimized for mobile!
+		draw_arc(final_screen_pos, wave_data.radius * zoom, 0.0, TAU, Constants.TILE_SIZE * 0.5, flash_color, ring_thickness, true)

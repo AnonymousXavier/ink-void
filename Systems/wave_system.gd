@@ -1,7 +1,7 @@
 extends Node
 class_name WaveSystem
 
-var wave_duration: float = 60.0
+var wave_duration: float = 5.0
 var time_left: float = wave_duration
 var is_wave_active: bool = true
 var current_wave: int = 1
@@ -26,10 +26,21 @@ func trigger_shockwave() -> void:
 	
 	var transform_data = TransformData.new()
 	var wave_data = ShockWaveData.new()
-	transform_data.position = get_viewport().get_visible_rect().size / 2.0 # Center screen
+	transform_data.position =  SceneInstances.entity_manager.transform_components[SceneInstances.entity_manager.player_id].position
 	
 	# We create a temporary dictionary in EntityManager just for this:
 	# var shockwave_components: Dictionary = {}
 	SceneInstances.entity_manager.shockwave_components[id] = wave_data
 	SceneInstances.entity_manager.transform_components[id] = transform_data
 	SceneInstances.entity_manager.active_entities.append(id)
+
+func start_next_wave() -> void:
+	current_wave += 1
+	
+	# Optional: You can make the wave_duration longer each wave!
+	# wave_duration += 10.0 
+	
+	time_left = wave_duration
+	is_wave_active = true
+	
+	print("STARTING WAVE: ", current_wave)

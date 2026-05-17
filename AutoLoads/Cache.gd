@@ -7,6 +7,9 @@ var is_ready: bool
 @onready var textures_dict: Dictionary[Enums.ENTITY_TYPES, ImageTexture]
 @onready var frozen_textures_dict: Dictionary[Enums.ENTITY_TYPES, ImageTexture]
 
+const UPGRADE_CARD_SCENE = preload("uid://du424w1sbe728")
+
+
 func _ready() -> void:
 	render_info = {
 		# ENEMY: Hollow, aggressive neon crimson. Scaled to 0.8 so clustered swarms don't perfectly overlap into a single blob.

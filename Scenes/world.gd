@@ -27,6 +27,7 @@ extends Node2D
 @onready var dash_system: DashSystem = $DashSystem
 @onready var wave_system: WaveSystem = $WaveSystem
 @onready var shockwave_system: ShockwaveSystem = $ShockwaveSystem
+@onready var ui_manager: UIManager = $UIManager
 
 
 var player_spawned: bool = false
@@ -39,6 +40,7 @@ func _ready() -> void:
 	SceneInstances.entity_manager = entity_manager
 	SceneInstances.rendering_system = rendering_system
 	SceneInstances.splatter_canvas = splatter_canvas
+	SceneInstances.ui_manager = ui_manager
 	
 	Factories.create_bullet_pool()
 	

@@ -62,7 +62,14 @@ func update(_delta: float) -> void:
 					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": enemy_id, "amount": bullet_meele.damage})
 					print("ENEMY HIT! HP: ", enemy_health.health)
 					
-					Factories.despawn_bullet(bullet_id)
+					if bullet_meele.pierce_count > 0:
+						bullet_meele.pierce_count -= 1
+						# Do NOT despawn! It rips right through!
+					else:
+						Factories.despawn_bullet(bullet_id)
+						
+					bullet_hit_enemy = true
+					break
 					bullet_hit_enemy = true
 					break 
 			

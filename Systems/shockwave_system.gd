@@ -24,8 +24,7 @@ func update(delta: float) -> void:
 		# If it covers the whole screen, delete it and trigger the UI
 		if wave_data.radius >= wave_data.max_radius:
 			dead_shockwaves.append(wave_id)
-			print("WAVE COMPLETE! SHOW ROGUELIKE UI!")
-			# SceneInstances.ui_manager.show_cards()
+			SceneInstances.ui_manager.show_cards() 
 			
 	for id in dead_shockwaves:
 		entity_manager.shockwave_components.erase(id)
