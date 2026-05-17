@@ -19,22 +19,18 @@ func _draw() -> void:
 	# 1. Check if the world is frozen
 	var is_frozen = SceneInstances.time_scale < 1.0
 	
-	# 2. Find the bullet we are holding (so we don't turn it gray!)
+	# Find the bullet we are holding (so its not gray)
 	var player_id = SceneInstances.entity_manager.player_id
 	var hijacked_id = -1
 	
 	if is_frozen and player_id != -1:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
-		if parry:
-			hijacked_id = parry.hijacked_bullet_id
+		hijacked_id = parry.hijacked_bullet_id
 	
 	# 3. Handle the Background Grid Shader
 	var bg_material = SceneInstances.BG.material as ShaderMaterial
-	if bg_material:
-		# If frozen, shift the grid lines to a dead gray. If normal, neon violet!
-		var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
-		bg_material.set_shader_parameter("border_color", grid_color)
-		# ... (keep your existing camera_pos and zoom bindings here)
+	var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
+	bg_material.set_shader_parameter("border_color", grid_color)
 		
 	# 4. The Entity Loop
 	for entity_id in SceneInstances.entity_manager.render_components:
@@ -92,23 +88,25 @@ func _draw() -> void:
 		# We use 64 points to keep it perfectly smooth but highly optimized for mobile!
 		draw_arc(final_screen_pos, wave_data.radius * zoom, 0.0, TAU, Constants.TILE_SIZE * 0.5, flash_color, ring_thickness, true)
 		
-	# THE LASER SIGHTS
+	# THE WEAPONS
 	var weapons = SceneInstances.entity_manager.projectile_weopon_components
 	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
 		var p_transform = SceneInstances.entity_manager.transform_components[player_id]
 		var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
 		
 		for w_id in weapons:
-			var weapon = weapons[w_id]
-			if weapon.is_aiming and w_id in SceneInstances.entity_manager.transform_components:
+			if w_id in SceneInstances.entity_manager.transform_components:
 				var e_transform = SceneInstances.entity_manager.transform_components[w_id]
+				var weapon = weapons[w_id]
 				var enemy_screen_pos = screen_center + ((e_transform.position - camera_pos) * zoom)
 				
-				# The laser intensifies as the timer drops to 0!
-				var charge_ratio = 1.0 - (weapon.aim_timer / weapon.aim_duration)
-				
-				# Starts faint red, becomes bright solid red
-				var laser_color = Color(1.0, 0.0, 0.0, 0.2 + (0.8 * charge_ratio))
-				var laser_thickness = (1.0 + (3.0 * charge_ratio)) * zoom
-				
-				draw_line(enemy_screen_pos, player_screen_pos, laser_color, laser_thickness, true)
+				# THE LASER SIGHT
+				if weapon.is_aiming:
+					# The laser intensifies as the timer drops to 0!
+					var charge_ratio = 1.0 - (weapon.aim_timer / weapon.aim_duration)
+					
+					# Starts faint red, becomes bright solid red
+					var laser_color = Color(1.0, 0.0, 0.0, 0.2 + (0.8 * charge_ratio))
+					var laser_thickness = (0.5 + (2.0 * charge_ratio)) * zoom
+					
+					draw_line(enemy_screen_pos, player_screen_pos, laser_color, laser_thickness, true)

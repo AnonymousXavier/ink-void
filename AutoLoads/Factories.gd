@@ -50,7 +50,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	var alignment_data = AlignmentData.new()
 	var velocity_data = VelocityData.new()
 	var stalker_data = StalkerData.new()
-	var projectile_weapon_data = Stats.projectile_weapon_datas[type]
+	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true)
 	
 	velocity_data.speed = 100.0
 	render_data.texture = Cache.textures_dict[type]

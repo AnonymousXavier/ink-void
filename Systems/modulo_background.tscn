@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cyvgpheoid87g"]
 
 [ext_resource type="Shader" uid="uid://v56ql88ekg" path="res://Shaders/modulo_background.gdshader" id="1_30nv3"]
+[ext_resource type="Script" uid="uid://cx3gkkk4vl7ou" path="res://Systems/modulo_background.gd" id="2_qkynx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qkynx"]
 shader = ExtResource("1_30nv3")
@@ -18,3 +19,4 @@ shader_parameter/bloom_intensity = 1.0
 material = SubResource("ShaderMaterial_qkynx")
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("2_qkynx")
