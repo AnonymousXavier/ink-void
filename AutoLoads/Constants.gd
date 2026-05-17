@@ -11,14 +11,21 @@ var RNG = RandomNumberGenerator.new()
 const UPGRADES: Dictionary = {
 	"hyper_dash": {
 		"title": "Hyper Dash", 
-		"desc": "+600 Dash Speed.\n-1.0s Cooldown."
+		"desc": "+600 Dash Speed.\n-1.0s Cooldown.",
+		"max_level": 2,
+		"speed_inc": 600.0,
+		"cd_dec": 1.0
 	},
 	"thick_blood": {
 		"title": "Thick Blood", 
-		"desc": "+1 Max HP.\nFully restore Health."
+		"desc": "+1 Max HP.\nFully restore Health.",
+		"max_level": 5,
+		"hp_inc": 1
 	},
 	"railgun_pierce": {
 		"title": "Railgun Pierce", 
-		"desc": "Parried bullets rip\nthrough all enemies."
+		"desc": "+3 Parried Bullet Pierce.",
+		"max_level": 3,
+		"pierce_inc": 3
 	}
 }

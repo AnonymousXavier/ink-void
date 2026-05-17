@@ -1,7 +1,7 @@
 extends Node
 class_name WaveSystem
 
-var wave_duration: float = 5.0
+var wave_duration: float = 60.0
 var time_left: float = wave_duration
 var is_wave_active: bool = true
 var current_wave: int = 1

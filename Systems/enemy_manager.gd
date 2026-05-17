@@ -29,6 +29,7 @@ func handle_enemy_spawning():
 func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at a random coord outside screen boundaries
 	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY
 	var camera = SceneInstances.camera
+	var entity_manager = SceneInstances.entity_manager
 	
 	var cam_center = camera.position
 	var cam_size = camera.get_size()
@@ -39,5 +40,27 @@ func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at 
 	var spawn_pos = Vector2i(cam_center) + Vector2i(x,y) * direction
 	
 	var enemy_id = Factories.create_enemy(enemy_type, spawn_pos)
+		
+	# --- THE ESCALATION MULTIPLIER ---
+	var wave_sys = SceneInstances.wave_system
+	if wave_sys:
+		var wave = wave_sys.current_wave
+		var render = entity_manager.render_components.get(enemy_id)
+		var health = entity_manager.health_components.get(enemy_id)
+		var velocity = entity_manager.velocity_components.get(enemy_id)
+		
+		# +50% HP per wave, +20% Speed per wave
+		var hp_multiplier: float = 1.0 + ((wave - 1) * 0.25) 
+		var speed_multiplier: float = 1.0 + ((wave - 1) * 0.1) 
+		
+		health.maxHealth = max(1, int(health.maxHealth * hp_multiplier))
+		health.health = health.maxHealth
+			
+		velocity.speed *= speed_multiplier
+			
+		# Tint the enemies slightly red as they get stronger
+		var red_tint = min(1.0, 0.1 * wave)
+		render.modulate = Color(1.0, 1.0 - red_tint, 1.0 - red_tint)
+	
 	SceneInstances.entity_manager.add_entity_to_a_chunk(spawn_pos, enemy_id)
 	

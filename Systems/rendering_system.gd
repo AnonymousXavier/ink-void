@@ -91,3 +91,24 @@ func _draw() -> void:
 		# draw_arc(center, radius, start_angle, end_angle, point_count, color, width, antialiased)
 		# We use 64 points to keep it perfectly smooth but highly optimized for mobile!
 		draw_arc(final_screen_pos, wave_data.radius * zoom, 0.0, TAU, Constants.TILE_SIZE * 0.5, flash_color, ring_thickness, true)
+		
+	# THE LASER SIGHTS
+	var weapons = SceneInstances.entity_manager.projectile_weopon_components
+	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
+		var p_transform = SceneInstances.entity_manager.transform_components[player_id]
+		var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
+		
+		for w_id in weapons:
+			var weapon = weapons[w_id]
+			if weapon.is_aiming and w_id in SceneInstances.entity_manager.transform_components:
+				var e_transform = SceneInstances.entity_manager.transform_components[w_id]
+				var enemy_screen_pos = screen_center + ((e_transform.position - camera_pos) * zoom)
+				
+				# The laser intensifies as the timer drops to 0!
+				var charge_ratio = 1.0 - (weapon.aim_timer / weapon.aim_duration)
+				
+				# Starts faint red, becomes bright solid red
+				var laser_color = Color(1.0, 0.0, 0.0, 0.2 + (0.8 * charge_ratio))
+				var laser_thickness = (1.0 + (3.0 * charge_ratio)) * zoom
+				
+				draw_line(enemy_screen_pos, player_screen_pos, laser_color, laser_thickness, true)
