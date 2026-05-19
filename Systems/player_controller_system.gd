@@ -11,21 +11,18 @@ func update(_delta: float) -> void:
 	var velocity = entity_manager.velocity_components.get(player_id)
 	var parry = entity_manager.parry_components.get(player_id)
 	var health = entity_manager.health_components.get(player_id)
+	var dash = entity_manager.dash_components.get(player_id)
 	
 	if not input or not velocity or not parry: return
 	
 	# THE DEATH OVERRIDE
 	if health and health.health <= 0:
-		velocity.direction = Vector2.ZERO # Stop sliding
-		
-		# Change texture to a dead/shattered version (if you have one)
+		velocity.direction = Vector2.ZERO 
 		var render: RenderingData = entity_manager.render_components.get(player_id)
 		if render:
-			render.modulate = Color(0.2, 0.2, 0.2, 0.5) # Ghostly dark gray
-			
-		return # Completely lock out all player input and actions!
-	
-	var dash = entity_manager.dash_components.get(player_id)
+			render.modulate = Color(0.2, 0.2, 0.2, 0.5) 
+		return # Lock out all input
+		
 	var is_dashing = dash and dash.is_dashing
 
 	# Only steer if NOT dashing
@@ -44,6 +41,7 @@ func update(_delta: float) -> void:
 		elif parry.current_state == ParryData.State.RECOVERING:
 			velocity.direction = Vector2.ZERO # Locked!
 			
+		# TIME FREEZE & RELEASE STATE
 		elif parry.current_state == ParryData.State.FROZEN_AIMING:
 			velocity.direction = Vector2.ZERO # Lock movement
 			
@@ -54,13 +52,16 @@ func update(_delta: float) -> void:
 				var bullet_vel = entity_manager.velocity_components.get(bullet_id)
 				var bullet_align = entity_manager.alignment_components.get(bullet_id)
 				var p_transform = entity_manager.transform_components.get(player_id)
+				var bullet_meele = entity_manager.meele_components.get(bullet_id)
 				
 				if bullet_vel and bullet_align and p_transform:
 					var aim_dir = p_transform.position.direction_to(mouse_pos)
 					
+					if bullet_meele:
+						bullet_meele.pierce_count = parry.parry_pierce_bonus 
+					
 					bullet_vel.direction = aim_dir
 					bullet_vel.speed = 1200.0
-					
 					bullet_align.alignment = Enums.ALIGNMENTS.ENEMY
 					
 					# Restore the engine state
@@ -104,7 +105,6 @@ func update(_delta: float) -> void:
 				parry.hijacked_bullet_id = -1
 
 				SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.8})
-				
 
 	# DAHS
 	if not dash or not dash.is_dashing:

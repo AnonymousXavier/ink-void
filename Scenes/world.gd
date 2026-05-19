@@ -28,6 +28,10 @@ extends Node2D
 @onready var wave_system: WaveSystem = $WaveSystem
 @onready var shockwave_system: ShockwaveSystem = $ShockwaveSystem
 @onready var ui_manager: UIManager = $UIManager
+@onready var upgrade_system: UpgradeSystem = $UpgradeSystem
+@onready var game_over_system: GameOverSystem = $GameOverSystem
+@onready var load_system: LoadSystem = $LoadSystem
+@onready var save_system: SaveSystem = $SaveSystem
 
 
 var player_spawned: bool = false
@@ -41,6 +45,8 @@ func _ready() -> void:
 	SceneInstances.rendering_system = rendering_system
 	SceneInstances.splatter_canvas = splatter_canvas
 	SceneInstances.ui_manager = ui_manager
+	SceneInstances.save_system = save_system
+	SceneInstances.load_system = load_system
 	
 	Factories.create_bullet_pool()
 	
@@ -68,7 +74,6 @@ func _process(delta: float) -> void:
 	
 	homing_system.update(delta)
 
-	
 	stalking_system.update()
 	movement_system.update(delta)
 	
@@ -83,4 +88,7 @@ func _process(delta: float) -> void:
 	
 	death_system.update()
 	bank_system.update(delta)
+	upgrade_system.update()
 	
+	game_over_system.update(delta)
+	save_system.update()

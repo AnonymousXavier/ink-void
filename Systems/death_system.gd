@@ -1,4 +1,5 @@
 extends Node
+class_name DeathSystem
 
 var enemies_to_delete: Array = []
 

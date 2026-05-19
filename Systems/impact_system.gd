@@ -59,6 +59,11 @@ func update(_delta: float) -> void:
 				if not enemy_transform or not enemy_health: continue
 				
 				if bullet_transform.position.distance_to(enemy_transform.position) <= Constants.PARRY_RADIUS * 1.5:
+					
+					if enemy_id in bullet_meele.hit_targets:
+						continue # We already hit this guy
+					bullet_meele.hit_targets.append(enemy_id)
+						
 					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": enemy_id, "amount": bullet_meele.damage})
 					print("ENEMY HIT! HP: ", enemy_health.health)
 					
@@ -70,8 +75,6 @@ func update(_delta: float) -> void:
 						
 					bullet_hit_enemy = true
 					break
-					bullet_hit_enemy = true
-					break 
 			
 			if bullet_hit_enemy:
 				continue

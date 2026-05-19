@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Enums="*uid://b0cdblhs6i1fo"
+MetaEconomy="*uid://woan6wbnh51w"
 Constants="*uid://c8idan2ugwob0"
 Cache="*uid://cevsth632i0er"
 Stats="*uid://bbsg7t4hw4i7p"

@@ -20,7 +20,7 @@ func update(delta: float) -> void:
 			if parry.current_state == ParryData.State.PARRYING:
 				# Missed the parry!
 				parry.current_state = ParryData.State.RECOVERING
-				parry.timer = 0.5 
+				parry.timer = Constants.PARRY_MISSED_PENALTY_TIME
 			elif parry.current_state == ParryData.State.RECOVERING:
 				# Recovery finished
 				parry.current_state = ParryData.State.READY
@@ -28,4 +28,4 @@ func update(delta: float) -> void:
 	# Handle Initiation Trigger
 	if parry.current_state == ParryData.State.READY and input.parry_pressed:
 		parry.current_state = ParryData.State.PARRYING
-		parry.timer = 1.0
+		parry.timer = Constants.PARRY_WAIT_TIME

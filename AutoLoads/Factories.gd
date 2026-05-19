@@ -43,8 +43,8 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
 	
 	var transform_data = TransformData.new()
 	var render_data = RenderingData.new()
-	var meele_data = Stats.meele_data[type].clone()
-	var health_data = Stats.health_data[type].clone()
+	var meele_data = Stats.meele_data[type].duplicate()
+	var health_data = Stats.health_data[type].duplicate()
 	var countdown_data = CountDownData.new()
 	var goldvalue_data = GoldValueData.new()
 	var alignment_data = AlignmentData.new()

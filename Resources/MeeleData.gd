@@ -8,11 +8,4 @@ class_name MeeleData
 @export var target_id: int
 @export var pierce_count: int = 0 # How many more enemies THIS specific bullet can hit
 
-func clone() -> MeeleData:
-	var data_clone = MeeleData.new()
-	
-	data_clone.attack_range = attack_range
-	data_clone.damage = damage
-	data_clone.fire_rate = fire_rate
-	
-	return data_clone
+var hit_targets: Array[int] = []

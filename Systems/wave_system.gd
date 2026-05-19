@@ -1,13 +1,24 @@
 extends Node
 class_name WaveSystem
 
-var wave_duration: float = 60.0
+var wave_duration: float = 5.0
 var time_left: float = wave_duration
 var is_wave_active: bool = true
 var current_wave: int = 1
 
+var active_deck: Dictionary = {}
+
 func _ready() -> void:
 	SceneInstances.wave_system = self
+	_initialize_deck()
+
+func _initialize_deck() -> void:
+	# Deep clone the blueprint so we don't corrupt the global Dictionary
+	active_deck = Constants.UPGRADES.duplicate(true)
+	
+	# Inject the starting level onto every card
+	for upgrade_id in active_deck:
+		active_deck[upgrade_id]["current_level"] = 0
 
 func update(delta: float) -> void:
 	if not is_wave_active: return
@@ -20,7 +31,7 @@ func update(delta: float) -> void:
 
 func trigger_shockwave() -> void:
 	# Spawn a massive, invisible "Hitbox" entity at the center of the arena
-	# We will give it a unique component so a new system can expand it!
+	# give it a unique component so a new system can expand it!
 	var id = SceneInstances.entity_manager.next_entity_id
 	SceneInstances.entity_manager.next_entity_id += 1
 	
@@ -37,9 +48,7 @@ func trigger_shockwave() -> void:
 func start_next_wave() -> void:
 	current_wave += 1
 	
-	# Optional: You can make the wave_duration longer each wave!
-	# wave_duration += 10.0 
-	
+	wave_duration += 10.0 
 	time_left = wave_duration
 	is_wave_active = true
 	
