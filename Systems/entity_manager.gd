@@ -30,7 +30,7 @@ var is_a_bullet: Dictionary[int, bool] = {}
 var player_id: int = -1
 var cell_overlay_id: int
 
-var bank_data: BankData
+var bank_data: BankData = BankData.new()
 var player_input_data: PlayerInputData
 
 # Inactive Components - For memeory management

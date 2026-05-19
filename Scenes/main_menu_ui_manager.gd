@@ -42,6 +42,7 @@ func _generate_and_open_shop() -> void:
 		
 	_refresh_shop_visuals()
 	shop_overlay.show()
+	
 func _refresh_shop_visuals() -> void:
 	for card in shop_grid.get_children():
 		# Safety check just in case a scrollbar sneaks into the loop

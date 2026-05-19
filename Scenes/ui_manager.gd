@@ -144,5 +144,15 @@ func _on_retry_pressed() -> void:
 	get_tree().reload_current_scene()
 
 func _on_main_menu_pressed() -> void:
+	# 1. Fetch the gold earned this run
+	var run_gold = SceneInstances.entity_manager.bank_data.gold # How do we ask the BankSystem for the current run's earnings?
+	
+	# 2. Inject it into the permanent Meta Economy
+	MetaEconomy.total_gold += run_gold
+	
+	# 3. Fire the Save Event BEFORE you destroy the scene!
+	SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SAVE_REQUESTED})
+	
+	# 4. Clean up and leave
 	SceneInstances.time_scale = 1.0
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
