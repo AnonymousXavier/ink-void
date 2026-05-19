@@ -29,6 +29,18 @@ func create_player(spawn_pos: Vector2) -> int:
 	entity_manager.velocity_components[id] = velocity_data
 	entity_manager.dash_components[id] = dash_data
 	
+	# META-PERK INJECTION
+	# We read the active loadout and safely mutate the baseline stats
+	for perk_id in MetaEconomy.active_perks:
+		if Constants.PERKS.has(perk_id):
+			var p_data = Constants.PERKS[perk_id]
+			match p_data["stat_id"]:
+				"max_hp":
+					health_data.maxHealth += p_data["value"]
+					health_data.health = health_data.maxHealth
+				"move_speed":
+					velocity_data.speed += p_data["value"]
+	
 	entity_manager.active_entities.append(id)
 	entity_manager.player_id = id
 	entity_manager.player_input_data = PlayerInputData.new()

@@ -5,8 +5,16 @@ class_name UIManager
 @onready var cards_container: HBoxContainer = $Control/HBoxContainer
 @onready var build_pips: HBoxContainer = $Control/MarginContainer/BuildPips
 
+@onready var death_overlay: ColorRect = $Control/DeathOverlay
+@onready var retry_button: Button = $Control/DeathOverlay/VBoxContainer/RetryButton
+@onready var main_menu_button: Button = $Control/DeathOverlay/VBoxContainer/MainMenuButton
+
 func _ready() -> void:
 	cards_container.hide()
+	death_overlay.hide()
+
+	retry_button.pressed.connect(_on_retry_pressed)
+	main_menu_button.pressed.connect(_on_main_menu_pressed)
 
 func _process(_delta: float) -> void:
 	if not Cache.is_ready or not SceneInstances.wave_system: return
@@ -27,12 +35,14 @@ func _process(_delta: float) -> void:
 
 	# THE HUD LISTENER
 	for event in SceneInstances.events_manager.events:
-		if event.type == Enums.EVENT_TYPES.UPGRADE_APPLIED:
-			_add_sigil_to_hud(event["upgrade_id"])
+		match event.type:
+			Enums.EVENT_TYPES.UPGRADE_APPLIED:
+				_add_sigil_to_hud(event["upgrade_id"])
+			Enums.EVENT_TYPES.SHOW_DEATH_SCREEN:
+				_show_death_overlay()
 
 func _add_sigil_to_hud(upgrade_id: String) -> void:
-	# 1. THE STATE CHECK
-	# If a pip with this exact ID already exists, update it instead of making a new one!
+	# If a pip with this exact ID already exists, update it instead of making a new one
 	if build_pips.has_node(upgrade_id):
 		var existing_pip = build_pips.get_node(upgrade_id)
 		
@@ -44,14 +54,14 @@ func _add_sigil_to_hud(upgrade_id: String) -> void:
 		var level_label = existing_pip.get_node("VBox/LevelLabel")
 		level_label.text = "Lv" + str(new_level)
 		
-		# Visual Polish: Give it a tiny "heartbeat" pulse so the player knows it leveled up
+		# VGive it a tiny "heartbeat" pulse so the player knows it leveled up
 		existing_pip.pivot_offset = existing_pip.size / 2.0
 		var tween = create_tween()
 		tween.tween_property(existing_pip, "scale", Vector2(1.3, 1.3), 0.1)
 		tween.tween_property(existing_pip, "scale", Vector2(1.0, 1.0), 0.1)
 		return 
 		
-	# 2. THE SPAWNER (If we don't own it yet)
+	# THE SPAWNER (If we don't own it yet)
 	var data = Constants.UPGRADES[upgrade_id]
 	
 	var panel = PanelContainer.new()
@@ -124,3 +134,15 @@ func select_upgrade(upgrade_id: String) -> void:
 	
 	SceneInstances.time_scale = 1.0
 	SceneInstances.wave_system.start_next_wave()
+
+func _show_death_overlay() -> void:
+	SceneInstances.time_scale = 0.0 # Hard freeze the corpse swarm
+	death_overlay.show()
+
+func _on_retry_pressed() -> void:
+	SceneInstances.time_scale = 1.0
+	get_tree().reload_current_scene()
+
+func _on_main_menu_pressed() -> void:
+	SceneInstances.time_scale = 1.0
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")

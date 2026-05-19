@@ -22,6 +22,7 @@ var stalker_components: Dictionary[int, StalkerData] = {}
 var flash_components: Dictionary[int, FlashData] = {}
 var shockwave_components: Dictionary [int, ShockWaveData] = {}
 var dash_components: Dictionary[int, DashData] = {}
+var interactable_components: Dictionary[int, InteractableData] = {}
 
 # Tags
 var is_an_enemy: Dictionary[int, bool] = {}

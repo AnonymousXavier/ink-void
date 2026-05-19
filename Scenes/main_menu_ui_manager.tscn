@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://c5wciy8smshp8"]
+
+[ext_resource type="Script" uid="uid://brmby0gpwpxtv" path="res://Scenes/main_menu_ui_manager.gd" id="1_csng4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_csng4"]
+bg_color = Color(0.4, 0, 0.019607844, 0.6862745)
+
+[node name="MainMenuUIManager" type="CanvasLayer" unique_id=1258719095]
+script = ExtResource("1_csng4")
+
+[node name="Control" type="Control" parent="." unique_id=1050733234]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoldLabel" type="Label" parent="Control" unique_id=1684227292]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="ShopOverlay" type="ColorRect" parent="Control" unique_id=137651053]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.78431374)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ShopOverlay" unique_id=474895442]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CloseButton" type="Button" parent="Control/ShopOverlay/VBoxContainer" unique_id=461950655]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_csng4")
+text = "x"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/ShopOverlay/VBoxContainer" unique_id=1312906504]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 14.22
+
+[node name="GridContainer" type="GridContainer" parent="Control/ShopOverlay/VBoxContainer/ScrollContainer" unique_id=305018191]
+layout_mode = 2
+columns = 3

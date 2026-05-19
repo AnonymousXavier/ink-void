@@ -8,6 +8,7 @@ var rendering_system: RenderingSystem
 var splatter_canvas: SplatterCanvas
 var wave_system: WaveSystem
 var ui_manager: UIManager
+var main_menu_ui_manager: MainMenuUIManager
 var save_system: SaveSystem
 var load_system: LoadSystem
 

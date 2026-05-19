@@ -13,6 +13,27 @@ const PARRY_MISSED_PENALTY_TIME = 0.5
 
 var RNG = RandomNumberGenerator.new()
 
+const PERKS: Dictionary = {
+	"iron_skin": {
+		"title": "Iron Skin",
+		"desc": "Start Wave 1 with +1 Max HP.",
+		"sigil": "[+]",
+		"color": Color(0.2, 1.0, 0.2), # Green
+		"cost": 50,
+		"stat_id": "max_hp",
+		"value": 1.0
+	},
+	"kinetic_soles": {
+		"title": "Kinetic Soles",
+		"desc": "Start Wave 1 with +15% Move Speed.",
+		"sigil": ">>",
+		"color": Color(0.0, 1.0, 1.0), # Cyan
+		"cost": 75,
+		"stat_id": "move_speed",
+		"value": 60.0 # +60 flat speed to the base 400
+	}
+}
+
 const UPGRADES: Dictionary = {
 	"hyper_dash": {
 		"title": "Hyper Dash", 

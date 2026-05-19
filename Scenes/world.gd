@@ -90,5 +90,5 @@ func _process(delta: float) -> void:
 	bank_system.update(delta)
 	upgrade_system.update()
 	
-	game_over_system.update(delta)
+	if not game_over_system.game_ended: game_over_system.update(delta)
 	save_system.update()
