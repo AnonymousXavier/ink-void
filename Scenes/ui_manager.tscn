@@ -85,7 +85,7 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="Control/DeathOverlay/VBoxContainer" unique_id=1899672557]
 layout_mode = 2
 size_flags_vertical = 3
-text = "SYSTEM FAILURE"
+text = "GAME OVER"
 label_settings = SubResource("LabelSettings_nphyr")
 horizontal_alignment = 1
 vertical_alignment = 1
