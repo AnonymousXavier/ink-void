@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://do5e5lwlik3fo"]
 
 [ext_resource type="Script" uid="uid://dia6xf0ro1lu7" path="res://Scenes/ui_manager.gd" id="1_nphyr"]
+[ext_resource type="PackedScene" uid="uid://yvtjaymrwjt" path="res://Systems/revive_ui.tscn" id="2_blom3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_nphyr"]
 font_size = 48
@@ -99,3 +100,5 @@ text = "Retry
 [node name="MainMenuButton" type="Button" parent="Control/DeathOverlay/VBoxContainer" unique_id=1357243289]
 layout_mode = 2
 text = "Main Menu"
+
+[node name="ReviveUI" parent="." unique_id=1789505353 instance=ExtResource("2_blom3")]

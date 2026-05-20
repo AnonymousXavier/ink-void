@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://yvtjaymrwjt"]
+
+[ext_resource type="Script" uid="uid://g5xw7fu420y0" path="res://Systems/revive_ui.gd" id="1_00240"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mftvl"]
+font_size = 64
+font_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_00240"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_23e7g"]
+font_size = 48
+font_color = Color(1, 0.84313726, 0, 1)
+
+[node name="ReviveUI" type="CanvasLayer" unique_id=1789505353]
+layer = 100
+script = ExtResource("1_00240")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=1272342191]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.8509804)
+
+[node name="CenterContainer" type="Control" parent="." unique_id=2014447667]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=171990821]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 1132.0
+offset_bottom = 628.0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=778450486]
+layout_mode = 2
+text = "FATAL IMPACT"
+label_settings = SubResource("LabelSettings_mftvl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1199887773]
+layout_mode = 2
+text = "TRIBUTE REQUIRED TO REWIND TIME"
+label_settings = SubResource("LabelSettings_00240")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CostLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1460663202]
+layout_mode = 2
+text = "-50 SOULS-"
+label_settings = SubResource("LabelSettings_23e7g")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/VBoxContainer" unique_id=280885913]
+custom_minimum_size = Vector2(416, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/Spacer" unique_id=1428403428]
+custom_minimum_size = Vector2(416, 60)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="PayButton" type="Button" parent="CenterContainer/VBoxContainer/Spacer/HBoxContainer" unique_id=306934599]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+text = "[SPACE] TRIBUTE"
+
+[node name="DieButton" type="Button" parent="CenterContainer/VBoxContainer/Spacer/HBoxContainer" unique_id=919703582]
+layout_mode = 2
+text = "[ESC] ACCEPT DEATH"

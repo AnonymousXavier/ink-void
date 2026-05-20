@@ -40,6 +40,9 @@ func _process(_delta: float) -> void:
 				_add_sigil_to_hud(event["upgrade_id"])
 			Enums.EVENT_TYPES.SHOW_DEATH_SCREEN:
 				_show_death_overlay()
+			Enums.EVENT_TYPES.SHOW_REVIVE_UI:
+				# This references the child node you just dropped into the tree!
+				$ReviveUI.display_ultimatum(event["cost"], event["can_afford"])
 
 func _add_sigil_to_hud(upgrade_id: String) -> void:
 	# If a pip with this exact ID already exists, update it instead of making a new one

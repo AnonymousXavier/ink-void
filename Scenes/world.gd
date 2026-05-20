@@ -32,6 +32,7 @@ extends Node2D
 @onready var game_over_system: GameOverSystem = $GameOverSystem
 @onready var load_system: LoadSystem = $LoadSystem
 @onready var save_system: SaveSystem = $SaveSystem
+@onready var revive_system: ReviveSystem = $ReviveSystem
 
 
 var player_spawned: bool = false
@@ -81,7 +82,7 @@ func _process(delta: float) -> void:
 	
 	shooting_system.update(delta)
 	projectile_dispatch_system.update(delta)
-	impact_system.update(delta)
+	impact_system.update()
 	flash_system.update(delta)
 	damage_system.update()
 	health_system.update()
@@ -89,6 +90,7 @@ func _process(delta: float) -> void:
 	death_system.update()
 	bank_system.update(delta)
 	upgrade_system.update()
+	revive_system.update()
 	
 	if not game_over_system.game_ended: game_over_system.update(delta)
 	save_system.update()
