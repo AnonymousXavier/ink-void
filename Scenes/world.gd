@@ -74,7 +74,7 @@ func _process(delta: float) -> void:
 	
 	homing_system.update(delta)
 
-	stalking_system.update()
+	stalking_system.update(delta)
 	movement_system.update(delta)
 	
 	count_down_system.update(delta)

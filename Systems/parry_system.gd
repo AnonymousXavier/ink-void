@@ -10,7 +10,7 @@ func update(delta: float) -> void:
 	var parry: ParryData = entity_manager.parry_components.get(player_id)
 	var input: PlayerInputData = entity_manager.player_input_data
 	var player_transform = entity_manager.transform_components.get(player_id)
-	var player_velocity = entity_manager.velocity_components.get(player_id)
+	var player_velocity: VelocityData = entity_manager.velocity_components.get(player_id)
 	
 	if not parry or not input: return
 	

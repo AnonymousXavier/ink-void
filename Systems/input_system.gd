@@ -21,7 +21,11 @@ func update(_delta: float) -> void:
 		var screen_center = get_viewport().get_visible_rect().size / 2.0
 		var camera_pos = SceneInstances.camera.position
 		var zoom = SceneInstances.camera.zoom
+		var player_transform: TransformData = entity_manager.transform_components[player_id]
 		
 		# Translate screen pixel back into the ECS coordinate system
 		input_data.aim_position = ((screen_mouse_pos - screen_center) / zoom) + camera_pos
 		input_data.fire_pressed = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+		input_data.aim_direction = input_data.aim_position - player_transform.position
+		
+		print(input_data.aim_direction)
