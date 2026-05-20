@@ -1,5 +1,5 @@
 class_name ShieldData
-extends RefCounted
+extends Resource
 
 # If true, the next fatal hit is ignored.
 var is_active: bool = false

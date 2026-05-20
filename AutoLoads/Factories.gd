@@ -13,7 +13,6 @@ func create_player(spawn_pos: Vector2) -> int:
 	var parry_data = ParryData.new()
 	var dash_data = DashData.new()
 	var shield_data = ShieldData.new()
-	
 
 	shield_data.is_active = false
 	
