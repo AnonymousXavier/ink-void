@@ -1,4 +1,4 @@
 extends Resource
 class_name StalkerData
 
-var target_id: int
+@export var target_id: int

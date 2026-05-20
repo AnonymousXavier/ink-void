@@ -1,5 +1,5 @@
 extends Resource
 class_name HealthData
 
-var health: float
-var maxHealth: float
+@export var health: float
+@export var maxHealth: float

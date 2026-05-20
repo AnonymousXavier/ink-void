@@ -14,15 +14,12 @@ func update() -> void:
 	handle_enemy_spawning()
 	
 func get_max_enemies_allowed(wave: int) -> int:
-	# Wave 1 allows 2 enemies. Every new wave raises the simultaneous cap by 3.
-	# Wave 8 (when Tanks arrive) will allow 26 enemies on screen at once.
 	return 2 + ((wave - 1) * 3)
 	
 func handle_enemy_spawning():
 	var wave_sys = SceneInstances.wave_system
 	var current_wave = wave_sys.current_wave
 	
-	# Keep spawning instantly until the screen is full for this specific wave level
 	if enemies_currently_alive < get_max_enemies_allowed(current_wave):
 		spawn_enemy(current_wave)
 
@@ -36,7 +33,7 @@ func spawn_enemy(wave: int):
 		total_weight += w
 		
 	var roll = Constants.RNG.randi_range(0, total_weight)
-	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY # Fallback
+	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY 
 	
 	var running_sum = 0
 	for type_key in weights.keys():
@@ -45,7 +42,6 @@ func spawn_enemy(wave: int):
 			enemy_type = type_key
 			break
 
-	# POSITION CALCULATIONS
 	var camera = SceneInstances.camera
 	var cam_center = camera.position
 	var cam_size = camera.get_size()
@@ -55,7 +51,6 @@ func spawn_enemy(wave: int):
 	var y = Constants.RNG.randf_range(cam_size.y / 2.0, cam_size.y)
 	var spawn_pos = Vector2i(cam_center) + Vector2i(x,y) * direction
 	
-	# SYNCHRONOUS CREATION
 	var enemy_id = Factories.create_enemy(enemy_type, spawn_pos)
 		
 	var render = entity_manager.render_components.get(enemy_id)
@@ -63,16 +58,15 @@ func spawn_enemy(wave: int):
 	var velocity = entity_manager.velocity_components.get(enemy_id)
 	
 	if health and velocity:
-		# +25% HP per wave, +10% Speed per wave
 		var hp_multiplier: float = 1.0 + ((wave - 1) * 0.25) 
 		var speed_multiplier: float = 1.0 + ((wave - 1) * 0.1) 
 		
 		health.maxHealth = max(1, int(health.maxHealth * hp_multiplier))
 		health.health = health.maxHealth
+			
 		velocity.speed *= speed_multiplier
 			
 	if render:
-		# Tint the enemies slightly darker/redder as they get mathematically stronger
 		var red_tint = min(1.0, 0.08 * wave)
 		render.modulate = render.modulate * Color(1.0, 1.0 - red_tint, 1.0 - red_tint, 1.0)
 	

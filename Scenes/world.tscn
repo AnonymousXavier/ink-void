@@ -33,7 +33,6 @@
 [ext_resource type="PackedScene" uid="uid://cbutnn7dfq6nk" path="res://Systems/game_over_system.tscn" id="31_r0ikl"]
 [ext_resource type="PackedScene" uid="uid://cq8wjspcbub31" path="res://Systems/load_system.tscn" id="32_opbav"]
 [ext_resource type="PackedScene" uid="uid://buc66fiiumisp" path="res://Systems/save_system.tscn" id="33_coyub"]
-[ext_resource type="PackedScene" uid="uid://dlwi4mju3t4jr" path="res://Systems/hit_stop_system.tscn" id="34_opbav"]
 
 [node name="World" type="Node2D" unique_id=626846320]
 script = ExtResource("1_a02cp")
@@ -105,5 +104,3 @@ offset_bottom = 654.0
 [node name="LoadSystem" parent="." unique_id=1582889498 instance=ExtResource("32_opbav")]
 
 [node name="SaveSystem" parent="." unique_id=1414083304 instance=ExtResource("33_coyub")]
-
-[node name="HitStopSystem" parent="." unique_id=912588155 instance=ExtResource("34_opbav")]

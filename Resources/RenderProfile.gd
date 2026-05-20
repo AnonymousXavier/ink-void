@@ -1,10 +1,10 @@
 extends Resource
 class_name RenderProfile
 
-var shape_type: Enums.SHAPE_TYPES
-var core_color: Color
-var glow_color: Color
-var is_hollow: bool
-var border_width: int
-var width: int
-var height: int
+@export var shape_type: Enums.SHAPE_TYPES
+@export var core_color: Color
+@export var glow_color: Color
+@export var is_hollow: bool
+@export var border_width: int
+@export var width: int
+@export var height: int

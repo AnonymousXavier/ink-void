@@ -53,6 +53,8 @@ func create_player(spawn_pos: Vector2) -> int:
 	
 	return id
 
+# Inside Factories.gd
+
 func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var id = SceneInstances.entity_manager.next_entity_id
 	var entity_manager: EntityManager = SceneInstances.entity_manager
@@ -68,8 +70,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var velocity_data = VelocityData.new()
 	var stalker_data = StalkerData.new()
 	
-	# Dynamic safety checks for component arrays that might not be declared yet
-
+	# Dynamic safety checks for component arrays
 	var meele_data = Stats.meele_data[type].duplicate() if type in Stats.meele_data else MeeleData.new()
 	var health_data = Stats.health_data[type].duplicate() if type in Stats.health_data else HealthData.new()
 	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true) if type in Stats.projectile_weapon_datas else ProjectileWeaponData.new()
@@ -84,10 +85,10 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	health_data.maxHealth = profile["health"]
 	health_data.health = profile["health"]
 	meele_data.damage = profile["damage"]
-	# We can use the mass values later for calculating your parry pushback!
-	meele_data.mass = profile["mass"] 
+	if "mass" in profile:
+		meele_data.mass = profile["mass"] 
 	
-	# Fetch the textures instantly without utilizing 'await' hooks!
+	# Fetch the textures instantly without utilizing 'await' hooks
 	render_data.texture = Cache.textures_dict[type]
 	render_data.frozen_texture = Cache.frozen_textures_dict[type]
 	

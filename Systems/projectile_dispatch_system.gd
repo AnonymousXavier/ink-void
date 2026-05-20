@@ -7,4 +7,4 @@ func update(_delta: float) -> void:
 			var parent_transform_data: TransformData = SceneInstances.entity_manager.transform_components[event["id"]]
 			
 			var direction = (target_transform_data.position - parent_transform_data.position).normalized()
-			Factories.spawn_bullet(parent_transform_data.position, direction, event["damage"], event["target"], Constants.BASE_BULLET_SPEED)
+			Factories.spawn_bullet(parent_transform_data.position, direction, event["damage"], event["target"], 300.0)

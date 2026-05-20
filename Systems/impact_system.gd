@@ -27,10 +27,10 @@ func update(_delta: float) -> void:
 			if dash and dash.is_dashing:
 				continue 
 			
-			var distance_to_player = player_transform.position.distance_to(bullet_transform.position)
-			
-			if player_parry.current_state == ParryData.State.PARRYING:
-				if distance_to_player <= Constants.PARRY_RADIUS:
+			# Isnt Dashing
+			if player_transform.position.distance_to(bullet_transform.position) <= Constants.PARRY_RADIUS:
+				
+				if player_parry.current_state == ParryData.State.PARRYING:
 					SceneInstances.time_scale = 0.1 
 					player_parry.current_state = ParryData.State.FROZEN_AIMING
 					player_parry.hijacked_bullet_id = bullet_id
@@ -40,16 +40,10 @@ func update(_delta: float) -> void:
 					if bullet_velocity_data:
 						bullet_velocity_data.speed = 0.0
 					
-					break # Bullet caught! Exit early so it doesn't drop down to damage math
+					break 
 					
-			# 2. THE BODY HITBOX
-			if distance_to_player <= Constants.PLAYER_HITBOX:
-				if player_parry.current_state != ParryData.State.FROZEN_AIMING:
-					SceneInstances.events_manager.add_event({
-						"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, 
-						"id": player_id, 
-						"amount": bullet_meele.damage
-					})
+				elif player_parry.current_state != ParryData.State.FROZEN_AIMING:
+					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": player_id, "amount": bullet_meele.damage})
 					print("PLAYER HIT! HP: ", player_health.health)
 					Factories.despawn_bullet(bullet_id)
 					break
@@ -64,7 +58,7 @@ func update(_delta: float) -> void:
 				
 				if not enemy_transform or not enemy_health: continue
 				
-				if bullet_transform.position.distance_to(enemy_transform.position) <= Constants.PARRY_RADIUS:
+				if bullet_transform.position.distance_to(enemy_transform.position) <= Constants.PARRY_RADIUS * 1.5:
 					
 					if enemy_id in bullet_meele.hit_targets:
 						continue # We already hit this guy

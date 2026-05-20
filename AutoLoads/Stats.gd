@@ -1,6 +1,6 @@
 extends Node
 
-# Automatically compiled component data registries
+# Dynamically compiled data registries
 var meele_data: Dictionary[Enums.ENTITY_TYPES, MeeleData] = {}
 var projectile_weapon_datas: Dictionary[Enums.ENTITY_TYPES, ProjectileWeaponData] = {}
 var health_data: Dictionary[Enums.ENTITY_TYPES, HealthData] = {}
@@ -35,8 +35,6 @@ const ENEMY_PROFILES = {
 	}
 }
 
-# Stats.gd
-
 # Explicit enemy density curves mapping
 const WAVE_SPAWN_WEIGHTS = {
 	1: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 100 },
@@ -61,12 +59,20 @@ func _ready() -> void:
 		)
 		
 		# Compile Projectile Systems 
-		projectile_weapon_datas[enemy_type] = Misc.create_projectile_data_for(
+		var weapon = Misc.create_projectile_data_for(
 			profile["fire_rate"], 
 			profile["damage"], 
 			Constants.CHUNK_SIZE * 0.5, 
 			[Enums.ALIGNMENTS.PLAYER]
 		)
+		
+		# Set custom aim times per profile variant
+		if enemy_type == Enums.ENTITY_TYPES.SNIPER_ENEMY:
+			weapon.aim_duration = 1.2 # Snipers trace long lines before firing
+		else:
+			weapon.aim_duration = 0.5
+			
+		projectile_weapon_datas[enemy_type] = weapon
 		
 		# Compile Core Health tracking structures
 		health_data[enemy_type] = Misc.create_health_data(

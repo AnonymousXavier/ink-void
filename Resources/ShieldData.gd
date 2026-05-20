@@ -2,4 +2,4 @@ class_name ShieldData
 extends Resource
 
 # If true, the next fatal hit is ignored.
-var is_active: bool = false
+@export var is_active: bool = false

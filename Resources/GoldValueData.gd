@@ -1,4 +1,4 @@
 extends Resource
 class_name GoldValueData
 
-var gold: int = 0
+@export var gold: int = 0

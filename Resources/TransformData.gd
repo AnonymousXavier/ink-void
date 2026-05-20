@@ -1,5 +1,5 @@
 extends Resource
 class_name TransformData
 
-var position: Vector2
-var rotation: float = 0
+@export var position: Vector2
+@export var rotation: float = 0

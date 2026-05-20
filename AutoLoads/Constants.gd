@@ -7,12 +7,9 @@ const TILE_SIZE = 32
 const CHUNK_SIZE = 512
 const BG_BORDER_WIDTH = 1 # px
 
-const PARRY_RADIUS: float = TILE_SIZE
-const PLAYER_HITBOX: float = TILE_SIZE / 2.0
+const PARRY_RADIUS: float = TILE_SIZE / 2.0 # Players Hitbox
 const PARRY_WAIT_TIME: float = 0.2
 const PARRY_MISSED_PENALTY_TIME = 0.5
-
-const BASE_BULLET_SPEED: float = 200.0
 
 var RNG = RandomNumberGenerator.new()
 
@@ -34,16 +31,7 @@ const PERKS: Dictionary = {
 		"cost": 75,
 		"stat_id": "move_speed",
 		"value": 60.0 # +60 flat speed to the base 400
-	},
-	"targeting_matrix": {
-	"title": "Targeting Matrix",
-	"desc": "Bullets flash pure white when in perfect parry range.",
-	"sigil": "[O]",
-	"color": Color(1.0, 1.0, 1.0), # Pure White
-	"cost": 0,
-	"stat_id": "parry_assist",
-	"value": 1.0 
-}
+	}
 }
 
 const UPGRADES: Dictionary = {
