@@ -7,5 +7,6 @@ class_name MeeleData
 @export var fire_rate: float # Bullets per sec
 @export var target_id: int
 @export var pierce_count: int = 0 # How many more enemies THIS specific bullet can hit
+@export var mass: float
 
 var hit_targets: Array[int] = []

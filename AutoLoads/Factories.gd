@@ -49,30 +49,49 @@ func create_player(spawn_pos: Vector2) -> int:
 	
 	return id
 
-func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i):
+func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var id = SceneInstances.entity_manager.next_entity_id
 	var entity_manager: EntityManager = SceneInstances.entity_manager
 	
+	# Fetch raw numerical stats from our profile registry
+	var profile = Stats.ENEMY_PROFILES[type]
+	
 	var transform_data = TransformData.new()
 	var render_data = RenderingData.new()
-	var meele_data = Stats.meele_data[type].duplicate()
-	var health_data = Stats.health_data[type].duplicate()
 	var countdown_data = CountDownData.new()
 	var goldvalue_data = GoldValueData.new()
 	var alignment_data = AlignmentData.new()
 	var velocity_data = VelocityData.new()
 	var stalker_data = StalkerData.new()
-	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true)
 	
-	velocity_data.speed = 100.0
-	render_data.texture = Cache.textures_dict[type]
-	render_data.frozen_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.NORMAL_ENEMY]
-	countdown_data.wait_time = 1 / meele_data.fire_rate
-	countdown_data.action = Enums.COUNTDOWN_ACTIONS.ATTACK
+	# Dynamic safety checks for component arrays that might not be declared yet
+	var meele_data = Stats.meele_data[type].duplicate() if type in Stats.meele_data else MeeleData.new()
+	var health_data = Stats.health_data[type].duplicate() if type in Stats.health_data else HealthData.new()
+	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true) if type in Stats.projectile_weapon_datas else ProjectileWeaponData.new()
+	
+	# --- DATA INJECTION FROM PRE-BAKED ARRAYS ---
 	transform_data.position = pos
+	velocity_data.speed = profile["speed"]
 	alignment_data.alignment = Enums.ALIGNMENTS.ENEMY
-	stalker_data.target_id = SceneInstances.entity_manager.player_id
+	stalker_data.target_id = entity_manager.player_id
 	
+	# Map values from the profile dictionary directly to components
+	health_data.maxHealth = profile["health"]
+	health_data.health = profile["health"]
+	meele_data.damage = profile["damage"]
+	# We can use the mass values later for calculating your parry pushback!
+	meele_data.mass = profile["mass"] 
+	
+	# Fetch the textures instantly without utilizing 'await' hooks!
+	render_data.texture = Cache.textures_dict[type]
+	render_data.frozen_texture = Cache.frozen_textures_dict[type]
+	
+	# Setup weapon fire cooldown loops based on archetype configs
+	var fire_rate = profile["fire_rate"] if "fire_rate" in profile else 1.0
+	countdown_data.wait_time = 1.0 / fire_rate
+	countdown_data.action = Enums.COUNTDOWN_ACTIONS.ATTACK
+	
+	# Bind instances back to the central entity arrays
 	entity_manager.meele_components[id] = meele_data
 	entity_manager.render_components[id] = render_data
 	entity_manager.transform_components[id] = transform_data

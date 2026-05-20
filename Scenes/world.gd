@@ -32,10 +32,11 @@ extends Node2D
 @onready var game_over_system: GameOverSystem = $GameOverSystem
 @onready var load_system: LoadSystem = $LoadSystem
 @onready var save_system: SaveSystem = $SaveSystem
-
+@onready var hit_stop_system: HitStopSystem = $HitStopSystem
 
 var player_spawned: bool = false
 var shader_material: ShaderMaterial
+var secs_paused: float = 0.0
 
 func _ready() -> void:
 	SceneInstances.camera = camera
@@ -54,7 +55,16 @@ func _process(delta: float) -> void:
 	if Cache.is_ready and not player_spawned:
 		Factories.create_player(Vector2.ZERO)
 		player_spawned = true
+
+	events_manager.update(delta)
+
+	if Engine.time_scale == 0.0:
+		print("Secs Paused: ", secs_paused)
+		secs_paused += 1/60.0
+		hit_stop_system.update()
+		return
 	
+	secs_paused = 0.0
 	events_manager.update(delta) # Automatically Clears it self at the end of the frame so order doesnt really matter
 	overlay_system.update(delta)
 	
@@ -89,6 +99,8 @@ func _process(delta: float) -> void:
 	death_system.update()
 	bank_system.update(delta)
 	upgrade_system.update()
+	
+	hit_stop_system.update()
 	
 	if not game_over_system.game_ended: game_over_system.update(delta)
 	save_system.update()
