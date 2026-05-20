@@ -1,5 +1,5 @@
-extends Node
+extends RefCounted
 class_name HealthData
 
-@export var health: float
-@export var maxHealth: float
+var health: float
+var maxHealth: float

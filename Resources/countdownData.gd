@@ -1,8 +1,8 @@
-extends Resource
+extends RefCounted
 class_name CountDownData
 
-@export var action: Enums.COUNTDOWN_ACTIONS
-@export var started: bool = false
+var action: Enums.COUNTDOWN_ACTIONS
+var started: bool = false
 
-@export var time_left: float = 0.0
-@export var wait_time: float = 0.0
+var time_left: float = 0.0
+var wait_time: float = 0.0

@@ -35,6 +35,20 @@ const ENEMY_PROFILES = {
 	}
 }
 
+# Stats.gd
+
+# Explicit enemy density curves mapping
+const WAVE_SPAWN_WEIGHTS = {
+	1: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 100 },
+	2: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 90,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 10 },
+	3: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 80,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 20 },
+	4: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 70,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 30 },
+	5: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 60,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 40 },
+	6: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 55,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 45 },
+	7: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 50,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 50 }, # Peak 50/50 Skill Check
+	8: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 45,  Enums.ENTITY_TYPES.SNIPER_ENEMY: 45, Enums.ENTITY_TYPES.TANK_ENEMY: 10 } # Tanks arrive!
+}
+
 func _ready() -> void:
 	# Automate component dictionary generation straight from the profiles source
 	for enemy_type in ENEMY_PROFILES.keys():
@@ -58,3 +72,19 @@ func _ready() -> void:
 		health_data[enemy_type] = Misc.create_health_data(
 			profile["health"]
 		)
+
+# Generates procedural scaling for infinite runs past wave 8
+static func get_spawn_weights_for_wave(wave: int) -> Dictionary:
+	if WAVE_SPAWN_WEIGHTS.has(wave):
+		return WAVE_SPAWN_WEIGHTS[wave]
+	
+	# Beyond wave 8, slowly bleed out the normal swarms to make room for heavy threats
+	var sniper_weight = min(45, 45 + (wave - 8))
+	var tank_weight = min(35, 10 + ((wave - 8) * 3))
+	var normal_weight = max(20, 100 - sniper_weight - tank_weight)
+	
+	return {
+		Enums.ENTITY_TYPES.NORMAL_ENEMY: normal_weight,
+		Enums.ENTITY_TYPES.SNIPER_ENEMY: sniper_weight,
+		Enums.ENTITY_TYPES.TANK_ENEMY: tank_weight
+	}

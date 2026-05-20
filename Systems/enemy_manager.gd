@@ -1,12 +1,8 @@
 extends Node
 class_name EnemyManager
 
-var start_time: int
 var enemies_currently_alive = 0
 
-func _ready() -> void:
-	start_time = Time.get_ticks_msec()
-	
 func update() -> void:
 	if not Cache.is_ready:
 		return
@@ -17,50 +13,67 @@ func update() -> void:
 	enemies_currently_alive = len(SceneInstances.entity_manager.is_an_enemy)
 	handle_enemy_spawning()
 	
-func get_enemies_expected_on_screen(secs_passed: int):
-	var minimum_enemies_expected = 0
-	return sin(deg_to_rad(secs_passed)) * 3 + minimum_enemies_expected
+func get_max_enemies_allowed(wave: int) -> int:
+	# Wave 1 allows 2 enemies. Every new wave raises the simultaneous cap by 3.
+	# Wave 8 (when Tanks arrive) will allow 26 enemies on screen at once.
+	return 2 + ((wave - 1) * 3)
 	
 func handle_enemy_spawning():
-	var secs_passed = (Time.get_ticks_msec() - start_time) / 1000
-	if get_enemies_expected_on_screen(secs_passed) > enemies_currently_alive:
-		spawn_enemy()
+	var wave_sys = SceneInstances.wave_system
+	var current_wave = wave_sys.current_wave
+	
+	# Keep spawning instantly until the screen is full for this specific wave level
+	if enemies_currently_alive < get_max_enemies_allowed(current_wave):
+		spawn_enemy(current_wave)
 
-func spawn_enemy(): # A higher level function, spawn enemy a random an enemy at a random coord outside screen boundaries
-	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY
-	var camera = SceneInstances.camera
+func spawn_enemy(wave: int):
 	var entity_manager = SceneInstances.entity_manager
 	
+	var weights = Stats.get_spawn_weights_for_wave(wave)
+	var total_weight = 0
+	
+	for w in weights.values():
+		total_weight += w
+		
+	var roll = Constants.RNG.randi_range(0, total_weight)
+	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY # Fallback
+	
+	var running_sum = 0
+	for type_key in weights.keys():
+		running_sum += weights[type_key]
+		if roll <= running_sum:
+			enemy_type = type_key
+			break
+
+	# POSITION CALCULATIONS
+	var camera = SceneInstances.camera
 	var cam_center = camera.position
 	var cam_size = camera.get_size()
 	
 	var direction = Vector2i(1 if Constants.RNG.randi_range(0, 1) else -1, 1 if Constants.RNG.randi_range(0, 1) else -1)
-	var x = Constants.RNG.randf_range(cam_size.y / 2, cam_size.y)
-	var y = Constants.RNG.randf_range(cam_size.y / 2, cam_size.y)
+	var x = Constants.RNG.randf_range(cam_size.x / 2.0, cam_size.x)
+	var y = Constants.RNG.randf_range(cam_size.y / 2.0, cam_size.y)
 	var spawn_pos = Vector2i(cam_center) + Vector2i(x,y) * direction
 	
+	# SYNCHRONOUS CREATION
 	var enemy_id = Factories.create_enemy(enemy_type, spawn_pos)
 		
-	# --- THE ESCALATION MULTIPLIER ---
-	var wave_sys = SceneInstances.wave_system
-	if wave_sys:
-		var wave = wave_sys.current_wave
-		var render = entity_manager.render_components.get(enemy_id)
-		var health = entity_manager.health_components.get(enemy_id)
-		var velocity = entity_manager.velocity_components.get(enemy_id)
-		
-		# +50% HP per wave, +20% Speed per wave
+	var render = entity_manager.render_components.get(enemy_id)
+	var health = entity_manager.health_components.get(enemy_id)
+	var velocity = entity_manager.velocity_components.get(enemy_id)
+	
+	if health and velocity:
+		# +25% HP per wave, +10% Speed per wave
 		var hp_multiplier: float = 1.0 + ((wave - 1) * 0.25) 
 		var speed_multiplier: float = 1.0 + ((wave - 1) * 0.1) 
 		
 		health.maxHealth = max(1, int(health.maxHealth * hp_multiplier))
 		health.health = health.maxHealth
-			
 		velocity.speed *= speed_multiplier
 			
-		# Tint the enemies slightly red as they get stronger
-		var red_tint = min(1.0, 0.1 * wave)
-		render.modulate = Color(1.0, 1.0 - red_tint, 1.0 - red_tint)
+	if render:
+		# Tint the enemies slightly darker/redder as they get mathematically stronger
+		var red_tint = min(1.0, 0.08 * wave)
+		render.modulate = render.modulate * Color(1.0, 1.0 - red_tint, 1.0 - red_tint, 1.0)
 	
 	SceneInstances.entity_manager.add_entity_to_a_chunk(spawn_pos, enemy_id)
-	

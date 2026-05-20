@@ -1,5 +1,5 @@
-extends Resource
+extends RefCounted
 class_name TransformData
 
-@export var position: Vector2
-@export var rotation: float = 0
+var position: Vector2
+var rotation: float = 0

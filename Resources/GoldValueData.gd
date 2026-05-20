@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 class_name GoldValueData
 
-@export var gold: int = 0
+var gold: int = 0

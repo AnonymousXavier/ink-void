@@ -1,5 +1,5 @@
-extends Resource
+extends RefCounted
 class_name VelocityData
 
-@export var speed: float = 0.0
-@export var direction: Vector2 = Vector2.ZERO
+var speed: float = 0.0
+var direction: Vector2 = Vector2.ZERO

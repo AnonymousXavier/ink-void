@@ -1,13 +1,12 @@
-extends Resource
+extends RefCounted
 class_name ProjectileWeaponData
 
-@export_group("Core Stats")
-@export var attack_range: int # Cells it covers
-@export var damage: float
-@export var fire_rate: float # Bullets per sec
-@export var target_id: int
+var attack_range: int # Cells it covers
+var damage: float
+var fire_rate: float # Bullets per sec
+var target_id: int
 
-@export var target_alignments: Array[Enums.ALIGNMENTS]
+var target_alignments: Array[Enums.ALIGNMENTS]
 
 var is_aiming: bool = false
 var aim_timer: float = 0.0
