@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name ParryData
 
 enum State { READY, PARRYING, RECOVERING, FROZEN_AIMING }

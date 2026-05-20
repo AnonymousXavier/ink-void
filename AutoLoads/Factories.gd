@@ -12,6 +12,10 @@ func create_player(spawn_pos: Vector2) -> int:
 	var countdown_data = CountDownData.new()
 	var parry_data = ParryData.new()
 	var dash_data = DashData.new()
+	var shield_data = ShieldData.new()
+	
+
+	shield_data.is_active = false
 	
 	transform_data.position = spawn_pos
 	render_data.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER]
@@ -28,6 +32,7 @@ func create_player(spawn_pos: Vector2) -> int:
 	entity_manager.parry_components[id] = parry_data
 	entity_manager.velocity_components[id] = velocity_data
 	entity_manager.dash_components[id] = dash_data
+	entity_manager.shield_components[id] = shield_data
 	
 	# META-PERK INJECTION
 	# We read the active loadout and safely mutate the baseline stats
@@ -65,6 +70,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var stalker_data = StalkerData.new()
 	
 	# Dynamic safety checks for component arrays that might not be declared yet
+
 	var meele_data = Stats.meele_data[type].duplicate() if type in Stats.meele_data else MeeleData.new()
 	var health_data = Stats.health_data[type].duplicate() if type in Stats.health_data else HealthData.new()
 	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true) if type in Stats.projectile_weapon_datas else ProjectileWeaponData.new()

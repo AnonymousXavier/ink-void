@@ -24,6 +24,7 @@ var shockwave_components: Dictionary [int, ShockWaveData] = {}
 var dash_components: Dictionary[int, DashData] = {}
 var interactable_components: Dictionary[int, InteractableData] = {}
 var shield_components: Dictionary[int, ShieldData] = {}
+
 # Tags
 var is_an_enemy: Dictionary[int, bool] = {}
 var is_a_bullet: Dictionary[int, bool] = {}

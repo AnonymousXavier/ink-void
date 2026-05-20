@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name ProjectileWeaponData
 
 var attack_range: int # Cells it covers

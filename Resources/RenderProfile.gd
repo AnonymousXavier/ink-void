@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name RenderProfile
 
 var shape_type: Enums.SHAPE_TYPES

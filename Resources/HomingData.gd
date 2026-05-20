@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name HomingData
 
 @export var target_id: int

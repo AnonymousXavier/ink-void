@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name DashData
 
 var start_position: Vector2 = Vector2.ZERO

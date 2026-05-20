@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name InteractableData
 
 var interaction_radius: float = 100.0

@@ -1,4 +1,4 @@
-extends RefCounted
+extends Resource
 class_name PlayerInputData
 
 var direction: Vector2 = Vector2.ZERO
