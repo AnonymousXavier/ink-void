@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var bg: ColorRect = $BG
+@onready var main_menu_ui_manager: MainMenuUIManager = $MainMenuUIManager
 
 var events_manager: EventsManager = EventsManager.new()
 var input_system: InputSystem = InputSystem.new()
@@ -9,7 +10,6 @@ var movement_system: MovementSystem = MovementSystem.new()
 var interaction_system: InteractionSystem = InteractionSystem.new()
 var rendering_system: RenderingSystem = RenderingSystem.new()
 var entity_manager: EntityManager = EntityManager.new()
-var main_menu_ui_manager: Node = MainMenuUIManager.new()
 
 var camera: Camera = Camera.new()
 
@@ -66,7 +66,7 @@ func _process(delta: float) -> void:
 	interaction_system.update()
 	camera.update()
 	
-	# 4. Listeners catch the events in the same frame
+	# Event Listeners 
 	main_menu_ui_manager.update()
 	
 	for event in events_manager.events:
@@ -74,6 +74,12 @@ func _process(delta: float) -> void:
 			SceneInstances.time_scale = 1.0 
 			get_tree().change_scene_to_file("res://Scenes/world.tscn")
 			return # Stop processing immediately
+			
+		elif event.type == Enums.EVENT_TYPES.OPEN_PERK_SHOP:
+			SceneInstances.time_scale = 0.0
+			if not main_menu_ui_manager.shop_overlay.visible:
+				print("SHOP EVENT CAUGHT! Current Local Gold: ", MetaEconomy.total_gold)
+			
 	main_menu_ui_manager.update()
 
 func _spawn_terminal(pos: Vector2, color: Color, event_type: int) -> void:

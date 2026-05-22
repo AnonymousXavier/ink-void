@@ -3,8 +3,7 @@ class_name DeathSystem
 
 var enemies_to_delete: Array = []
 
-func _ready() -> void:
-	get_tree().process_frame.connect(delete_entities)
+# WE DELETE THE _ready() FUNCTION ENTIRELY
 
 func update() -> void:
 	for event in SceneInstances.events_manager.events:
@@ -16,6 +15,10 @@ func update() -> void:
 			var transform_data = SceneInstances.entity_manager.transform_components.get(id)
 			if transform_data and SceneInstances.splatter_canvas:
 				SceneInstances.splatter_canvas.stamp(transform_data.position)
+				
+	# Run the cleanup sequence immediately after checking all events for this frame
+	if enemies_to_delete.size() > 0:
+		delete_entities()
 			
 func delete_entities():
 	for id in enemies_to_delete:

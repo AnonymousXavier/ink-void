@@ -3,10 +3,9 @@ class_name MainMenuUIManager
 
 # --- UI REFERENCES ---
 @onready var gold_label: Label = $Control/GoldLabel
-@onready var shop_overlay: ColorRect = $Control/ShopOverlay
 @onready var close_shop_btn: Button = $Control/ShopOverlay/VBoxContainer/CloseButton
 @onready var shop_grid: GridContainer = $Control/ShopOverlay/VBoxContainer/ScrollContainer/GridContainer
-
+@onready var shop_overlay: ColorRect = $Control/ShopOverlay
 
 func _ready() -> void:
 	shop_overlay.hide()
@@ -73,6 +72,7 @@ func _on_perk_clicked(perk_id: String, data: Dictionary) -> void:
 		if MetaEconomy.total_gold >= data["cost"]:
 			MetaEconomy.total_gold -= data["cost"]
 			MetaEconomy.unlocked_perks.append(perk_id)
+			MetaEconomy.save_data()
 			print("PURCHASED: ", perk_id)
 		else:
 			print("INSUFFICIENT FUNDS!")
@@ -84,6 +84,8 @@ func _on_perk_clicked(perk_id: String, data: Dictionary) -> void:
 
 func _close_shop() -> void:
 	shop_overlay.hide()
+	SceneInstances.time_scale = 1.0
+	
 	var em = SceneInstances.entity_manager
 	var input = em.player_input_data
 	if input: input.fire_pressed = false

@@ -35,6 +35,7 @@ var game_over_system: GameOverSystem = GameOverSystem.new()
 var load_system: LoadSystem = LoadSystem.new()
 var save_system: SaveSystem = SaveSystem.new()
 var revive_system: ReviveSystem = ReviveSystem.new()
+var particles_system: ParticlesSystem = ParticlesSystem.new()
 
 # Define Variables
 var player_spawned: bool = false
@@ -57,38 +58,11 @@ func _ready() -> void:
 	add_systems_to_scene()
 	
 func add_systems_to_scene():
+	add_child(splatter_canvas)
 	add_child(rendering_system)
 	
-	add_child(input_system)
-	add_child(events_manager)
-	add_child(enemy_manager)
-	add_child(camera)
-	add_child(homing_system)
-	add_child(movement_system)
-	add_child(entity_manager)
-	add_child(shooting_system)
-	add_child(count_down_system)
-	add_child(projectile_dispatch_system)
-	add_child(impact_system)
-	add_child(damage_system)
-	add_child(health_system)
-	add_child(death_system)
-	add_child(bank_system)
-	add_child(overlay_system)
-	add_child(player_controller_system)
-	add_child(stalking_system)
-	add_child(parry_system)
-	add_child(splatter_canvas)
-	add_child(camera_shake_system)
-	add_child(flash_system)
-	add_child(dash_system)
 	add_child(wave_system)
-	add_child(shockwave_system)
-	add_child(upgrade_system)
-	add_child(game_over_system)
-	add_child(load_system)
-	add_child(save_system)
-	add_child(revive_system)
+	add_child(particles_system)
 	
 func _process(delta: float) -> void:
 	if Cache.is_ready and not player_spawned:
@@ -124,6 +98,7 @@ func _process(delta: float) -> void:
 	shooting_system.update(delta)
 	projectile_dispatch_system.update(delta)
 	impact_system.update()
+	particles_system.update(delta)
 	flash_system.update(delta)
 	damage_system.update()
 	health_system.update()

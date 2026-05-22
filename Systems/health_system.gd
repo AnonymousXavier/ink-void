@@ -6,7 +6,6 @@ func update() -> void:
 		if event["type"] == Enums.EVENT_TYPES.DAMAGE_CONFIRMED:
 			if apply_damage(event["id"], event["amount"]) <= 0:
 				if event["id"] == SceneInstances.entity_manager.player_id: 
-					# THE INTERCEPTION: Do not trigger GAME_OVER yet!
 					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.PENDING_REVIVE, "id": event["id"]})
 				else:
 					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.ENTITY_KILLED, "id": event["id"]})

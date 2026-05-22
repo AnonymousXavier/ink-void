@@ -43,4 +43,15 @@ func update(delta: float) -> void:
 		# Bullets safety cleanup boundaries pass
 		if entity_manager.is_a_bullet.has(id):
 			if not screen_rect.has_point(transform.position):
-				Factories.despawn_bullet(id)
+				despawn_bullet(id, transform)
+				
+func despawn_bullet(bullet_id, transform_data: TransformData):
+	var impact_coordinate = Vector2(transform_data.position.x, transform_data.position.y)
+	
+	SceneInstances.events_manager.add_event({
+		"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE, 
+		"pos": impact_coordinate,
+		"color": Color(0.8, 0.8, 0.8) # Brutalist gray
+	})
+
+	Factories.despawn_bullet(bullet_id)

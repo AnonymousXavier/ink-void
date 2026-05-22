@@ -42,24 +42,34 @@ func update() -> void:
 					
 				elif player_parry.current_state != ParryData.State.FROZEN_AIMING:
 					
-					# --- 2. THE SHIELD INTERCEPTION ---
+					# THE SHIELD INTERCEPTION
 					if player_shield and player_shield.is_active:
 						player_shield.is_active = false
 						SceneInstances.events_manager.add_event({
 							"type": Enums.EVENT_TYPES.SCREEN_SHAKE, 
 							"intensity": 0.8
 						})
+						# SPARK SHATTER
+						SceneInstances.events_manager.add_event({
+							"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
+							"pos": Vector2(bullet_transform.position.x, bullet_transform.position.y),
+							"color": Color(0.0, 1.0, 1.0) # Cyan shield sparks!
+						})
 						print("SHIELD SHATTERED! Player saved.")
 						Factories.despawn_bullet(bullet_id)
 						break
 						
-					# --- 3. LETHAL HIT (Drops to HealthSystem) ---
+					SceneInstances.events_manager.add_event({
+						"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
+						"pos": Vector2(bullet_transform.position.x, bullet_transform.position.y),
+						"color": Color(1.0, 0.2, 0.2) # Crimson blood sparks
+					})
+					# SPARK
 					SceneInstances.events_manager.add_event({
 						"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, 
 						"id": player_id, 
 						"amount": bullet_meele.damage
 					})
-					print("PLAYER HIT! HP: ", player_health.health)
 					Factories.despawn_bullet(bullet_id)
 					break
 					
@@ -80,6 +90,11 @@ func update() -> void:
 						"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, 
 						"id": enemy_id, 
 						"amount": bullet_meele.damage
+					})
+					SceneInstances.events_manager.add_event({
+						"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
+						"pos": Vector2(bullet_transform.position.x, bullet_transform.position.y),
+						"color": Color(1.0, 0.2, 0.2) # Crimson blood sparks
 					})
 					print("ENEMY HIT! HP: ", enemy_health.health)
 					
