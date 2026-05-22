@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://b4xgsftrx1h8o"]
-
-[ext_resource type="Script" uid="uid://dg7q2rkm8a0gd" path="res://Systems/homing_system.gd" id="1_pench"]
-
-[node name="HomingSystem" type="Node" unique_id=63456667]
-script = ExtResource("1_pench")

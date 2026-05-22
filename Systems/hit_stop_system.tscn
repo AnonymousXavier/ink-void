@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://cqy8rel5kvw52"]
-
-[ext_resource type="Script" uid="uid://bjq1x1d28j5vs" path="res://Systems/hit_stop_system.gd" id="1_vaxin"]
-
-[node name="HitStopSystem" type="Node" unique_id=1959105632]
-script = ExtResource("1_vaxin")

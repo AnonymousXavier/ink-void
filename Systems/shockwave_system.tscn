@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bycgoalg77hlp"]
-
-[ext_resource type="Script" uid="uid://7566grgcmuvj" path="res://Systems/shockwave_system.gd" id="1_rupjx"]
-
-[node name="ShockwaveSystem" type="Node" unique_id=2077640000]
-script = ExtResource("1_rupjx")

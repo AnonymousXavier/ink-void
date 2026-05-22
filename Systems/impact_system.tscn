@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://b58leycdhhxnx"]
-
-[ext_resource type="Script" uid="uid://xlup7lsa7ky8" path="res://Systems/impact_system.gd" id="1_yyfta"]
-
-[node name="ImpactSystem" type="Node" unique_id=2015396842]
-script = ExtResource("1_yyfta")

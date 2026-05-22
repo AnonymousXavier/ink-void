@@ -9,7 +9,7 @@ const ENEMY_PROFILES = {
 	Enums.ENTITY_TYPES.NORMAL_ENEMY: {
 		"shape": Enums.SHAPE_TYPES.CIRCLE,
 		"color": Color("ff2244"),
-		"health": 10,
+		"health": 1,
 		"speed": 80.0,
 		"damage": 1,
 		"mass": 1.0,
@@ -18,7 +18,7 @@ const ENEMY_PROFILES = {
 	Enums.ENTITY_TYPES.SNIPER_ENEMY: {
 		"shape": Enums.SHAPE_TYPES.TRIANGLE,
 		"color": Color(1.0, 0.7, 0.1),
-		"health": 10,
+		"health": 2,
 		"speed": 110.0,
 		"damage": 1,
 		"mass": 0.5,
@@ -27,7 +27,7 @@ const ENEMY_PROFILES = {
 	Enums.ENTITY_TYPES.TANK_ENEMY: {
 		"shape": Enums.SHAPE_TYPES.SQUARE,
 		"color": Color(0.2, 0.5, 1.0),
-		"health": 20,
+		"health": 3,
 		"speed": 40.0,
 		"damage": 2,
 		"mass": 4.0,

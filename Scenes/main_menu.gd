@@ -1,19 +1,23 @@
 extends Node2D
 
-@onready var events_manager: EventsManager = $EventsManager
-@onready var input_system: InputSystem = $InputSystem
-@onready var player_controller_system: PlayerControllerSystem = $PlayerControllerSystem
-@onready var movement_system: MovementSystem = $MovementSystem
-@onready var interaction_system: InteractionSystem = $InteractionSystem
-@onready var rendering_system: RenderingSystem = $RenderingSystem
-@onready var entity_manager: EntityManager = $EntityManager
-@onready var main_menu_ui_manager: Node = $MainMenuUIManager
 @onready var bg: ColorRect = $BG
-@onready var camera: Camera = $Camera 
+
+var events_manager: EventsManager = EventsManager.new()
+var input_system: InputSystem = InputSystem.new()
+var player_controller_system: PlayerControllerSystem = PlayerControllerSystem.new()
+var movement_system: MovementSystem = MovementSystem.new()
+var interaction_system: InteractionSystem = InteractionSystem.new()
+var rendering_system: RenderingSystem = RenderingSystem.new()
+var entity_manager: EntityManager = EntityManager.new()
+var main_menu_ui_manager: Node = MainMenuUIManager.new()
+
+var camera: Camera = Camera.new()
 
 var has_spawned_player = false
 
 func _ready() -> void:
+	SceneInstances.viewport = get_viewport()
+	
 	SceneInstances.events_manager = events_manager
 	SceneInstances.entity_manager = entity_manager
 	SceneInstances.main_menu_ui_manager = main_menu_ui_manager
@@ -22,6 +26,7 @@ func _ready() -> void:
 	SceneInstances.camera = camera 
 	
 	_update_gold_display()
+	add_child(rendering_system)
 
 func _spawn_objects():
 	var screen_center = get_viewport_rect().size / 2.0
@@ -44,6 +49,8 @@ func _spawn_objects():
 func _process(delta: float) -> void:
 	if not Cache.is_ready: return
 	
+	rendering_system.update()
+	
 	if Cache.is_ready and not has_spawned_player:
 		_spawn_objects()
 		has_spawned_player = true
@@ -52,7 +59,7 @@ func _process(delta: float) -> void:
 	events_manager.update(delta)
 	
 	# 2. Process Input and Physics
-	input_system.update(delta)
+	input_system.update()
 	player_controller_system.update(delta)
 	movement_system.update(delta)
 	

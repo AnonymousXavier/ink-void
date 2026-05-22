@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://dr3yrc8wkgbmx"]
-
-[ext_resource type="Script" uid="uid://cftan107wbs7g" path="res://Systems/events_manager.gd" id="1_5bs3x"]
-
-[node name="EventsManager" type="Node" unique_id=2095481203]
-script = ExtResource("1_5bs3x")

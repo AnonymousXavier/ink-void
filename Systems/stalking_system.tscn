@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://dnrci6ejgl3n8"]
-
-[ext_resource type="Script" uid="uid://1ltj51bs0p0g" path="res://Systems/stalking_system.gd" id="1_l3ve7"]
-
-[node name="StalkingSystem" type="Node" unique_id=531811237]
-script = ExtResource("1_l3ve7")

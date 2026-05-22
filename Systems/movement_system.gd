@@ -5,7 +5,7 @@ func update(delta: float) -> void:
 	var scaled_delta = delta * SceneInstances.time_scale
 	
 	var entity_manager = SceneInstances.entity_manager
-	var screen_rect = get_viewport().get_visible_rect()
+	var screen_rect = SceneInstances.viewport.get_visible_rect()
 	
 	screen_rect.size = screen_rect.size / SceneInstances.camera.zoom
 	screen_rect.position = SceneInstances.camera._top_left

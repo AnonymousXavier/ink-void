@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://cn45jwmqc474h"]
-
-[ext_resource type="Script" uid="uid://dg7g77cwxfs27" path="res://Systems/flash_system.gd" id="1_uemtr"]
-
-[node name="FlashSystem" type="Node" unique_id=1255499260]
-script = ExtResource("1_uemtr")

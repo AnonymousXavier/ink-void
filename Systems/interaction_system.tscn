@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://duhjibnoanca0"]
-
-[ext_resource type="Script" uid="uid://3kroih5y71rx" path="res://Systems/interaction_system.gd" id="1_k1smw"]
-
-[node name="InteractionSystem" type="Node" unique_id=1428922527]
-script = ExtResource("1_k1smw")

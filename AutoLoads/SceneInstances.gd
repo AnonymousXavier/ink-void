@@ -11,5 +11,6 @@ var ui_manager: UIManager
 var main_menu_ui_manager: MainMenuUIManager
 var save_system: SaveSystem
 var load_system: LoadSystem
+var viewport: Viewport
 
 var time_scale: float = 1.0

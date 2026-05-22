@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://rljh4s2ck0x2"]
-
-[ext_resource type="Script" uid="uid://cmpkflnwwpym1" path="res://Systems/parry_system.gd" id="1_sry5o"]
-
-[node name="ParrySystem" type="Node" unique_id=1664932608]
-script = ExtResource("1_sry5o")

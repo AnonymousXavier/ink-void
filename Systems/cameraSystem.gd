@@ -13,7 +13,7 @@ var position: Vector2 # Camera's Center
 
 # This calculates exactly how much of the game world the camera can see right now
 func get_size() -> Vector2:
-	var viewport_size = get_viewport().get_visible_rect().size
+	var viewport_size = SceneInstances.viewport.get_visible_rect().size
 	return viewport_size / zoom
 
 # This calculates the exact Top-Left and Bottom-Right corners of the camera in the world

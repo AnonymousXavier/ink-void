@@ -4,7 +4,7 @@ class_name RenderingSystem
 var screen_center: Vector2
 var has_spawned_overlay: bool
 
-func _process(_delta: float) -> void:
+func update() -> void:
 	if not has_spawned_overlay and Cache.is_ready:
 		Factories.create_overlay_effect()
 		has_spawned_overlay = true

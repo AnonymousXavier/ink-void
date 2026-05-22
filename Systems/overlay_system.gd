@@ -1,4 +1,5 @@
 extends Node
+class_name OverlaySystem
 
 func update(_delta: float) -> void:
 	for event in SceneInstances.events_manager.events:

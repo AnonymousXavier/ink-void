@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://yvtjaymrwjt"]
 
-[ext_resource type="Script" uid="uid://g5xw7fu420y0" path="res://Systems/revive_ui.gd" id="1_00240"]
+[ext_resource type="Script" uid="uid://g5xw7fu420y0" path="res://Scenes/revive_ui.gd" id="1_00240"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mftvl"]
 font_size = 64

@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bxtyicw8un52b"]
-
-[ext_resource type="Script" uid="uid://i0ii0342ch1m" path="res://Systems/splatter_canvas.gd" id="1_k01km"]
-
-[node name="SplatterCanvas" type="Node2D" unique_id=97424432]
-script = ExtResource("1_k01km")

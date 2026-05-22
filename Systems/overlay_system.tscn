@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://pw2blkx23hsd"]
-
-[ext_resource type="Script" uid="uid://c7sq5ka2ddqcm" path="res://Systems/overlay_system.gd" id="1_oqari"]
-
-[node name="OverlaySystem" type="Node" unique_id=915206206]
-script = ExtResource("1_oqari")

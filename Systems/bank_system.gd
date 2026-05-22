@@ -1,4 +1,5 @@
 extends Node
+class_name BankSystem
 
 func update(_delta):
 	for event in SceneInstances.events_manager.events:

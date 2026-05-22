@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://ujk585sa8rmt"]
-
-[ext_resource type="Script" uid="uid://bat6lai56mx3g" path="res://Systems/revive_system.gd" id="1_jm4ys"]
-
-[node name="ReviveSystem" type="Node" unique_id=1524765446]
-script = ExtResource("1_jm4ys")

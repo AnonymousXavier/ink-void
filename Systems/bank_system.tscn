@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://ccoeuqpwxg76x"]
-
-[ext_resource type="Script" uid="uid://c5jcnd5avcr8m" path="res://Systems/bank_system.gd" id="1_ecnyf"]
-
-[node name="BankSystem" type="Node" unique_id=185438664]
-script = ExtResource("1_ecnyf")

@@ -1,44 +1,48 @@
 extends Node2D
 
 @onready var bg: ColorRect = $BG
-@onready var rendering_system: RenderingSystem = $RenderingSystem
-@onready var input_system: InputSystem = $InputSystem
-@onready var events_manager: EventsManager = $EventsManager
-@onready var enemy_manager: EnemyManager = $EnemyManager
-@onready var camera: Camera = $Camera
-@onready var homing_system: HomingSystem = $HomingSystem
-@onready var movement_system: MovementSystem = $MovementSystem
-@onready var entity_manager: EntityManager = $EntityManager
-@onready var shooting_system: ShootingSystem = $ShootingSystem
-@onready var count_down_system: CountDownSystem = $CountDownSystem
-@onready var projectile_dispatch_system: Node = $ProjectileDispatchSystem
-@onready var impact_system: Node = $ImpactSystem
-@onready var damage_system: DamageSystem = $DamageSystem
-@onready var health_system: HealthSystem = $HealthSystem
-@onready var death_system: Node = $DeathSystem
-@onready var bank_system: Node = $BankSystem
-@onready var overlay_system: Node = $OverlaySystem
-@onready var player_controller_system: PlayerControllerSystem = $PlayerControllerSystem
-@onready var stalking_system: StalkingSystem = $StalkingSystem
-@onready var parry_system: ParrySystem = $ParrySystem
-@onready var splatter_canvas: SplatterCanvas = $SplatterCanvas
-@onready var camera_shake_system: CameraShakeSystem = $CameraShakeSystem
-@onready var flash_system: FlashSystem = $FlashSystem
-@onready var dash_system: DashSystem = $DashSystem
-@onready var wave_system: WaveSystem = $WaveSystem
-@onready var shockwave_system: ShockwaveSystem = $ShockwaveSystem
 @onready var ui_manager: UIManager = $UIManager
-@onready var upgrade_system: UpgradeSystem = $UpgradeSystem
-@onready var game_over_system: GameOverSystem = $GameOverSystem
-@onready var load_system: LoadSystem = $LoadSystem
-@onready var save_system: SaveSystem = $SaveSystem
-@onready var revive_system: ReviveSystem = $ReviveSystem
 
+# Initialize Systems
+var rendering_system: RenderingSystem = RenderingSystem.new()
+var input_system: InputSystem = InputSystem.new()
+var events_manager: EventsManager = EventsManager.new()
+var enemy_manager: EnemyManager = EnemyManager.new()
+var camera: Camera = Camera.new()
+var homing_system: HomingSystem = HomingSystem.new()
+var movement_system: MovementSystem = MovementSystem.new()
+var entity_manager: EntityManager = EntityManager.new()
+var shooting_system: ShootingSystem = ShootingSystem.new()
+var count_down_system: CountDownSystem = CountDownSystem.new()
+var projectile_dispatch_system: ProjectileDispatchSystem = ProjectileDispatchSystem.new()
+var impact_system: ImpactSystem = ImpactSystem.new()
+var damage_system: DamageSystem = DamageSystem.new()
+var health_system: HealthSystem = HealthSystem.new()
+var death_system: DeathSystem = DeathSystem.new()
+var bank_system: BankSystem = BankSystem.new()
+var overlay_system: OverlaySystem = OverlaySystem.new()
+var player_controller_system: PlayerControllerSystem = PlayerControllerSystem.new()
+var stalking_system: StalkingSystem = StalkingSystem.new()
+var parry_system: ParrySystem = ParrySystem.new()
+var splatter_canvas: SplatterCanvas = SplatterCanvas.new()
+var camera_shake_system: CameraShakeSystem = CameraShakeSystem.new()
+var flash_system: FlashSystem = FlashSystem.new()
+var dash_system: DashSystem = DashSystem.new()
+var wave_system: WaveSystem = WaveSystem.new()
+var shockwave_system: ShockwaveSystem = ShockwaveSystem.new()
+var upgrade_system: UpgradeSystem = UpgradeSystem.new()
+var game_over_system: GameOverSystem = GameOverSystem.new()
+var load_system: LoadSystem = LoadSystem.new()
+var save_system: SaveSystem = SaveSystem.new()
+var revive_system: ReviveSystem = ReviveSystem.new()
 
+# Define Variables
 var player_spawned: bool = false
 var shader_material: ShaderMaterial
 
 func _ready() -> void:
+	SceneInstances.viewport = get_viewport()
+	
 	SceneInstances.camera = camera
 	SceneInstances.BG = bg
 	SceneInstances.events_manager = events_manager
@@ -50,16 +54,53 @@ func _ready() -> void:
 	SceneInstances.load_system = load_system
 	
 	Factories.create_bullet_pool()
+	add_systems_to_scene()
+	
+func add_systems_to_scene():
+	add_child(rendering_system)
+	
+	add_child(input_system)
+	add_child(events_manager)
+	add_child(enemy_manager)
+	add_child(camera)
+	add_child(homing_system)
+	add_child(movement_system)
+	add_child(entity_manager)
+	add_child(shooting_system)
+	add_child(count_down_system)
+	add_child(projectile_dispatch_system)
+	add_child(impact_system)
+	add_child(damage_system)
+	add_child(health_system)
+	add_child(death_system)
+	add_child(bank_system)
+	add_child(overlay_system)
+	add_child(player_controller_system)
+	add_child(stalking_system)
+	add_child(parry_system)
+	add_child(splatter_canvas)
+	add_child(camera_shake_system)
+	add_child(flash_system)
+	add_child(dash_system)
+	add_child(wave_system)
+	add_child(shockwave_system)
+	add_child(upgrade_system)
+	add_child(game_over_system)
+	add_child(load_system)
+	add_child(save_system)
+	add_child(revive_system)
 	
 func _process(delta: float) -> void:
 	if Cache.is_ready and not player_spawned:
 		Factories.create_player(Vector2.ZERO)
 		player_spawned = true
+		
+	rendering_system.update()
 	
 	events_manager.update(delta) # Automatically Clears it self at the end of the frame so order doesnt really matter
 	overlay_system.update(delta)
 	
-	input_system.update(delta)
+	input_system.update()
 	
 	parry_system.update(delta)
 	dash_system.update(delta)
