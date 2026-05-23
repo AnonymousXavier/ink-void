@@ -145,7 +145,9 @@ func _draw() -> void:
 	if not (get_tree().current_scene and get_tree().current_scene.name == "World"):
 		return
 					
-	# PARRY SLASH ARC
+	# ==========================================
+	# PARRY SLASH ARC (Detached Flying Crescent)
+	# ==========================================
 	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		var input = SceneInstances.entity_manager.player_input_data
@@ -157,19 +159,69 @@ func _draw() -> void:
 			
 			var aim_dir = input.aim_direction.normalized()
 			if aim_dir == Vector2.ZERO: aim_dir = Vector2.UP
-			
 			var aim_angle = aim_dir.angle()
 			
-			# Draw a 60-degree total arc (30 degrees in both directions)
-			var arc_spread = deg_to_rad(30.0) 
+			var progress = 1.0 - (parry.timer / Constants.PARRY_WAIT_TIME)
+			progress = clamp(progress, 0.0, 1.0)
+			
+			# Aggressive "Ease-Out" so the swing snaps fast
+			var swing_progress = 1.0 - pow(1.0 - progress, 4.0)
+			
+			# 1. Calculate a MUCH bigger sweeping angle (130 degrees total!)
+			var arc_spread = deg_to_rad(65.0) 
 			var start_angle = aim_angle - arc_spread
 			var end_angle = aim_angle + arc_spread
 			
-			var arc_radius = Constants.PARRY_RADIUS * zoom
-			var arc_thickness = 4.0 * zoom
+			# 2. THE DETACHED SMEAR MATH
+			# The head of the sword travels all the way from left to right
+			var head_angle = lerp(start_angle, end_angle, swing_progress)
 			
-			# Draw a brutal, solid white geometric stroke!
-			draw_arc(player_screen_pos, arc_radius, start_angle, end_angle, 32, Color.WHITE, arc_thickness, true)
+			# The motion trail dynamically grows to 80 degrees long in the middle of the swing, then shrinks!
+			var current_trail = deg_to_rad(80.0) * sin(swing_progress * PI)
+			var tail_angle = head_angle - current_trail
+			
+			# Push the visual arc slightly further out for a better sense of reach
+			var base_radius = Constants.PARRY_RADIUS * 1.15 * zoom 
+			
+			# 3. BUILD THE CRESCENT POLYGON
+			var points = PackedVector2Array()
+			var segments = 16 
+			
+			# Forced perspective: Swells to 16 pixels thick right as it crosses your mouse cursor!
+			var current_max_thickness = lerp(2.0, 16.0, sin(swing_progress * PI)) * zoom
+			
+			var outer_points = []
+			var inner_points = []
+			
+			# Draw the shape from the fading tail to the sharp leading head
+			for i in range(segments + 1):
+				var t = float(i) / float(segments) 
+				var theta = lerp(tail_angle, head_angle, t)
+				
+				# Taper the inner and outer edges perfectly together at both ends
+				var local_thickness = current_max_thickness * sin(t * PI)
+				var direction = Vector2(cos(theta), sin(theta))
+				
+				var outer_p = player_screen_pos + (direction * (base_radius + local_thickness))
+				var inner_p = player_screen_pos + (direction * (base_radius - local_thickness))
+				
+				outer_points.append(outer_p)
+				inner_points.append(inner_p)
+				
+			inner_points.reverse()
+			points.append_array(outer_points)
+			points.append_array(inner_points)
+			
+			# 4. Fade out smoothly
+			var alpha = 1.0
+			if progress > 0.7:
+				alpha = 1.0 - ((progress - 0.7) * 3.33)
+				
+			var slash_color = Color(1.0, 1.0, 1.0, alpha) 
+			
+			# Draw the flying blade!
+			if head_angle > tail_angle + 0.01: 
+				draw_polygon(points, PackedColorArray([slash_color]))
 			
 	# --- THE PARRY AMMO BAR ---
 	var bar_width = Constants.TILE_SIZE * zoom

@@ -17,7 +17,6 @@ func update(delta: float) -> void:
 		
 		if not transform or not velocity: continue
 			
-		# THE SPEEDSTER CHECK: 
 		# If this entity is dashing, they use raw unscaled delta (immune to time stops!)
 		# Otherwise, they are a slave to the global time scale.
 		var active_delta = delta

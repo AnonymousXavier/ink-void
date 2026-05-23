@@ -48,7 +48,7 @@ func _ready() -> void:
 		p.process_material = mat
 		
 		# Create a solid 3x3 white square image buffer
-		var img = Image.create(3, 3, false, Image.FORMAT_RGBA8)
+		var img = Image.create(2, 2, false, Image.FORMAT_RGBA8)
 		img.fill(Color.WHITE) # Gives the pixels solid data to modulate
 		
 		p.texture = ImageTexture.create_from_image(img)

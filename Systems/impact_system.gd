@@ -32,28 +32,27 @@ func update() -> void:
 			
 			if distance <= Constants.PARRY_RADIUS:
 				
-				# --- DIRECTIONAL PARRY MATH ---
+				# DIRECTIONAL PARRY MATH
 				var input = entity_manager.player_input_data
 				var aim_dir = input.aim_direction.normalized()
 				if aim_dir == Vector2.ZERO: aim_dir = Vector2.UP
 				
 				var vector_to_bullet = (bullet_transform.position - player_transform.position).normalized()
 				
-				# Check if the bullet is within a 60-degree cone (±30 degrees from where you are aiming)
-				# (Tweak this 30.0 number up or down to make the parry more/less forgiving!)
-				var is_facing_bullet = abs(aim_dir.angle_to(vector_to_bullet)) <= deg_to_rad(30.0)
+				# Check if the bullet is within a X-degree cone (+-X/2 degrees from where you are aiming)
+				var is_facing_bullet = abs(aim_dir.angle_to(vector_to_bullet)) <= deg_to_rad(Constants.PARRY_DEFLECTION_ARK_RADIUS)
 				
 				# --- SUCCESSFUL SLASH PARRY ---
 				if player_parry.current_state == ParryData.State.PARRYING and is_facing_bullet:
 					
-					# 1. Micro-Freeze Glitch (Hitstop)
+					# Micro-Freeze Glitch (Hitstop)
 					SceneInstances.time_scale = 0.05
 					SceneInstances.events_manager.add_event({
 						"type": Enums.EVENT_TYPES.HIT_STOP, 
 						"duration": 0.15 
 					})
 					
-					# 2. INSTANT DEFLECTION MATH (Auto-Aim to Nearest Enemy)
+					# INSTANT DEFLECTION MATH (Auto-Aim to Nearest Enemy)
 					var return_dir = Vector2.UP # Fallback
 					var closest_dist = INF
 					var all_enemies = entity_manager.is_an_enemy.keys()
@@ -92,7 +91,7 @@ func update() -> void:
 					
 					continue # Flips multiple bullets safely
 					
-				# --- PLAYER TAKES A HIT (Not parrying, OR parrying the wrong way!) ---
+				# PLAYER TAKES A HIT (Not parrying, OR parrying the wrong way!)
 				else:
 					# The Shield Interception
 					if player_shield and player_shield.is_active:

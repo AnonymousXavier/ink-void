@@ -10,6 +10,7 @@ const BG_BORDER_WIDTH = 1 # px
 const PARRY_RADIUS: float = TILE_SIZE / 2.0 # Players Hitbox
 const PARRY_WAIT_TIME: float = 0.2
 const PARRY_MISSED_PENALTY_TIME = 0.5
+const PARRY_DEFLECTION_ARK_RADIUS = 30.0 # of 360
 
 var RNG = RandomNumberGenerator.new()
 
