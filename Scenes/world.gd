@@ -36,6 +36,7 @@ var load_system: LoadSystem = LoadSystem.new()
 var save_system: SaveSystem = SaveSystem.new()
 var revive_system: ReviveSystem = ReviveSystem.new()
 var particles_system: ParticlesSystem = ParticlesSystem.new()
+var hitstop_system: HitStopSystem = HitStopSystem.new()
 
 # Define Variables
 var player_spawned: bool = false
@@ -98,6 +99,7 @@ func _process(delta: float) -> void:
 	shooting_system.update(delta)
 	projectile_dispatch_system.update(delta)
 	impact_system.update()
+	hitstop_system.update()
 	particles_system.update(delta)
 	flash_system.update(delta)
 	damage_system.update()

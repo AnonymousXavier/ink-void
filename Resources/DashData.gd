@@ -4,7 +4,7 @@ class_name DashData
 @export var start_position: Vector2 = Vector2.ZERO
 
 @export var is_dashing: bool = false
-@export var dash_duration: float = 0.15 
+@export var dash_duration: float = 1.0
 @export var dash_time_left: float = 0.0
 
 @export var cooldown: float = 3.0

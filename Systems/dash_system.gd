@@ -9,23 +9,27 @@ func update(delta: float) -> void:
 	
 	var dash = entity_manager.dash_components.get(player_id)
 	var input = entity_manager.player_input_data
-	var velocity = entity_manager.velocity_components.get(player_id)
 	var parry = entity_manager.parry_components.get(player_id)
 	
-	if not dash or not input or not velocity or not parry: return
+	# We no longer need the velocity component here because we aren't locking it!
+	if not dash or not input or not parry: return
 	
 	# Process the Cooldown
 	if dash.cooldown_time_left > 0:
 		dash.cooldown_time_left -= delta
 		
-	# Process an Active Dash
+	# Process an Active Speedster State
 	if dash.is_dashing:
-		dash.dash_time_left -= delta
+		dash.dash_time_left -= delta # Uses pure real-time delta!
+		
 		if dash.dash_time_left <= 0:
-			# Dash finished! Return to normal physics
+			# Speedster mode finished!
 			dash.is_dashing = false
-			velocity.speed = 400.0 
 			
+			# 1. THAW THE UNIVERSE
+			SceneInstances.time_scale = 1.0 
+			
+			# 2. Friction Wake (Calculates the straight line between where you started the freeze and where you ended up)
 			var transform_data = entity_manager.transform_components.get(player_id)
 			if transform_data and dash.get("friction_wake_radius") != null and dash.friction_wake_radius > 0.0:
 				var all_enemies = entity_manager.is_an_enemy.keys()
@@ -37,42 +41,29 @@ func update(delta: float) -> void:
 					var e_vel = entity_manager.velocity_components.get(e_id)
 					if not e_transform or not e_vel: continue
 					
-					# Find the shortest distance from the enemy to the dash line
 					var closest_point = Geometry2D.get_closest_point_to_segment(e_transform.position, dash_start, dash_end)
 					var distance = e_transform.position.distance_to(closest_point)
 					
 					if distance <= dash.friction_wake_radius:
 						e_vel.speed *= (1.0 - dash.friction_wake_slow_percent)
 						
-						# Visual Tell: Tint the slowed enemies blue so you know it worked!
 						var e_render = entity_manager.render_components.get(e_id)
 						if e_render: e_render.modulate = Color(0.2, 0.5, 1.0)
 			
-		else:
-			# Lock the speed and direction while dashing
-			velocity.speed = dash.dash_speed
-			velocity.direction = dash.dash_direction
-		return # Skip the trigger check
+		# NOTICE: No velocity locks here! You retain 100% full movement control.
+		return 
 		
-	# Start Dash
-	if input.dash_pressed and dash.cooldown_time_left <= 0 and parry.current_state != ParryData.State.FROZEN_AIMING:
+	# Start Speedster Mode
+	if input.dash_pressed and dash.cooldown_time_left <= 0 and parry.current_state != ParryData.State.PARRYING:
 		dash.is_dashing = true
 		dash.dash_time_left = dash.dash_duration
 		dash.cooldown_time_left = dash.cooldown
 		
-		# Lock in the current movement direction. If standing still, dash towards the mouse!
-		if input.direction != Vector2.ZERO:
-			dash.dash_direction = input.direction.normalized()
-		else:
-			var player_pos = entity_manager.transform_components[player_id].position
-			dash.dash_direction = player_pos.direction_to(input.aim_position)
-			
-		# FOr the Friction Powerup
+		# Record where we started so the friction wake can calculate the distance traveled
 		var p_trans = entity_manager.transform_components.get(player_id)
 		if p_trans:
 			dash.start_position = p_trans.position
 		
-		velocity.speed = dash.dash_speed
-		velocity.direction = dash.dash_direction
-		
+		# ENGAGE THE MATRIX: Drop the universe to 10% speed!
+		SceneInstances.time_scale = 0.1 
 		SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.4})

@@ -13,13 +13,23 @@ func update(delta: float) -> void:
 	for id in entity_manager.velocity_components:
 		var transform = entity_manager.transform_components.get(id)
 		var velocity = entity_manager.velocity_components.get(id)
+		var dash = entity_manager.dash_components.get(id) # Fetch dash data if it exists
 		
 		if not transform or not velocity: continue
 			
+		# THE SPEEDSTER CHECK: 
+		# If this entity is dashing, they use raw unscaled delta (immune to time stops!)
+		# Otherwise, they are a slave to the global time scale.
+		var active_delta = delta
+		if dash and dash.is_dashing:
+			active_delta = delta # Pure real-time speed
+		else:
+			active_delta = scaled_delta # Molasses speed
+			
 		var old_pos = transform.position
 		
-		# Process normal intentional directional movement
-		var movement_displacement = velocity.direction * velocity.speed * scaled_delta
+		# Process normal intentional directional movement using the calculated delta
+		var movement_displacement = velocity.direction * velocity.speed * active_delta
 		
 		# Process external impact forces (Tanks parry recoil pushback)
 		var knockback_displacement = Vector2.ZERO
@@ -46,6 +56,7 @@ func update(delta: float) -> void:
 				despawn_bullet(id, transform)
 				
 func despawn_bullet(bullet_id, transform_data: TransformData):
+	# Clone the vector so pool recycling doesn't corrupt the spark event
 	var impact_coordinate = Vector2(transform_data.position.x, transform_data.position.y)
 	
 	SceneInstances.events_manager.add_event({

@@ -9,12 +9,10 @@ func update(delta: float) -> void:
 	
 	var parry: ParryData = entity_manager.parry_components.get(player_id)
 	var input: PlayerInputData = entity_manager.player_input_data
-	var player_transform = entity_manager.transform_components.get(player_id)
-	var player_velocity = entity_manager.velocity_components.get(player_id)
 	
 	if not parry or not input: return
 	
-	# Handle Active Window & Miss Cooldown Timers
+	# 1. Handle Active Window & Miss Cooldown Timers
 	if parry.current_state == ParryData.State.PARRYING or parry.current_state == ParryData.State.RECOVERING:
 		parry.timer -= delta
 		
@@ -25,57 +23,22 @@ func update(delta: float) -> void:
 			elif parry.current_state == ParryData.State.RECOVERING:
 				parry.current_state = ParryData.State.READY
 				
-	# Handle Parry
+	# 2. Handle Parry Input Trigger
 	if parry.current_state == ParryData.State.READY and input.parry_pressed:
 		parry.current_state = ParryData.State.PARRYING
 		parry.timer = Constants.PARRY_WAIT_TIME
-
-	# Handle Frozen Aiming Release 
-	elif parry.current_state == ParryData.State.FROZEN_AIMING and input.parry_pressed:
-		var bullet_id = parry.hijacked_bullet_id
 		
-		# Verify bullet still exists in active tracker registries
-		if entity_manager.is_a_bullet.has(bullet_id):
-			var bullet_transform = entity_manager.transform_components.get(bullet_id)
-			var bullet_velocity = entity_manager.velocity_components.get(bullet_id)
-			var bullet_meele = entity_manager.meele_components.get(bullet_id)
-			var bullet_alignment = entity_manager.alignment_components.get(bullet_id)
+		# --- WHIFF ANIMATION: Spawn the slash effect unconditionally! ---
+		var player_transform = entity_manager.transform_components.get(player_id)
+		if player_transform:
+			var slash_dir = input.aim_direction.normalized()
+			if slash_dir == Vector2.ZERO: slash_dir = Vector2.UP
 			
-			if bullet_transform and bullet_velocity and bullet_meele and bullet_alignment:
-				# Calculate aim vector based on where the player is currently pointing
-				var aim_direction = input.aim_direction.normalized()
-				if aim_direction == Vector2.ZERO:
-					aim_direction = Vector2.UP # Fallback direction vector
-				
-				# Native shooter damage and apply the kinetic multiplier
-				bullet_meele.damage = bullet_meele.damage * 2.0 
-				bullet_meele.hit_targets.clear() # Reset targets
-				bullet_meele.pierce_count = 1 if bullet_meele.mass >= 4.0 else 0 # Tanks pierce through 1 extra enemy
-				
-				# B. Re-align faction arrays to explicitly target enemies
-				bullet_alignment.alignment = Enums.ALIGNMENTS.ENEMY
-				
-				# C. Update bullet positioning vectors and snap speed to extreme velocities
-				bullet_transform.position = player_transform.position
-				bullet_velocity.direction = aim_direction
-				bullet_velocity.speed = 1200.0 # Blazing fast projectile bounce speed
-				
-				# D. THE KINETIC RECOIL KICKBACK
-				# Push the 1-HP player backwards in the opposite direction of their aim vector
-				# Heavy tank bullets (mass: 4.0) create massive distance, light snipers barely budge
-				if player_velocity:
-					var recoil_force = bullet_meele.mass * 250.0
-					# Inject raw pushback vector directly into player velocity components
-					player_velocity.knockback_vector = -aim_direction * recoil_force
-
-				# E. Clean visual juice registration
-				SceneInstances.events_manager.add_event({
-					"type": Enums.EVENT_TYPES.SCREEN_SHAKE, 
-					"intensity": 0.3 * bullet_meele.mass
-				})
-		
-		# 4. Snap engine physics back to full simulation scale and trigger window reset
-		SceneInstances.time_scale = 1.0
-		parry.hijacked_bullet_id = -1
-		parry.current_state = ParryData.State.RECOVERING
-		parry.timer = 0.15 # Tiny recovery window after a successful blast release
+			# Push the visual effect slightly in front of the player's physical hitbox
+			var spawn_pos = player_transform.position + (slash_dir * (Constants.PARRY_RADIUS * 0.5))
+			
+			SceneInstances.events_manager.add_event({
+				"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
+				"pos": spawn_pos,
+				"color": Color(1.0, 0.8, 0.2) # Golden slash sparks!
+			})
