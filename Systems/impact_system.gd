@@ -18,8 +18,9 @@ func update() -> void:
 		var bullet_transform = entity_manager.transform_components.get(bullet_id)
 		var alignment = entity_manager.alignment_components.get(bullet_id)
 		var bullet_meele = entity_manager.meele_components.get(bullet_id)
+		var bullet_render = entity_manager.render_components.get(bullet_id) # <--- ADD THIS
 	
-		if not bullet_transform or not alignment or not bullet_meele: continue
+		if not bullet_transform or not alignment or not bullet_meele or not bullet_render: continue
 		
 		# ==========================================
 		# BULLET TARGETS PLAYER
@@ -77,6 +78,7 @@ func update() -> void:
 					bullet_meele.damage *= 2.0
 					bullet_meele.hit_targets.clear()
 					alignment.alignment = Enums.ALIGNMENTS.ENEMY # Flip factions!
+					bullet_render.modulate = Color(0.0, 1.0, 1.0) # <--- INSTANTLY TURN IT CYAN!
 					
 					# 3. Visual Juice (White-hot Clash Spark)
 					SceneInstances.events_manager.add_event({
@@ -85,8 +87,8 @@ func update() -> void:
 					})
 					SceneInstances.events_manager.add_event({
 						"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
-						"pos": bullet_transform.position,
-						"color": Color.WHITE # Clean white clash
+						"pos": Vector2(bullet_transform.position.x, bullet_transform.position.y),
+						"color": bullet_render.modulate # <--- USE THE BULLET'S COLOR
 					})
 					
 					continue # Flips multiple bullets safely

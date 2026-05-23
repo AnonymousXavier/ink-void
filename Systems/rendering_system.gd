@@ -26,20 +26,32 @@ func _draw() -> void:
 	var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
 	bg_material.set_shader_parameter("border_color", grid_color)
 		
-	# The Entity Loop
-	for entity_id in SceneInstances.entity_manager.render_components:
+	# ========================================
+	# 4. The Entity Loop (Sorted for Z-Index)
+	# ========================================
+	var entities_to_draw = SceneInstances.entity_manager.render_components.keys()
+	
+	# Pluck the player out and push them to the very end of the array 
+	# so they are guaranteed to be drawn on top of everything else!
+	if player_id in entities_to_draw:
+		entities_to_draw.erase(player_id)
+		entities_to_draw.append(player_id)
+		
+	for entity_id in entities_to_draw:
 		if entity_id not in SceneInstances.entity_manager.transform_components: continue
-				
 		var render_data = SceneInstances.entity_manager.render_components[entity_id]
 		var transform_data = SceneInstances.entity_manager.transform_components[entity_id]
-			
 		var core_color = render_data.modulate
 		var active_texture = render_data.texture
-		
+
 		# If time is frozen, and this ISN'T the player...
 		if is_frozen and entity_id != player_id:
 			if render_data.frozen_texture:
 				active_texture = render_data.frozen_texture # Turn it dead gray!
+		
+		if active_texture == null:
+			print("SYSTEM WARNING: Entity ID ", entity_id, " has no texture! Skipping render.", "Main Texture: ", render_data.texture)
+			continue
 		
 		# Now draw using the active_texture (with the Double-Draw center math from before!)
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
@@ -50,7 +62,7 @@ func _draw() -> void:
 		# Halo
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale * 1.3)
 		draw_texture(active_texture, offset, Color(1.0, 1.0, 1.0, 0.15))
-
+		
 		# Flash
 		# If the entity is currently screaming in pain, overdrive the glow
 		if SceneInstances.entity_manager.flash_components.has(entity_id):
@@ -103,7 +115,7 @@ func _draw() -> void:
 					
 					draw_line(enemy_screen_pos, player_screen_pos, laser_color, laser_thickness, true)
 
-	# --- INTERACTABLE TERMINAL LABELS ---
+	# INTERACTABLE TERMINAL LABELS
 	var default_font = ThemeDB.fallback_font
 	for i_id in SceneInstances.entity_manager.interactable_components.keys():
 		var i_data = SceneInstances.entity_manager.interactable_components[i_id]
@@ -145,9 +157,7 @@ func _draw() -> void:
 	if not (get_tree().current_scene and get_tree().current_scene.name == "World"):
 		return
 					
-	# ==========================================
 	# PARRY SLASH ARC (Detached Flying Crescent)
-	# ==========================================
 	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		var input = SceneInstances.entity_manager.player_input_data
@@ -223,77 +233,91 @@ func _draw() -> void:
 			if head_angle > tail_angle + 0.01: 
 				draw_polygon(points, PackedColorArray([slash_color]))
 			
-	# --- THE PARRY AMMO BAR ---
-	var bar_width = Constants.TILE_SIZE * zoom
-	var bar_height = Constants.TILE_SIZE * 0.125 * zoom
-	var bar_offset = Vector2(-bar_width, -bar_width) / 2.0
-			
+	# ==========================================
+	# THE PLAYER OVERHEAD HUD (Health, Parry, Dash)
+	# ==========================================
 	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
-		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
+		var p_transform = SceneInstances.entity_manager.transform_components[player_id]
+		var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
 		
+		# Decoupled Dimensions
+		var bar_width = Constants.TILE_SIZE * zoom
+		var ammo_bar_height = Constants.TILE_SIZE * 0.12 * zoom # Thin, sleek bars for cooldowns
+		var health_height = Constants.TILE_SIZE * 0.15 * zoom   # Thick, chunky bar for Life
+		var gap = 0 # Micro-gap to prevent color bleeding
+		
+		# Calculate exact stacking offsets (Working upwards from the head)
+		var base_x_offset = -bar_width / 2.0
+		var dash_y_offset = -(Constants.TILE_SIZE * 0.4 * zoom) # Base height above player
+		var parry_y_offset = dash_y_offset - ammo_bar_height - gap
+		var health_y_offset = parry_y_offset - health_height - gap
+		
+		# ==========================================
+		# 1. THE PLAYER HEALTH PIPS (TOP BAR)
+		# ==========================================
+		var health = SceneInstances.entity_manager.health_components.get(player_id)
+		if health and health.maxHealth > 0:
+			var pip_width = bar_width / float(health.maxHealth)
+			
+			for i in range(health.maxHealth):
+				var pip_x = player_screen_pos.x + base_x_offset + (i * pip_width)
+				
+				# Notice we use health_height here instead of the ammo height!
+				var pip_rect = Rect2(Vector2(pip_x, player_screen_pos.y + health_y_offset), Vector2(pip_width, health_height))
+				var padded_pip = pip_rect.grow(-1.5 * zoom)
+				
+				if i < health.health:
+					# ACTIVE HEALTH: Bright Neon Emerald Green
+					draw_rect(padded_pip, Color(0.1, 0.9, 0.3, 1.0), true)
+				else:
+					# MISSING HEALTH: Hollow, dim red outline
+					draw_rect(padded_pip, Color(0.4, 0.1, 0.1, 0.6), false, 2.0 * zoom)
+		
+		# ==========================================
+		# 2. THE PARRY AMMO BAR (MIDDLE BAR)
+		# ==========================================
+		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		if parry:
-			var p_transform = SceneInstances.entity_manager.transform_components[player_id]
-			var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
+			var bar_rect = Rect2(Vector2(player_screen_pos.x + base_x_offset, player_screen_pos.y + parry_y_offset), Vector2(bar_width, ammo_bar_height))
+			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true) # Background
 			
-			# 1. Define the dimensions and position it above the player's head
-			var bar_rect = Rect2(player_screen_pos + bar_offset, Vector2(bar_width, bar_height))
-			
-			# 2. Draw the dark background casing
-			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true)
-			
-			# 3. Calculate segment width based on max ammo capacity
 			var segment_width = bar_width / float(parry.max_charges)
 			
-			# 4. Draw the individual ammo blocks
 			for i in range(parry.max_charges):
 				var seg_x = bar_rect.position.x + (i * segment_width)
-				var seg_rect = Rect2(Vector2(seg_x, bar_rect.position.y), Vector2(segment_width, bar_height))
+				var seg_rect = Rect2(Vector2(seg_x, bar_rect.position.y), Vector2(segment_width, ammo_bar_height))
 				
-				# Shrink the rectangle by 1 pixel to create native grid lines/gaps between charges
 				var padded_rect = seg_rect.grow(-1.0 * zoom)
 				
 				if i < parry.current_charges:
-					# Fully charged slot -> Solid brutalist white
 					draw_rect(padded_rect, Color(1.0, 1.0, 1.0, 1.0), true) 
-					
 				elif i == parry.current_charges and parry.current_charges < parry.max_charges:
-					# The active reloading slot -> Calculate the percentage and draw a partial bar
 					var recharge_ratio = 1.0 - (parry.recharge_timer / parry.recharge_time)
-					var partial_width = (segment_width * recharge_ratio) - (2.0 * zoom) # Account for the padding
-					
+					var partial_width = (segment_width * recharge_ratio) - (2.0 * zoom)
 					if partial_width > 0:
 						var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
-						# Draw it slightly dimmer/blueish to indicate it is "charging"
 						draw_rect(partial_rect, Color(0.6, 0.8, 1.0, 0.9), true)
-						
-	# --- THE DASH COOLDOWN BAR ---
-	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
+	
+		# ==========================================
+		# 3. THE DASH COOLDOWN BAR (BOTTOM BAR)
+		# ==========================================
 		var dash = SceneInstances.entity_manager.dash_components.get(player_id)
-		
 		if dash:
-			var p_transform = SceneInstances.entity_manager.transform_components[player_id]
-			var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
-			
-			# Position it directly below the Parry bar (Parry Y offset is -bar_width / 2.0)
-			# We add the bar's height + a tiny 4px gap to stack them neatly
-			var dash_bar_offset = bar_offset
-			dash_bar_offset.y = bar_offset.y + bar_height
-			var bar_rect = Rect2(player_screen_pos + dash_bar_offset, Vector2(bar_width, bar_height))
-			
-			# Draw the dark background casing
-			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true)
-			
+			var bar_rect = Rect2(Vector2(player_screen_pos.x + base_x_offset, player_screen_pos.y + dash_y_offset), Vector2(bar_width, ammo_bar_height))
+			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true) # Background
 			var padded_rect = bar_rect.grow(-1.0 * zoom)
 			
-			if dash.cooldown_time_left <= 0:
-				# Fully charged -> Solid Electric Cyan
-				draw_rect(padded_rect, Color(0.0, 1.0, 1.0, 1.0), true) 
-			else:
-				# Recharging -> Calculate percentage and draw partial fill
-				var recharge_ratio = 1.0 - (dash.cooldown_time_left / dash.cooldown)
-				var partial_width = padded_rect.size.x * recharge_ratio
+			var fill_ratio = 1.0
+			var bar_color = Color(0.0, 1.0, 1.0, 1.0)
+			
+			if dash.is_dashing:
+				fill_ratio = dash.dash_time_left / dash.dash_duration
+				bar_color = Color(1.0, 1.0, 1.0, 1.0) 
+			elif dash.cooldown_time_left > 0:
+				fill_ratio = 1.0 - (dash.cooldown_time_left / dash.cooldown)
+				bar_color = Color(0.0, 0.6, 0.8, 0.9)
 				
-				if partial_width > 0:
-					var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
-					# Dimmer cyan while it is still charging
-					draw_rect(partial_rect, Color(0.0, 0.6, 0.8, 0.9), true)
+			if fill_ratio > 0:
+				var partial_width = padded_rect.size.x * fill_ratio
+				var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
+				draw_rect(partial_rect, bar_color, true)

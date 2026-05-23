@@ -10,48 +10,67 @@ func update(delta: float) -> void:
 	var player_transform = entity_manager.transform_components.get(player_id)
 	if not player_transform: return
 
-	var stalker_components = entity_manager.stalker_components
-	var transform_components = entity_manager.transform_components
-	var velocity_components = entity_manager.velocity_components
-	
-	for entity_id in stalker_components:
-		var transform_data: TransformData = transform_components.get(entity_id)
-		var velocity_data: VelocityData = velocity_components.get(entity_id)
+	# Notice we loop through ALL enemies now, not just stalkers!
+	for entity_id in entity_manager.is_an_enemy.keys():
+		var transform_data: TransformData = entity_manager.transform_components.get(entity_id)
+		var velocity_data: VelocityData = entity_manager.velocity_components.get(entity_id)
+		var ai_data: AIData = entity_manager.ai_components.get(entity_id)
 		
-		if not transform_data or not velocity_data: continue
+		if not transform_data or not velocity_data or not ai_data: continue
 		
-		# Calculate base vector relative to the player target
 		var vector_to_player = player_transform.position - transform_data.position
-		var distance = vector_to_player.length()
+		var distance_to_player = vector_to_player.length()
 		var direction_to_player = vector_to_player.normalized()
 		
-		# Extract weapon attributes to determine safety zones
+		# 1. PERCEPTION: Calculate Separation (Boids)
+		var separation_vector = Vector2.ZERO
+		var neighbor_count = 0
+		var personal_space = 70.0 # How far they push away from each other
+		
+		# We loop through enemies to see who is standing too close
+		for other_id in entity_manager.is_an_enemy.keys():
+			if other_id == entity_id: continue
+			
+			var other_trans = entity_manager.transform_components.get(other_id)
+			if not other_trans: continue
+			
+			var dist_to_ally = transform_data.position.distance_to(other_trans.position)
+			if dist_to_ally < personal_space and dist_to_ally > 0:
+				# The closer they are, the harder they push away (inverse scaling)
+				var push_force = (personal_space - dist_to_ally) / personal_space
+				separation_vector += (transform_data.position - other_trans.position).normalized() * push_force
+				neighbor_count += 1
+				
+		if neighbor_count > 0:
+			separation_vector /= neighbor_count
+			
+		# 2. DECISION: State Machine Evaluation
+		var target_direction = Vector2.ZERO
 		var weapon_data = entity_manager.projectile_weopon_components.get(entity_id)
 
-		# THE SNIPER 
-		if weapon_data and weapon_data.attack_range > Constants.CHUNK_SIZE * 0.6:
-			# Define target combat distance (75% of max firing range)
+		# If they have a weapon that can shoot further than a standard melee lunge (e.g., 150px)
+		if weapon_data and weapon_data.attack_range > 150.0:
+			# SNIPER / RANGED LOGIC
 			var optimal_distance = weapon_data.attack_range * 0.75
 			var retreat_threshold = weapon_data.attack_range * 0.40
 			
-			if distance < retreat_threshold:
-				# Player is too close! Back away to maintain advantage
-				velocity_data.direction = -direction_to_player
-			elif distance > optimal_distance:
-				# Too far away to acquire a solid target lock, advance slightly
-				velocity_data.direction = direction_to_player
+			if distance_to_player < retreat_threshold:
+				ai_data.current_state = AIData.State.RETREATING
+				target_direction = -direction_to_player
+			elif distance_to_player > optimal_distance:
+				ai_data.current_state = AIData.State.CHASING
+				target_direction = direction_to_player
 			else:
-				# Cross product provides a perpendicular vector for clean strafing
-				var strafe_direction = Vector2(-direction_to_player.y, direction_to_player.x)
-				velocity_data.direction = strafe_direction * 0.4 # Slow orbit
-				
-		# THE TANK SQUARE
-		elif velocity_data.speed < 50.0: 
-			# Tanks track completely relentlessly, ignoring minor player micro-movements
-			# We can blend their tracking path slowly over frames to make them feel heavy
-			velocity_data.direction = velocity_data.direction.lerp(direction_to_player, delta * 2.0).normalized()
-			
-		# THE NORMAL ENEMY
+				ai_data.current_state = AIData.State.STRAFING
+				target_direction = Vector2(-direction_to_player.y, direction_to_player.x)
 		else:
-			# Baseline charging behavior
-			velocity_data.direction = direction_to_player
+			# MELEE LOGIC (Tanks and Grunts)
+			ai_data.current_state = AIData.State.CHASING
+			target_direction = direction_to_player
+			
+		# 3. STEERING: Combine Forces
+		# Blend the desire to attack the player with the claustrophobic need to avoid allies
+		var final_direction = target_direction + (separation_vector * ai_data.separation_weight)
+		
+		# Use lerp to give them momentum, making them turn smoothly rather than snapping instantly
+		velocity_data.direction = velocity_data.direction.lerp(final_direction.normalized(), delta * 6.0).normalized()

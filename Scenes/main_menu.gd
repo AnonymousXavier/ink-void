@@ -10,9 +10,7 @@ var movement_system: MovementSystem = MovementSystem.new()
 var interaction_system: InteractionSystem = InteractionSystem.new()
 var rendering_system: RenderingSystem = RenderingSystem.new()
 var entity_manager: EntityManager = EntityManager.new()
-
 var camera: Camera = Camera.new()
-
 var has_spawned_player = false
 
 func _ready() -> void:

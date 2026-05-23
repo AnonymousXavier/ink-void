@@ -55,13 +55,16 @@ func update(delta: float) -> void:
 				despawn_bullet(id, transform)
 				
 func despawn_bullet(bullet_id, transform_data: TransformData):
-	# Clone the vector so pool recycling doesn't corrupt the spark event
+	# 1. Fetch the bullet's exact color
+	var render_data = SceneInstances.entity_manager.render_components.get(bullet_id)
+	var bullet_color = render_data.modulate if render_data else Color(0.8, 0.8, 0.8)
+	
 	var impact_coordinate = Vector2(transform_data.position.x, transform_data.position.y)
 	
 	SceneInstances.events_manager.add_event({
 		"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE, 
 		"pos": impact_coordinate,
-		"color": Color(0.8, 0.8, 0.8) # Brutalist gray
+		"color": bullet_color 
 	})
 
 	Factories.despawn_bullet(bullet_id)

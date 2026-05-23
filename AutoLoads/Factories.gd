@@ -53,8 +53,6 @@ func create_player(spawn_pos: Vector2) -> int:
 	
 	return id
 
-# Inside Factories.gd
-
 func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var id = SceneInstances.entity_manager.next_entity_id
 	var entity_manager: EntityManager = SceneInstances.entity_manager
@@ -69,6 +67,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var alignment_data = AlignmentData.new()
 	var velocity_data = VelocityData.new()
 	var stalker_data = StalkerData.new()
+	var ai_data = AIData.new()
 	
 	# Dynamic safety checks for component arrays
 	var meele_data = Stats.meele_data[type].duplicate() if type in Stats.meele_data else MeeleData.new()
@@ -108,6 +107,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	entity_manager.velocity_components[id] = velocity_data
 	entity_manager.stalker_components[id] = stalker_data
 	entity_manager.projectile_weopon_components[id] = projectile_weapon_data
+	entity_manager.ai_components[id] = ai_data
 	
 	entity_manager.active_entities.append(id)
 	entity_manager.is_an_enemy[id] = true
@@ -130,7 +130,7 @@ func create_overlay_effect():
 	entity_manager.cell_overlay_id = id
 	return id
 	
-func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float):
+func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float, bullet_color: Color = Color("ff0033")):
 	var entity_manager: EntityManager = SceneInstances.entity_manager
 	
 	# Fetch Bullet from inactive list or create new data
@@ -176,6 +176,7 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	entity_manager.alignment_components[bullet_id] = alignment_dta
 	
 	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
+	renderingData.modulate = bullet_color
 	renderingData.frozen_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.BULLET]
 	
 	# Delete them

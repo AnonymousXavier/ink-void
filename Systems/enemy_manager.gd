@@ -6,7 +6,7 @@ var enemies_currently_alive = 0
 func update() -> void:
 	if not Cache.is_ready:
 		return
-
+	
 	if not SceneInstances.wave_system.is_wave_active:
 		return 
 	
@@ -31,7 +31,7 @@ func spawn_enemy(wave: int):
 	
 	for w in weights.values():
 		total_weight += w
-		
+	
 	var roll = Constants.RNG.randi_range(0, total_weight)
 	var enemy_type = Enums.ENTITY_TYPES.NORMAL_ENEMY 
 	
@@ -41,7 +41,7 @@ func spawn_enemy(wave: int):
 		if roll <= running_sum:
 			enemy_type = type_key
 			break
-
+	
 	var camera = SceneInstances.camera
 	var cam_center = camera.position
 	var cam_size = camera.get_size()
@@ -52,7 +52,7 @@ func spawn_enemy(wave: int):
 	var spawn_pos = Vector2i(cam_center) + Vector2i(x,y) * direction
 	
 	var enemy_id = Factories.create_enemy(enemy_type, spawn_pos)
-		
+	
 	var render = entity_manager.render_components.get(enemy_id)
 	var health = entity_manager.health_components.get(enemy_id)
 	var velocity = entity_manager.velocity_components.get(enemy_id)
@@ -63,9 +63,9 @@ func spawn_enemy(wave: int):
 		
 		health.maxHealth = max(1, int(health.maxHealth * hp_multiplier))
 		health.health = health.maxHealth
-			
+		
 		velocity.speed *= speed_multiplier
-			
+		
 	if render:
 		var red_tint = min(1.0, 0.08 * wave)
 		render.modulate = render.modulate * Color(1.0, 1.0 - red_tint, 1.0 - red_tint, 1.0)
