@@ -19,20 +19,14 @@ func _draw() -> void:
 	# 1. Check if the world is frozen
 	var is_frozen = SceneInstances.time_scale < 1.0
 	
-	# Find the bullet we are holding (so its not gray)
 	var player_id = SceneInstances.entity_manager.player_id
-	var hijacked_id = -1
-	
-	if is_frozen and player_id != -1:
-		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
-		hijacked_id = parry.hijacked_bullet_id
 	
 	# 3. Handle the Background Grid Shader
 	var bg_material = SceneInstances.BG.material as ShaderMaterial
 	var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
 	bg_material.set_shader_parameter("border_color", grid_color)
 		
-	# 4. The Entity Loop
+	# The Entity Loop
 	for entity_id in SceneInstances.entity_manager.render_components:
 		if entity_id not in SceneInstances.entity_manager.transform_components: continue
 				
@@ -42,8 +36,8 @@ func _draw() -> void:
 		var core_color = render_data.modulate
 		var active_texture = render_data.texture
 		
-		# If time is frozen, and this ISN'T the player, and this ISN'T the hijacked bullet...
-		if is_frozen and entity_id != player_id and entity_id != hijacked_id:
+		# If time is frozen, and this ISN'T the player...
+		if is_frozen and entity_id != player_id:
 			if render_data.frozen_texture:
 				active_texture = render_data.frozen_texture # Turn it dead gray!
 		
@@ -66,8 +60,6 @@ func _draw() -> void:
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
 		draw_texture(active_texture, offset, core_color)
 		
-		# --- THE SHOCKWAVE (WHOOSH) ---
-
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE) # Reset the transforms for shockwaves
 	
 	# Shockwave
@@ -110,3 +102,146 @@ func _draw() -> void:
 					var laser_thickness = (0.5 + (2.0 * charge_ratio)) * zoom
 					
 					draw_line(enemy_screen_pos, player_screen_pos, laser_color, laser_thickness, true)
+
+	# --- INTERACTABLE TERMINAL LABELS ---
+	var default_font = ThemeDB.fallback_font
+	for i_id in SceneInstances.entity_manager.interactable_components.keys():
+		var i_data = SceneInstances.entity_manager.interactable_components[i_id]
+		var t_data = SceneInstances.entity_manager.transform_components.get(i_id)
+		
+		if not t_data or i_data.terminal_name == "": continue
+		
+		var i_screen_pos = screen_center + ((t_data.position - camera_pos) * zoom)
+		
+		var text = i_data.terminal_name
+		var font_size = int(16 * zoom)
+		var text_size = default_font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+		
+		# Center the label 50 pixels above the terminal block
+		var text_pos = i_screen_pos + Vector2(-text_size.x / 2.0, -50.0 * zoom)
+		
+		# Draw a clean, dark backing panel behind the text
+		var padding = 6.0 * zoom
+		var bg_rect = Rect2(text_pos + Vector2(-padding, -text_size.y - padding), text_size + Vector2(padding * 2, padding * 2))
+		draw_rect(bg_rect, Color(0.05, 0.05, 0.05, 0.9), true)
+		
+		# Text color gets brighter when the player steps inside the radius
+		var text_color = Color(1.0, 1.0, 1.0, 1.0) if i_data.is_player_in_range else Color(0.5, 0.5, 0.5, 1.0)
+		draw_string(default_font, text_pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
+		
+		# If the player is standing inside the activation zone, flash an input prompt!
+		if i_data.is_player_in_range:
+			var prompt = "[ L-CLICK ]"
+			var prompt_font_size = int(12 * zoom)
+			var prompt_size = default_font.get_string_size(prompt, HORIZONTAL_ALIGNMENT_CENTER, -1, prompt_font_size)
+			var prompt_pos = i_screen_pos + Vector2(-prompt_size.x / 2.0, 60.0 * zoom)
+			
+			# Create a fast sine wave using engine time so the text pulses rapidly
+			var pulse = (sin(Time.get_ticks_msec() / 100.0) + 1.0) / 2.0 
+			var pulse_color = Color(1.0, 0.8, 0.2, 0.4 + (0.6 * pulse)) # Golden glow
+			
+			draw_string(default_font, prompt_pos, prompt, HORIZONTAL_ALIGNMENT_CENTER, -1, prompt_font_size, pulse_color)
+					
+	if not (get_tree().current_scene and get_tree().current_scene.name == "World"):
+		return
+					
+	# PARRY SLASH ARC
+	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
+		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
+		var input = SceneInstances.entity_manager.player_input_data
+		
+		# Only draw the arc when the blade is active!
+		if parry and parry.current_state == ParryData.State.PARRYING:
+			var p_transform = SceneInstances.entity_manager.transform_components[player_id]
+			var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
+			
+			var aim_dir = input.aim_direction.normalized()
+			if aim_dir == Vector2.ZERO: aim_dir = Vector2.UP
+			
+			var aim_angle = aim_dir.angle()
+			
+			# Draw a 60-degree total arc (30 degrees in both directions)
+			var arc_spread = deg_to_rad(30.0) 
+			var start_angle = aim_angle - arc_spread
+			var end_angle = aim_angle + arc_spread
+			
+			var arc_radius = Constants.PARRY_RADIUS * zoom
+			var arc_thickness = 4.0 * zoom
+			
+			# Draw a brutal, solid white geometric stroke!
+			draw_arc(player_screen_pos, arc_radius, start_angle, end_angle, 32, Color.WHITE, arc_thickness, true)
+			
+	# --- THE PARRY AMMO BAR ---
+	var bar_width = Constants.TILE_SIZE * zoom
+	var bar_height = Constants.TILE_SIZE * 0.125 * zoom
+	var bar_offset = Vector2(-bar_width, -bar_width) / 2.0
+			
+	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
+		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
+		
+		if parry:
+			var p_transform = SceneInstances.entity_manager.transform_components[player_id]
+			var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
+			
+			# 1. Define the dimensions and position it above the player's head
+			var bar_rect = Rect2(player_screen_pos + bar_offset, Vector2(bar_width, bar_height))
+			
+			# 2. Draw the dark background casing
+			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true)
+			
+			# 3. Calculate segment width based on max ammo capacity
+			var segment_width = bar_width / float(parry.max_charges)
+			
+			# 4. Draw the individual ammo blocks
+			for i in range(parry.max_charges):
+				var seg_x = bar_rect.position.x + (i * segment_width)
+				var seg_rect = Rect2(Vector2(seg_x, bar_rect.position.y), Vector2(segment_width, bar_height))
+				
+				# Shrink the rectangle by 1 pixel to create native grid lines/gaps between charges
+				var padded_rect = seg_rect.grow(-1.0 * zoom)
+				
+				if i < parry.current_charges:
+					# Fully charged slot -> Solid brutalist white
+					draw_rect(padded_rect, Color(1.0, 1.0, 1.0, 1.0), true) 
+					
+				elif i == parry.current_charges and parry.current_charges < parry.max_charges:
+					# The active reloading slot -> Calculate the percentage and draw a partial bar
+					var recharge_ratio = 1.0 - (parry.recharge_timer / parry.recharge_time)
+					var partial_width = (segment_width * recharge_ratio) - (2.0 * zoom) # Account for the padding
+					
+					if partial_width > 0:
+						var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
+						# Draw it slightly dimmer/blueish to indicate it is "charging"
+						draw_rect(partial_rect, Color(0.6, 0.8, 1.0, 0.9), true)
+						
+	# --- THE DASH COOLDOWN BAR ---
+	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
+		var dash = SceneInstances.entity_manager.dash_components.get(player_id)
+		
+		if dash:
+			var p_transform = SceneInstances.entity_manager.transform_components[player_id]
+			var player_screen_pos = screen_center + ((p_transform.position - camera_pos) * zoom)
+			
+			# Position it directly below the Parry bar (Parry Y offset is -bar_width / 2.0)
+			# We add the bar's height + a tiny 4px gap to stack them neatly
+			var dash_bar_offset = bar_offset
+			dash_bar_offset.y = bar_offset.y + bar_height
+			var bar_rect = Rect2(player_screen_pos + dash_bar_offset, Vector2(bar_width, bar_height))
+			
+			# Draw the dark background casing
+			draw_rect(bar_rect, Color(0.1, 0.1, 0.1, 0.8), true)
+			
+			var padded_rect = bar_rect.grow(-1.0 * zoom)
+			
+			if dash.cooldown_time_left <= 0:
+				# Fully charged -> Solid Electric Cyan
+				draw_rect(padded_rect, Color(0.0, 1.0, 1.0, 1.0), true) 
+			else:
+				# Recharging -> Calculate percentage and draw partial fill
+				var recharge_ratio = 1.0 - (dash.cooldown_time_left / dash.cooldown)
+				var partial_width = padded_rect.size.x * recharge_ratio
+				
+				if partial_width > 0:
+					var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
+					# Dimmer cyan while it is still charging
+					draw_rect(partial_rect, Color(0.0, 0.6, 0.8, 0.9), true)

@@ -12,19 +12,46 @@ func update(delta: float) -> void:
 	
 	if not parry or not input: return
 	
-	# 1. Handle Active Window & Miss Cooldown Timers
+	# ==========================================
+	# 1. BACKGROUND RELOAD LOOP
+	# ==========================================
+	if parry.current_charges < parry.max_charges:
+		parry.recharge_timer -= delta
+		if parry.recharge_timer <= 0:
+			parry.current_charges += 1
+			
+			# If we are still missing charges, immediately start the next reload!
+			if parry.current_charges < parry.max_charges:
+				parry.recharge_timer = parry.recharge_time
+			else:
+				parry.recharge_timer = 0.0
+
+	# ==========================================
+	# 2. STATE MACHINE (Active Slash & Spam Delay)
+	# ==========================================
 	if parry.current_state == ParryData.State.PARRYING or parry.current_state == ParryData.State.RECOVERING:
 		parry.timer -= delta
 		
 		if parry.timer <= 0:
 			if parry.current_state == ParryData.State.PARRYING:
 				parry.current_state = ParryData.State.RECOVERING
-				parry.timer = Constants.PARRY_MISSED_PENALTY_TIME
+				# This is the "Spam Delay". Setting this to 0.1s means you can fire rapidly, 
+				# but you can't accidentally burn all 3 charges in a single frame.
+				parry.timer = 0.15 
 			elif parry.current_state == ParryData.State.RECOVERING:
 				parry.current_state = ParryData.State.READY
 				
-	# 2. Handle Parry Input Trigger
-	if parry.current_state == ParryData.State.READY and input.parry_pressed:
+	# ==========================================
+	# 3. INPUT TRIGGER (Consumes Ammo)
+	# ==========================================
+	if parry.current_state == ParryData.State.READY and input.parry_pressed and parry.current_charges > 0:
+		
+		# If we were full, starting a drain means we need to start the background timer
+		if parry.current_charges == parry.max_charges:
+			parry.recharge_timer = parry.recharge_time
+			
+		parry.current_charges -= 1 # Consume a charge!
+		
 		parry.current_state = ParryData.State.PARRYING
 		parry.timer = Constants.PARRY_WAIT_TIME
 		

@@ -34,17 +34,44 @@ func _spawn_objects():
 	
 	# The Shop
 	_spawn_terminal(
-		screen_center - Vector2(0, 150), # 150px Above Player
+		screen_center - Vector2(0, 150), 
 		Color(0.2, 0.8, 0.2), 
-		Enums.EVENT_TYPES.OPEN_PERK_SHOP
+		Enums.EVENT_TYPES.OPEN_PERK_SHOP,
+		"SYSTEM_SHOP" # <--- Pass the text
 	)
 	
-	# The Breach / Airlock (Crimson Red)
+	# The Breach / Airlock 
 	_spawn_terminal(
-		screen_center + Vector2(0, 150), # 150px Below Player
+		screen_center + Vector2(0, 150), 
 		Color(0.8, 0.1, 0.1), 
-		Enums.EVENT_TYPES.ENTER_ARENA
+		Enums.EVENT_TYPES.ENTER_ARENA,
+		"ENTER_ARENA" # <--- Pass the text
 	)
+
+# Update the parameters to accept t_name
+func _spawn_terminal(pos: Vector2, color: Color, event_type: int, t_name: String) -> void:
+	var em = SceneInstances.entity_manager
+	var t_id = em.next_entity_id
+	em.next_entity_id += 1
+	
+	var t_transform = TransformData.new()
+	t_transform.position = pos
+	em.transform_components[t_id] = t_transform
+	
+	var t_render = RenderingData.new()
+	t_render.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER] 
+	t_render.modulate = color
+	em.render_components[t_id] = t_render
+	
+	var t_interact = InteractableData.new()
+	t_interact.interaction_radius = 60.0
+	t_interact.event_to_fire = event_type
+	t_interact.base_color = color
+	t_interact.hover_color = color.lightened(0.2)
+	t_interact.terminal_name = t_name # <--- Inject the text into the data
+	em.interactable_components[t_id] = t_interact
+	
+	em.active_entities.append(t_id)
 
 func _process(delta: float) -> void:
 	if not Cache.is_ready: return
@@ -81,29 +108,6 @@ func _process(delta: float) -> void:
 				print("SHOP EVENT CAUGHT! Current Local Gold: ", MetaEconomy.total_gold)
 			
 	main_menu_ui_manager.update()
-
-func _spawn_terminal(pos: Vector2, color: Color, event_type: int) -> void:
-	var em = SceneInstances.entity_manager
-	var t_id = em.next_entity_id
-	em.next_entity_id += 1
-	
-	var t_transform = TransformData.new()
-	t_transform.position = pos
-	em.transform_components[t_id] = t_transform
-	
-	var t_render = RenderingData.new()
-	t_render.texture = Cache.textures_dict[Enums.ENTITY_TYPES.PLAYER] 
-	t_render.modulate = color
-	em.render_components[t_id] = t_render
-	
-	var t_interact = InteractableData.new()
-	t_interact.interaction_radius = 60.0
-	t_interact.event_to_fire = event_type
-	t_interact.base_color = color
-	t_interact.hover_color = color.lightened(0.2)
-	em.interactable_components[t_id] = t_interact
-	
-	em.active_entities.append(t_id)
 
 func _update_gold_display() -> void:
 	pass
