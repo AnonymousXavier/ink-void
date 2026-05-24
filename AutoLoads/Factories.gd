@@ -89,7 +89,7 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	
 	# Fetch the textures instantly without utilizing 'await' hooks
 	render_data.texture = Cache.textures_dict[type]
-	render_data.frozen_texture = Cache.frozen_textures_dict[type]
+	render_data.modulate = Cache.base_colors[type]
 	
 	# Setup weapon fire cooldown loops based on archetype configs
 	var fire_rate = profile["fire_rate"] if "fire_rate" in profile else 1.0
@@ -177,7 +177,6 @@ func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: in
 	
 	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
 	renderingData.modulate = bullet_color
-	renderingData.frozen_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.BULLET]
 	
 	# Delete them
 	entity_manager.inactive_bullet_transform_components.erase(bullet_id)

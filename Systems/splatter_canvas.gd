@@ -19,8 +19,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	call_deferred("queue_redraw")
 
-func stamp(world_pos: Vector2) -> void:
-	var base_texture = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.BULLET]
+# We added 'base_color' so we know what color the enemy was!
+func stamp(world_pos: Vector2, base_color: Color) -> void:
+	# Use the main white texture dictionary now!
+	var base_texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
 	var base_size = base_texture.get_size() 
 	
 	# Generate 3 to 5 droplets per death
@@ -44,8 +46,9 @@ func stamp(world_pos: Vector2) -> void:
 		var random_rot = randf_range(0, TAU)
 		var t = Transform2D(random_rot, final_scale, 0, world_pos + scatter)
 		
-		var red_tint = randf_range(0.4, 0.8) 
-		var drop_color = Color(red_tint, 0.05, 0.05, randf_range(0.8, 1.0))
+		# 4. Color: Multiply the enemy's base color by a darkening factor so it looks like a stained floor!
+		var darken_factor = randf_range(0.4, 0.7) 
+		var drop_color = Color(base_color.r * darken_factor, base_color.g * darken_factor, base_color.b * darken_factor, randf_range(0.8, 1.0))
 		
 		# 5. Apply to GPU memory
 		graveyard_multimesh.set_instance_transform_2d(blood_count, t)
@@ -60,7 +63,8 @@ func _draw() -> void:
 	var camera_pos = SceneInstances.camera.position
 	var zoom = SceneInstances.camera.zoom
 	
-	var blood_tex = Cache.frozen_textures_dict[Enums.ENTITY_TYPES.BULLET] 
+	# Use the main white texture dictionary here too!
+	var blood_tex = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET] 
 	
 	var cam_offset = screen_center - (camera_pos * zoom)
 	draw_set_transform(cam_offset, 0.0, Vector2(zoom, zoom))

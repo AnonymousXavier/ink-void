@@ -17,15 +17,21 @@ func update() -> void:
 			if id in entity_manager.is_an_enemy:
 				var gold_data = entity_manager.gold_value_components.get(id)
 				if gold_data:
-					MetaEconomy.gold += gold_data.value 
+					SceneInstances.entity_manager.bank_data.souls += gold_data.gold 
 					
 			# ==========================================
 			# 2. SPAWN BLOOD SPLATTER
 			# ==========================================
-			# Fetch the position BEFORE it gets deleted
+			# Fetch the position and render data BEFORE it gets deleted
 			var transform_data = entity_manager.transform_components.get(id)
+			var render_data = entity_manager.render_components.get(id)
+			
 			if transform_data and SceneInstances.splatter_canvas:
-				SceneInstances.splatter_canvas.stamp(transform_data.position)
+				# If for some reason they lack a color, default to brutalist gray
+				var splatter_color = render_data.modulate if render_data else Color(0.5, 0.5, 0.5) 
+				
+				# Pass the color into our newly upgraded stamp function!
+				SceneInstances.splatter_canvas.stamp(transform_data.position, splatter_color)
 				
 	# Run the cleanup sequence immediately after checking all events for this frame
 	if enemies_to_delete.size() > 0:

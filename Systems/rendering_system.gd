@@ -39,21 +39,27 @@ func _draw() -> void:
 		
 	for entity_id in entities_to_draw:
 		if entity_id not in SceneInstances.entity_manager.transform_components: continue
+		
 		var render_data = SceneInstances.entity_manager.render_components[entity_id]
 		var transform_data = SceneInstances.entity_manager.transform_components[entity_id]
-		var core_color = render_data.modulate
 		var active_texture = render_data.texture
+		
+		if active_texture == null: continue
 
-		# If time is frozen, and this ISN'T the player...
+		# ==========================================
+		# THE COLOR OVERRIDE PIPELINE
+		# ==========================================
+		var active_color = render_data.modulate # 1. Start with the entity's true color
+		
+		# 2. Time Freeze Overrides Everything (Except Player)
 		if is_frozen and entity_id != player_id:
-			if render_data.frozen_texture:
-				active_texture = render_data.frozen_texture # Turn it dead gray!
+			active_color = Color(0.3, 0.3, 0.3, 1.0) # Dead, brutalist gray
+			
+		# 3. Damage Flash takes ultimate priority over everything
+		if SceneInstances.entity_manager.flash_components.has(entity_id):
+			active_color = Color(8.0, 8.0, 8.0, 1.0) # Overblown pure white
+		# ==========================================
 		
-		if active_texture == null:
-			print("SYSTEM WARNING: Entity ID ", entity_id, " has no texture! Skipping render.", "Main Texture: ", render_data.texture)
-			continue
-		
-		# Now draw using the active_texture (with the Double-Draw center math from before!)
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
 		var final_screen_pos = screen_center + distance_from_cam
 		var offset = -active_texture.get_size() / 2.0 
@@ -61,16 +67,13 @@ func _draw() -> void:
 		
 		# Halo
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale * 1.3)
-		draw_texture(active_texture, offset, Color(1.0, 1.0, 1.0, 0.15))
+		var halo_color = active_color
+		halo_color.a = 0.15 # Inherit the active color, but make it transparent
+		draw_texture(active_texture, offset, halo_color)
 		
-		# Flash
-		# If the entity is currently screaming in pain, overdrive the glow
-		if SceneInstances.entity_manager.flash_components.has(entity_id):
-			core_color = Color(8.0, 8.0, 8.0, 1.0) # Overblown pure white
-			
 		# Core
 		draw_set_transform(final_screen_pos, transform_data.rotation, core_scale)
-		draw_texture(active_texture, offset, core_color)
+		draw_texture(active_texture, offset, active_color)
 		
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE) # Reset the transforms for shockwaves
 	
