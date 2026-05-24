@@ -86,6 +86,8 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	meele_data.damage = profile["damage"]
 	if "mass" in profile:
 		meele_data.mass = profile["mass"] 
+	if "gold" in profile:
+		goldvalue_data.gold = profile["gold"]
 	
 	# Fetch the textures instantly without utilizing 'await' hooks
 	render_data.texture = Cache.textures_dict[type]

@@ -1,13 +1,16 @@
 extends CanvasLayer
 class_name UIManager
 
-@onready var timer_label: Label = $Control/TimerLabel
+@onready var timer_label: Label = $LabelsMarginContainer/TimerLabel
 @onready var cards_container: HBoxContainer = $Control/HBoxContainer
 @onready var build_pips: HBoxContainer = $Control/MarginContainer/BuildPips
+@onready var souls_label: Label = $LabelsMarginContainer/SoulsLabel
 
 @onready var death_overlay: ColorRect = $Control/DeathOverlay
 @onready var retry_button: Button = $Control/DeathOverlay/VBoxContainer/RetryButton
 @onready var main_menu_button: Button = $Control/DeathOverlay/VBoxContainer/MainMenuButton
+
+var displayed_souls: int = 0 # The visual counter that lags behind the logical bank
 
 func _ready() -> void:
 	cards_container.hide()
@@ -43,6 +46,94 @@ func _process(_delta: float) -> void:
 			Enums.EVENT_TYPES.SHOW_REVIVE_UI:
 				# This references the child node you just dropped into the tree!
 				$ReviveUI.display_ultimatum(event["cost"], event["can_afford"])
+			Enums.EVENT_TYPES.SOUL_COLLECTED:
+				_spawn_flying_soul(event["world_pos"], event["amount"])
+
+# THE JUICE MATH
+func _spawn_flying_soul(world_pos: Vector2, amount: int) -> void:
+	var screen_center = get_viewport().get_visible_rect().size / 2.0
+	var camera_pos = SceneInstances.camera.position
+	var zoom = SceneInstances.camera.zoom
+	
+	var start_screen_pos = screen_center + ((world_pos - camera_pos) * zoom)
+	
+	# ==========================================
+	# 1. CREATE A ROUND SOUL (Procedural StyleBox)
+	# ==========================================
+	var soul_node = Panel.new()
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.2, 0.8, 1.0, 1.0) # Solid Light Blue
+	
+	# Maxing out the corner radius forces the square Panel into a perfect circle
+	style.corner_radius_top_left = 100
+	style.corner_radius_top_right = 100
+	style.corner_radius_bottom_left = 100
+	style.corner_radius_bottom_right = 100
+	
+	# Add a glowing aura
+	style.shadow_color = Color(0.2, 0.8, 1.0, 0.6)
+	style.shadow_size = int(6 * zoom)
+	
+	soul_node.add_theme_stylebox_override("panel", style)
+	soul_node.size = Vector2(12.0, 12.0) * zoom
+	soul_node.position = start_screen_pos - (soul_node.size / 2.0)
+	
+	# ==========================================
+	# 2. CREATE THE TRAIL (CPUParticles2D)
+	# ==========================================
+	var trail = CPUParticles2D.new()
+	trail.amount = 16
+	trail.lifetime = 0.3
+	trail.gravity = Vector2.ZERO # No falling, just drag
+	trail.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	trail.emission_sphere_radius = 2.0 * zoom
+	trail.scale_amount_min = 2.0 * zoom
+	trail.scale_amount_max = 8.0 * zoom
+	trail.color = Color(0.2, 0.8, 1.0, 0.5) # Semi-transparent tail
+	trail.position = soul_node.size / 2.0 # Anchor it strictly to the center of the circle!
+	
+	soul_node.add_child(trail)
+	$Control.add_child(soul_node)
+	
+	# 3. THE FLIGHT ANIMATION
+	var target_pos = souls_label.global_position
+	var tween = create_tween().set_parallel(true)
+	
+	# Erupt outward in a chaotic spread
+	var random_burst = Vector2(randf_range(-60, 60), randf_range(-60, -100)) * zoom
+	var mid_pos = start_screen_pos + random_burst
+	
+	tween.tween_property(soul_node, "position", mid_pos, 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_property(soul_node, "position", target_pos, 0.4).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
+	
+	# 4. THE IMPACT & CLEANUP
+	tween.chain().tween_callback(func():
+		_increment_soul_counter(amount)
+		
+		# Instead of deleting it instantly (which deletes the trail abruptly),
+		# we turn off the core visual, stop emitting new particles, and wait for the tail to fade!
+		style.bg_color.a = 0.0
+		style.shadow_color.a = 0.0
+		trail.emitting = false
+		
+		# Safely delete the node from memory after the trail's lifetime finishes
+		get_tree().create_timer(0.3).timeout.connect(soul_node.queue_free)
+	)
+
+func _increment_soul_counter(amount: int) -> void:
+	displayed_souls += amount
+	souls_label.text = "SOULS: " + str(displayed_souls)
+	
+	# Center the pivot so the scale effect expands from the middle, not the top-left corner
+	souls_label.pivot_offset = souls_label.size / 2.0
+	
+	# Reset the scale to overblown, then smoothly bounce it back to normal
+	souls_label.scale = Vector2(1.5, 1.5)
+	souls_label.modulate = Color.WHITE # Flash it pure white
+	
+	var punch_tween = create_tween().set_parallel(true)
+	punch_tween.tween_property(souls_label, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	punch_tween.tween_property(souls_label, "modulate", Color(0.2, 0.8, 1.0), 0.3) # Settle back into Light Blue
 
 func _add_sigil_to_hud(upgrade_id: String) -> void:
 	# If a pip with this exact ID already exists, update it instead of making a new one

@@ -39,12 +39,6 @@ func apply_upgrade(player_id: int, upgrade_id: String, em: EntityManager) -> voi
 			if parry:
 				parry.parry_pierce_bonus += data["pierce_inc"]
 				
-		"friction_wake":
-			var dash = em.dash_components.get(player_id)
-			if dash:
-				dash.friction_wake_radius += data["wake_radius_inc"]
-				dash.friction_wake_slow_percent += data["slow_percent_inc"]
-				
 		"heavy_caliber":
 			var parry = em.parry_components.get(player_id)
 			if parry:

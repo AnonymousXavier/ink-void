@@ -132,26 +132,46 @@ func update() -> void:
 				
 				if not enemy_transform or not enemy_health: continue
 				
+				# Collision Check
 				if bullet_transform.position.distance_to(enemy_transform.position) <= Constants.PARRY_RADIUS * 1.5:
 					if enemy_id in bullet_meele.hit_targets: continue 
 					
 					bullet_meele.hit_targets.append(enemy_id)
-					SceneInstances.events_manager.add_event({
-						"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, 
-						"id": enemy_id, 
-						"amount": bullet_meele.damage
-					})
-					SceneInstances.events_manager.add_event({
-						"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE,
-						"pos": Vector2(bullet_transform.position.x, bullet_transform.position.y),
-						"color": Color(1.0, 0.2, 0.2) # Crimson blood sparks
-					})
 					
+					# 1. Apply Damage and Visuals
+					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.DAMAGE_ATTEMPT, "id": enemy_id, "amount": bullet_meele.damage})
+					SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE, "pos": Vector2(bullet_transform.position.x, bullet_transform.position.y), "color": bullet_render.modulate})
+					
+					# 2. RICOCHET / PIERCE LOGIC
 					if bullet_meele.pierce_count > 0:
 						bullet_meele.pierce_count -= 1
+						
+						# Find the next closest valid target to bounce to
+						var next_dir = Vector2.ZERO
+						var closest_dist = INF
+						
+						for next_id in entity_manager.is_an_enemy.keys():
+							if next_id in bullet_meele.hit_targets: continue # Don't bounce back to someone already hit!
+							
+							var next_trans = entity_manager.transform_components.get(next_id)
+							if next_trans:
+								var dist = bullet_transform.position.distance_squared_to(next_trans.position)
+								# Optional: Add a max ricochet range here (e.g., dist < 400000)
+								if dist < closest_dist:
+									closest_dist = dist
+									next_dir = bullet_transform.position.direction_to(next_trans.position)
+						
+						# If we found a target, aggressively snap the bullet's direction toward them
+						var b_vel = entity_manager.velocity_components.get(bullet_id)
+						if next_dir != Vector2.ZERO and b_vel:
+							b_vel.direction = next_dir
+						# If no enemies are nearby, it just keeps flying in its current direction!
+
 					else:
+						# Out of pierces/bounces, destroy the bullet
 						Factories.despawn_bullet(bullet_id)
 						
 					bullet_hit_enemy = true
-					break
+					break # Stop checking other enemies this frame so it only bounces once per frame
+					
 			if bullet_hit_enemy: continue

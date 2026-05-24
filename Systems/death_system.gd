@@ -16,8 +16,18 @@ func update() -> void:
 			# ==========================================
 			if id in entity_manager.is_an_enemy:
 				var gold_data = entity_manager.gold_value_components.get(id)
-				if gold_data:
+				var transform_data = entity_manager.transform_components.get(id)
+				
+				if gold_data and transform_data:
+					# Instantly update the logical bank
 					SceneInstances.entity_manager.bank_data.souls += gold_data.gold 
+					
+					# Tell the UI to spawn the flying particle!
+					SceneInstances.events_manager.add_event({
+						"type": Enums.EVENT_TYPES.SOUL_COLLECTED,
+						"amount": gold_data.gold,
+						"world_pos": transform_data.position
+					})
 					
 			# ==========================================
 			# 2. SPAWN BLOOD SPLATTER

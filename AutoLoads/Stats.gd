@@ -13,7 +13,8 @@ const ENEMY_PROFILES = {
 		"speed": 80.0,
 		"damage": 1,
 		"mass": 1.0,
-		"fire_rate": 1.0
+		"fire_rate": 1.0,
+		"gold": 1  # Standard Grunt = 10 Souls
 	},
 	Enums.ENTITY_TYPES.SNIPER_ENEMY: {
 		"shape": Enums.SHAPE_TYPES.TRIANGLE,
@@ -22,7 +23,8 @@ const ENEMY_PROFILES = {
 		"speed": 110.0,
 		"damage": 1,
 		"mass": 0.5,
-		"fire_rate": 0.4
+		"fire_rate": 0.4,
+		"gold": 3  # Annoying Sniper = 25 Souls
 	},
 	Enums.ENTITY_TYPES.TANK_ENEMY: {
 		"shape": Enums.SHAPE_TYPES.SQUARE,
@@ -31,10 +33,10 @@ const ENEMY_PROFILES = {
 		"speed": 40.0,
 		"damage": 2,
 		"mass": 4.0,
-		"fire_rate": 0.5
+		"fire_rate": 0.5,
+		"gold": 5  # Massive Tank = 50 Souls
 	}
 }
-
 # Explicit enemy density curves mapping
 const WAVE_SPAWN_WEIGHTS = {
 	1: { Enums.ENTITY_TYPES.NORMAL_ENEMY: 100 },
@@ -85,8 +87,8 @@ static func get_spawn_weights_for_wave(wave: int) -> Dictionary:
 		return WAVE_SPAWN_WEIGHTS[wave]
 	
 	# Beyond wave 8, slowly bleed out the normal swarms to make room for heavy threats
-	var sniper_weight = min(45, 45 + (wave - 8))
-	var tank_weight = min(35, 10 + ((wave - 8) * 3))
+	var sniper_weight = min(45, 45 + (wave - 1))
+	var tank_weight = min(35, 10 + ((wave - 1) * 3))
 	var normal_weight = max(20, 100 - sniper_weight - tank_weight)
 	
 	return {

@@ -9,6 +9,9 @@ var player_controller_system: PlayerControllerSystem = PlayerControllerSystem.ne
 var movement_system: MovementSystem = MovementSystem.new()
 var interaction_system: InteractionSystem = InteractionSystem.new()
 var rendering_system: RenderingSystem = RenderingSystem.new()
+
+var boundary_system: BoundarySystem = BoundarySystem.new(Rect2(-500, -500, 2000, 2000))
+
 var entity_manager: EntityManager = EntityManager.new()
 var camera: Camera = Camera.new()
 var has_spawned_player = false
@@ -44,6 +47,14 @@ func _spawn_objects():
 		Color(0.8, 0.1, 0.1), 
 		Enums.EVENT_TYPES.ENTER_ARENA,
 		"ENTER_ARENA" # <--- Pass the text
+	)
+	
+	# The Tutorial 
+	_spawn_terminal(
+		screen_center + Vector2(-200, 0), 
+		Color(0.2, 0.5, 1.0), # Blue for Training
+		Enums.EVENT_TYPES.ENTER_TUTORIAL, 
+		"SIMULATION" 
 	)
 
 # Update the parameters to accept t_name
@@ -87,6 +98,7 @@ func _process(delta: float) -> void:
 	input_system.update()
 	player_controller_system.update(delta)
 	movement_system.update(delta)
+	boundary_system.update()
 	
 	interaction_system.update()
 	camera.update()
@@ -104,6 +116,12 @@ func _process(delta: float) -> void:
 			SceneInstances.time_scale = 0.0
 			if not main_menu_ui_manager.shop_overlay.visible:
 				print("SHOP EVENT CAUGHT! Current Local Gold: ", MetaEconomy.total_gold)
+				
+		elif event.type == Enums.EVENT_TYPES.ENTER_TUTORIAL:
+			SceneInstances.time_scale = 1.0 
+			print("Turotial pls")
+			get_tree().change_scene_to_file("res://Scenes/tutorial.tscn")
+			return
 			
 	main_menu_ui_manager.update()
 

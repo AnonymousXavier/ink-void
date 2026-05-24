@@ -3,11 +3,39 @@
 [ext_resource type="Script" uid="uid://dia6xf0ro1lu7" path="res://Scenes/ui_manager.gd" id="1_nphyr"]
 [ext_resource type="PackedScene" uid="uid://yvtjaymrwjt" path="res://Scenes/revive_ui.tscn" id="2_blom3"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_blom3"]
+font_size = 32
+
 [sub_resource type="LabelSettings" id="LabelSettings_nphyr"]
 font_size = 48
 
 [node name="UIManager" type="CanvasLayer" unique_id=1258719095]
 script = ExtResource("1_nphyr")
+
+[node name="LabelsMarginContainer" type="MarginContainer" parent="." unique_id=311325008]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="SoulsLabel" type="Label" parent="LabelsMarginContainer" unique_id=1914547866]
+custom_minimum_size = Vector2(1120, 45)
+layout_mode = 2
+size_flags_vertical = 0
+text = "SOULS: 0"
+vertical_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="LabelsMarginContainer" unique_id=235160543]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0:00"
+label_settings = SubResource("LabelSettings_blom3")
+horizontal_alignment = 1
 
 [node name="Control" type="Control" parent="." unique_id=1050733234]
 layout_mode = 3
@@ -16,13 +44,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TimerLabel" type="Label" parent="Control" unique_id=235160543]
-layout_mode = 0
-offset_left = -1.0
-offset_right = 39.0
-offset_bottom = 23.0
-text = "0:00"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control" unique_id=1325569329]
 custom_minimum_size = Vector2(896, 384)
@@ -61,6 +82,7 @@ layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="DeathOverlay" type="ColorRect" parent="Control" unique_id=295296146]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -102,3 +124,4 @@ layout_mode = 2
 text = "Main Menu"
 
 [node name="ReviveUI" parent="." unique_id=1789505353 instance=ExtResource("2_blom3")]
+visible = false
