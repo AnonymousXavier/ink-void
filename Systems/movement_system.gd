@@ -55,7 +55,7 @@ func update(delta: float) -> void:
 				despawn_bullet(id, transform)
 				
 func despawn_bullet(bullet_id, transform_data: TransformData):
-	# 1. Fetch the bullet's exact color
+	# Fetch the bullet's exact color
 	var render_data = SceneInstances.entity_manager.render_components.get(bullet_id)
 	var bullet_color = render_data.modulate if render_data else Color(0.8, 0.8, 0.8)
 	

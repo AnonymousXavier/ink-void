@@ -74,7 +74,6 @@ func create_enemy(type: Enums.ENTITY_TYPES, pos: Vector2i) -> int:
 	var health_data = Stats.health_data[type].duplicate() if type in Stats.health_data else HealthData.new()
 	var projectile_weapon_data = Stats.projectile_weapon_datas[type].duplicate(true) if type in Stats.projectile_weapon_datas else ProjectileWeaponData.new()
 	
-	# --- DATA INJECTION FROM PRE-BAKED ARRAYS ---
 	transform_data.position = pos
 	velocity_data.speed = profile["speed"]
 	alignment_data.alignment = Enums.ALIGNMENTS.ENEMY

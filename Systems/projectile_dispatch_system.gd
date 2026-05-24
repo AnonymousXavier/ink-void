@@ -10,7 +10,7 @@ func update(_delta: float) -> void:
 			var bullet_speed = 300.0 # This should match the speed you pass to spawn_bullet
 			var direction = Vector2.ZERO
 			
-			# 1. Fetch the target's velocity to see how fast they are moving
+			# Fetch the target's velocity to see how fast they are moving
 			var target_velocity = SceneInstances.entity_manager.velocity_components.get(event["target"])
 			
 			if target_velocity and target_velocity.direction != Vector2.ZERO:
@@ -23,7 +23,7 @@ func update(_delta: float) -> void:
 				
 				direction = (future_position - parent_transform.position).normalized()
 			else:
-				# Fallback: If the player is standing completely still, just shoot straight at them
+				# If the player is standing completely still, just shoot straight at them
 				direction = (target_transform.position - parent_transform.position).normalized()
 
 			var parent_render = SceneInstances.entity_manager.render_components.get(event["id"])

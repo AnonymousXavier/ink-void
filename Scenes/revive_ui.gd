@@ -37,7 +37,6 @@ func display_ultimatum(cost: int, can_afford: bool) -> void:
 		pay_button.modulate = Color.DARK_GRAY
 		pay_button.text = "INSUFFICIENT SOULS"
 		
-	# --- THE TERMINAL SLAM ANIMATION ---
 	# Reset states before animating
 	overlay.modulate.a = 0.0
 	container.scale = Vector2(1.2, 1.2) # Start 20% larger

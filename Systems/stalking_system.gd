@@ -22,7 +22,7 @@ func update(delta: float) -> void:
 		var distance_to_player = vector_to_player.length()
 		var direction_to_player = vector_to_player.normalized()
 		
-		# 1. PERCEPTION: Calculate Separation (Boids)
+		# Calculate Separation 
 		var separation_vector = Vector2.ZERO
 		var neighbor_count = 0
 		var personal_space = 70.0 # How far they push away from each other
@@ -44,7 +44,7 @@ func update(delta: float) -> void:
 		if neighbor_count > 0:
 			separation_vector /= neighbor_count
 			
-		# 2. DECISION: State Machine Evaluation
+		# State Machine Evaluation
 		var target_direction = Vector2.ZERO
 		var weapon_data = entity_manager.projectile_weopon_components.get(entity_id)
 
@@ -68,7 +68,7 @@ func update(delta: float) -> void:
 			ai_data.current_state = AIData.State.CHASING
 			target_direction = direction_to_player
 			
-		# 3. STEERING: Combine Forces
+		# Combine Forces
 		# Blend the desire to attack the player with the claustrophobic need to avoid allies
 		var final_direction = target_direction + (separation_vector * ai_data.separation_weight)
 		

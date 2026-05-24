@@ -5,7 +5,6 @@ var hit_stop_end_time: int = 0
 var is_stopped: bool = false
 
 func update() -> void:
-	# THE WAKE-UP SEQUENCE
 	if is_stopped:
 		# Use raw real-world unscaled time so this timer doesn't freeze when the game freezes
 		if Time.get_ticks_msec() >= hit_stop_end_time:

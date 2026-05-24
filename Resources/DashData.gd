@@ -12,7 +12,3 @@ class_name DashData
 
 @export var dash_speed: float = 1800.0
 @export var dash_direction: Vector2 = Vector2.ZERO
-
-# --- FRICTION WAKE ---
-@export var friction_wake_radius: float = 0.0 # Starts at 0. Upgrades will increase this!
-@export var friction_wake_slow_percent: float = 0.0

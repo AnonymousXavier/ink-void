@@ -57,9 +57,7 @@ func _spawn_flying_soul(world_pos: Vector2, amount: int) -> void:
 	
 	var start_screen_pos = screen_center + ((world_pos - camera_pos) * zoom)
 	
-	# ==========================================
-	# 1. CREATE A ROUND SOUL (Procedural StyleBox)
-	# ==========================================
+	# CREATE A ROUND SOUL (Procedural StyleBox)
 	var soul_node = Panel.new()
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.2, 0.8, 1.0, 1.0) # Solid Light Blue
@@ -78,9 +76,7 @@ func _spawn_flying_soul(world_pos: Vector2, amount: int) -> void:
 	soul_node.size = Vector2(12.0, 12.0) * zoom
 	soul_node.position = start_screen_pos - (soul_node.size / 2.0)
 	
-	# ==========================================
-	# 2. CREATE THE TRAIL (CPUParticles2D)
-	# ==========================================
+	# CREATE THE TRAIL (CPUParticles2D)
 	var trail = CPUParticles2D.new()
 	trail.amount = 16
 	trail.lifetime = 0.3
@@ -95,7 +91,7 @@ func _spawn_flying_soul(world_pos: Vector2, amount: int) -> void:
 	soul_node.add_child(trail)
 	$Control.add_child(soul_node)
 	
-	# 3. THE FLIGHT ANIMATION
+	# THE FLIGHT ANIMATION
 	var target_pos = souls_label.global_position
 	var tween = create_tween().set_parallel(true)
 	
@@ -106,7 +102,7 @@ func _spawn_flying_soul(world_pos: Vector2, amount: int) -> void:
 	tween.tween_property(soul_node, "position", mid_pos, 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.chain().tween_property(soul_node, "position", target_pos, 0.4).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	
-	# 4. THE IMPACT & CLEANUP
+	# THE IMPACT & CLEANUP
 	tween.chain().tween_callback(func():
 		_increment_soul_counter(amount)
 		

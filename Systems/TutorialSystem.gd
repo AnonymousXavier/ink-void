@@ -1,7 +1,6 @@
 extends Node
 class_name TutorialSystem
 
-# Added DASH_FAILED and PARRY_FAILED states!
 enum Phase { WELCOME, DASH_TEST, DASH_FAILED, PARRY_TEST, PARRY_FAILED, COMPLETE }
 var current_phase: Phase = Phase.WELCOME
 
@@ -67,16 +66,14 @@ func update(delta: float) -> void:
 		Phase.PARRY_FAILED:
 			# Explicit retry loop
 			instruction_label.text = "FAILED. SLASH THE BULLET *BEFORE* IT HITS YOU.\n[ L-CLICK ] TO TRY AGAIN."
-			if input.left_click_pressed:
-				input.left_click_pressed = false # Consume the input
+			if input.fire_pressed:
+				input.fire_pressed = false # Consume the input
 				_transition_to_parry_test()
 				
 		Phase.COMPLETE:
 			pass
 
-# ==========================================
 # PHASE TRANSITIONS & LOGIC
-# ==========================================
 func _transition_to_dash_test() -> void:
 	current_phase = Phase.DASH_TEST
 	phase_timer = 1.5 # Shortened to 1.5s so they have to react fast
@@ -120,9 +117,7 @@ func _transition_to_complete() -> void:
 		get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
 	)
 
-# ==========================================
 # EVENT MONITORS & FAIL SAFES
-# ==========================================
 func _monitor_events(player_id: int) -> void:
 	for event in SceneInstances.events_manager.events:
 		if event.type == Enums.EVENT_TYPES.DAMAGE_ATTEMPT:

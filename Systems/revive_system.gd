@@ -22,13 +22,13 @@ func update() -> void:
 func trigger_revive_sequence():
 	var bank = SceneInstances.entity_manager.bank_data
 	
-	# 1. Hard freeze the custom game loop
+	# Hard freeze the custom game loop
 	SceneInstances.time_scale = 0.0
 	
-	# 2. Check if they have enough Keys (Souls)
+	# Check if they have enough Keys (Souls)
 	var can_afford = bank.souls >= current_revive_cost
 	
-	# 3. Tell the UI Manager to slide the Tribute overlay onto the screen
+	# Tell the UI Manager to slide the Tribute overlay onto the screen
 	SceneInstances.events_manager.add_event({
 		"type": Enums.EVENT_TYPES.SHOW_REVIVE_UI,
 		"cost": current_revive_cost,
@@ -40,19 +40,18 @@ func execute_revive():
 	var player_id = entity_manager.player_id
 	var bank = entity_manager.bank_data
 	
-	# 1. Deduct the souls and scale the cost for next time
+	# Deduct the souls and scale the cost for next time
 	bank.souls -= current_revive_cost
 	current_revive_cost *= 2 
 	
-	# 2. Heal the player back to baseline
+	# Heal the player back to baseline
 	var health = entity_manager.health_components.get(player_id)
 	if health:
 		health.health = health.maxHealth
 		
-	# 3. BREATHING ROOM: Trigger your existing shockwave system!
 	# This clears all bullets around the player so they don't instantly die the frame they wake up.
 	if SceneInstances.wave_system:
 		SceneInstances.wave_system.trigger_shockwave()
 		
-	# 4. Wake the engine back up
+	# Wake the engine back up
 	SceneInstances.time_scale = 1.0

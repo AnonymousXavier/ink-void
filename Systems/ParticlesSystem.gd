@@ -58,12 +58,12 @@ func _ready() -> void:
 		get_tree().current_scene.call_deferred("add_child", p)
 
 func update(delta: float) -> void:
-	# 1. Catch the impact events
+	# Catch the impact events
 	for event in SceneInstances.events_manager.events:
 		if event.type == Enums.EVENT_TYPES.SPAWN_IMPACT_PARTICLE:
 			_trigger_burst(event.get("pos", Vector2.ZERO), event.get("color", Color.WHITE))
 			
-	# 2. Reclaim finished particles safely back to the pool
+	# Reclaim finished particles safely back to the pool
 	for i in range(active_particles.size() - 1, -1, -1):
 		var p = active_particles[i]
 		

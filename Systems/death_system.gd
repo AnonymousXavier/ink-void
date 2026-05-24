@@ -11,9 +11,7 @@ func update() -> void:
 			
 			var entity_manager = SceneInstances.entity_manager
 			
-			# ==========================================
-			# 1. EXTRACT SOULS (ECONOMY)
-			# ==========================================
+			# SOULS
 			if id in entity_manager.is_an_enemy:
 				var gold_data = entity_manager.gold_value_components.get(id)
 				var transform_data = entity_manager.transform_components.get(id)
@@ -29,9 +27,7 @@ func update() -> void:
 						"world_pos": transform_data.position
 					})
 					
-			# ==========================================
-			# 2. SPAWN BLOOD SPLATTER
-			# ==========================================
+			# SPAWN BLOOD SPLATTER
 			# Fetch the position and render data BEFORE it gets deleted
 			var transform_data = entity_manager.transform_components.get(id)
 			var render_data = entity_manager.render_components.get(id)

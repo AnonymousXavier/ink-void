@@ -8,5 +8,4 @@ var is_player_in_range: bool = false
 var base_color: Color
 var hover_color: Color
 
-# Add this to label the terminal!
 var terminal_name: String = ""

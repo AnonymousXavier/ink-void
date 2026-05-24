@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var bg: ColorRect = $BG
-@onready var ui_manager: UIManager = $UIManager # You might want to hide the timer/cards in the _ready func of this UI!
+@onready var ui_manager: UIManager = $UIManager 
 
 # Initialize Core Systems
 var rendering_system: RenderingSystem = RenderingSystem.new()

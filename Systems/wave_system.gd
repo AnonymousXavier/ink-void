@@ -39,8 +39,6 @@ func trigger_shockwave() -> void:
 	var wave_data = ShockWaveData.new()
 	transform_data.position =  SceneInstances.entity_manager.transform_components[SceneInstances.entity_manager.player_id].position
 	
-	# We create a temporary dictionary in EntityManager just for this:
-	# var shockwave_components: Dictionary = {}
 	SceneInstances.entity_manager.shockwave_components[id] = wave_data
 	SceneInstances.entity_manager.transform_components[id] = transform_data
 	SceneInstances.entity_manager.active_entities.append(id)

@@ -26,9 +26,7 @@ func _draw() -> void:
 	var grid_color = Color("333333") if is_frozen else Color("1c1c28") 
 	bg_material.set_shader_parameter("border_color", grid_color)
 		
-	# ========================================
-	# 4. The Entity Loop (Sorted for Z-Index)
-	# ========================================
+	# The Entity Loop (Sorted for Z-Index)
 	var entities_to_draw = SceneInstances.entity_manager.render_components.keys()
 	
 	# Pluck the player out and push them to the very end of the array 
@@ -46,19 +44,16 @@ func _draw() -> void:
 		
 		if active_texture == null: continue
 
-		# ==========================================
 		# THE COLOR OVERRIDE PIPELINE
-		# ==========================================
 		var active_color = render_data.modulate # 1. Start with the entity's true color
 		
-		# 2. Time Freeze Overrides Everything (Except Player)
+		# Time Freeze Overrides Everything (Except Player)
 		if is_frozen and entity_id != player_id:
 			active_color = Color(0.3, 0.3, 0.3, 1.0) # Dead, brutalist gray
 			
-		# 3. Damage Flash takes ultimate priority over everything
+		# Damage Flash takes ultimate priority over everything
 		if SceneInstances.entity_manager.flash_components.has(entity_id):
 			active_color = Color(8.0, 8.0, 8.0, 1.0) # Overblown pure white
-		# ==========================================
 		
 		var distance_from_cam = (transform_data.position - camera_pos) * zoom
 		var final_screen_pos = screen_center + distance_from_cam
@@ -255,9 +250,7 @@ func _draw() -> void:
 		var parry_y_offset = dash_y_offset - ammo_bar_height - gap
 		var health_y_offset = parry_y_offset - health_height - gap
 		
-		# ==========================================
-		# 1. THE PLAYER HEALTH PIPS (TOP BAR)
-		# ==========================================
+		# THE PLAYER HEALTH PIPS (TOP BAR)
 		var health = SceneInstances.entity_manager.health_components.get(player_id)
 		if health and health.maxHealth > 0:
 			var pip_width = bar_width / float(health.maxHealth)
@@ -276,9 +269,7 @@ func _draw() -> void:
 					# MISSING HEALTH: Hollow, dim red outline
 					draw_rect(padded_pip, Color(0.4, 0.1, 0.1, 0.6), false, 2.0 * zoom)
 		
-		# ==========================================
-		# 2. THE PARRY AMMO BAR (MIDDLE BAR)
-		# ==========================================
+		# THE PARRY AMMO BAR (MIDDLE BAR)
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		if parry:
 			var bar_rect = Rect2(Vector2(player_screen_pos.x + base_x_offset, player_screen_pos.y + parry_y_offset), Vector2(bar_width, ammo_bar_height))
@@ -301,9 +292,7 @@ func _draw() -> void:
 						var partial_rect = Rect2(padded_rect.position, Vector2(partial_width, padded_rect.size.y))
 						draw_rect(partial_rect, Color(0.6, 0.8, 1.0, 0.9), true)
 	
-		# ==========================================
-		# 3. THE DASH COOLDOWN BAR (BOTTOM BAR)
-		# ==========================================
+		# THE DASH COOLDOWN BAR (BOTTOM BAR)
 		var dash = SceneInstances.entity_manager.dash_components.get(player_id)
 		if dash:
 			var bar_rect = Rect2(Vector2(player_screen_pos.x + base_x_offset, player_screen_pos.y + dash_y_offset), Vector2(bar_width, ammo_bar_height))

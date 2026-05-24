@@ -38,19 +38,19 @@ func stamp(world_pos: Vector2, base_color: Color) -> void:
 		# Center pool stays put, satellites scatter randomly
 		var scatter = Vector2.ZERO if is_center else Vector2(randf_range(-25, 25), randf_range(-25, 25))
 		
-		# 2. Scale (Center is massive, satellites are tiny)
+		# Scale (Center is massive, satellites are tiny)
 		var scale_multiplier = randf_range(2.5, 4.0) if is_center else randf_range(0.8, 1.5)
 		var final_scale = base_size * scale_multiplier
 
-		# 3. Transform
+		# Transform
 		var random_rot = randf_range(0, TAU)
 		var t = Transform2D(random_rot, final_scale, 0, world_pos + scatter)
 		
-		# 4. Color: Multiply the enemy's base color by a darkening factor so it looks like a stained floor!
+		# Color: Multiply the enemy's base color by a darkening factor so it looks like a stained floor!
 		var darken_factor = randf_range(0.4, 0.7) 
 		var drop_color = Color(base_color.r * darken_factor, base_color.g * darken_factor, base_color.b * darken_factor, randf_range(0.8, 1.0))
 		
-		# 5. Apply to GPU memory
+		# Apply to GPU memory
 		graveyard_multimesh.set_instance_transform_2d(blood_count, t)
 		graveyard_multimesh.set_instance_color(blood_count, drop_color) 
 		

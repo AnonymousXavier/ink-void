@@ -38,7 +38,7 @@ func _spawn_objects():
 		screen_center - Vector2(0, 150), 
 		Color(0.2, 0.8, 0.2), 
 		Enums.EVENT_TYPES.OPEN_PERK_SHOP,
-		"SYSTEM_SHOP" # <--- Pass the text
+		"SYSTEM_SHOP" 
 	)
 	
 	# The Breach / Airlock 
@@ -46,7 +46,7 @@ func _spawn_objects():
 		screen_center + Vector2(0, 150), 
 		Color(0.8, 0.1, 0.1), 
 		Enums.EVENT_TYPES.ENTER_ARENA,
-		"ENTER_ARENA" # <--- Pass the text
+		"ENTER_ARENA" 
 	)
 	
 	# The Tutorial 
@@ -57,7 +57,6 @@ func _spawn_objects():
 		"SIMULATION" 
 	)
 
-# Update the parameters to accept t_name
 func _spawn_terminal(pos: Vector2, color: Color, event_type: int, t_name: String) -> void:
 	var em = SceneInstances.entity_manager
 	var t_id = em.next_entity_id
@@ -91,10 +90,8 @@ func _process(delta: float) -> void:
 		_spawn_objects()
 		has_spawned_player = true
 		
-	# 1. Clear the queue
 	events_manager.update(delta)
 	
-	# 2. Process Input and Physics
 	input_system.update()
 	player_controller_system.update(delta)
 	movement_system.update(delta)

@@ -26,6 +26,11 @@ Factories="*uid://bmy1whtkrwwj2"
 ImageGenerator="*uid://cmyu2bjdamg4a"
 SceneInstances="*uid://cfd242ejhsr4b"
 
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_height"
+
 [input]
 
 left={
