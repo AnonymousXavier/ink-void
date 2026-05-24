@@ -54,7 +54,7 @@ func _spawn_objects():
 		screen_center + Vector2(-200, 0), 
 		Color(0.2, 0.5, 1.0), # Blue for Training
 		Enums.EVENT_TYPES.ENTER_TUTORIAL, 
-		"SIMULATION" 
+		"TUTORIAL" 
 	)
 
 func _spawn_terminal(pos: Vector2, color: Color, event_type: int, t_name: String) -> void:
