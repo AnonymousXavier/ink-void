@@ -30,3 +30,4 @@ func update(_delta: float) -> void:
 			var bullet_color = parent_render.modulate if parent_render else Color("ff0033")
 			
 			Factories.spawn_bullet(parent_transform.position, direction, event["damage"], event["target"], bullet_speed, bullet_color)
+			SceneInstances.audio_system.play_sound("shoot")

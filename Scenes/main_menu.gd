@@ -3,6 +3,7 @@ extends Node2D
 @onready var bg: ColorRect = $BG
 @onready var main_menu_ui_manager: MainMenuUIManager = $MainMenuUIManager
 
+var audio_system: AudioSystem = AudioSystem.new("lobby_bgm")
 var events_manager: EventsManager = EventsManager.new()
 var input_system: InputSystem = InputSystem.new()
 var player_controller_system: PlayerControllerSystem = PlayerControllerSystem.new()
@@ -25,6 +26,8 @@ func _ready() -> void:
 	SceneInstances.rendering_system = rendering_system
 	SceneInstances.BG = bg
 	SceneInstances.camera = camera 
+	
+	add_child(audio_system)
 	
 	_update_gold_display()
 	add_child(rendering_system)
@@ -121,6 +124,7 @@ func _process(delta: float) -> void:
 			return
 			
 	main_menu_ui_manager.update()
+	audio_system.update(delta)
 
 func _update_gold_display() -> void:
 	pass

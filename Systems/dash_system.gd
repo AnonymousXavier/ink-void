@@ -29,6 +29,7 @@ func update(delta: float) -> void:
 	# Start Speedster Mode
 	if input.dash_pressed and dash.cooldown_time_left <= 0 and parry.current_state != ParryData.State.PARRYING:
 		dash.is_dashing = true
+		SceneInstances.audio_system.play_sound("dash")
 		dash.dash_time_left = dash.dash_duration
 		dash.cooldown_time_left = dash.cooldown
 		

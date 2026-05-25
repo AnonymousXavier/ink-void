@@ -39,7 +39,7 @@ func update(delta: float) -> void:
 				
 	# 3. INPUT TRIGGER (Consumes Ammo)
 	if parry.current_state == ParryData.State.READY and input.parry_pressed and parry.current_charges > 0:
-		
+		SceneInstances.audio_system.play_sound("slash")
 		# If we were full, starting a drain means we need to start the background timer
 		if parry.current_charges == parry.max_charges:
 			parry.recharge_timer = parry.recharge_time

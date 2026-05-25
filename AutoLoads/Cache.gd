@@ -1,6 +1,7 @@
 extends Node
 
 var is_ready: bool
+var audio_dict: Dictionary[String, AudioStream]
 
 # RENDERING DATA
 @onready var textures_dict: Dictionary[Enums.ENTITY_TYPES, ImageTexture]
@@ -36,6 +37,20 @@ func _ready() -> void:
 		Enums.ENTITY_TYPES.BULLET: await ImageGenerator.generate_texture_for(render_info[Enums.ENTITY_TYPES.BULLET]),
 		Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY: await ImageGenerator.generate_texture_for(render_info[Enums.ENTITY_TYPES.CELL_HOVER_OVERLAY]),
 		Enums.ENTITY_TYPES.PLAYER: await ImageGenerator.generate_texture_for(render_info[Enums.ENTITY_TYPES.PLAYER])
+	}
+
+	# Preload all your generated audio here!
+	audio_dict = {
+		"slash": preload("uid://bq5qyyhu04nnx"),
+		"parry": preload("uid://cyxnctjw465ik"),
+		"dash": preload("uid://cwavci7klm88o"),
+		"shoot": preload("uid://dhnko1t8mc2iq"),
+		"enemy_death": preload("uid://dtt4nr1cmsobp"),
+		"soul_pop": preload("uid://bq20jtogsgkw8"),
+		# Background music
+		"lobby_bgm": preload("uid://pcsuom33xydi"), 
+		"arena_bgm": preload("uid://cqwjqxvlwkwx3"), 
+		"tutorial_bgm": preload("uid://cjdkadiqlwhom")
 	}
 
 	is_ready = true

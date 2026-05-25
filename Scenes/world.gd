@@ -4,6 +4,7 @@ extends Node2D
 @onready var ui_manager: UIManager = $UIManager
 
 # Initialize Systems
+var audio_system: AudioSystem = AudioSystem.new("arena_bgm")
 var rendering_system: RenderingSystem = RenderingSystem.new()
 var input_system: InputSystem = InputSystem.new()
 var events_manager: EventsManager = EventsManager.new()
@@ -63,6 +64,7 @@ func add_systems_to_scene():
 	add_child(rendering_system)
 	
 	add_child(wave_system)
+	add_child(audio_system)
 	add_child(particles_system)
 	
 func _process(delta: float) -> void:
@@ -109,6 +111,8 @@ func _process(delta: float) -> void:
 	bank_system.update(delta)
 	upgrade_system.update()
 	revive_system.update()
+	
+	audio_system.update(delta)
 	
 	if not game_over_system.game_ended: game_over_system.update(delta)
 	save_system.update()

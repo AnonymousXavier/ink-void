@@ -4,6 +4,7 @@ extends Node2D
 @onready var ui_manager: UIManager = $UIManager 
 
 # Initialize Core Systems
+var audio_system: AudioSystem = AudioSystem.new("tutorial_bgm")
 var rendering_system: RenderingSystem = RenderingSystem.new()
 var input_system: InputSystem = InputSystem.new()
 var events_manager: EventsManager = EventsManager.new()
@@ -31,8 +32,7 @@ var particles_system: ParticlesSystem = ParticlesSystem.new()
 var hitstop_system: HitStopSystem = HitStopSystem.new()
 
 # Initialize Tutorial-Specific Systems
-# A tight 600x600 quarantine zone centered on the spawn
-var boundary_system: BoundarySystem = BoundarySystem.new(Rect2(-300, -300, 600, 600))
+var boundary_system: BoundarySystem = BoundarySystem.new(Rect2(-300, -300, 1000, 1000))
 var tutorial_system: TutorialSystem = TutorialSystem.new()
 
 var player_spawned: bool = false
@@ -58,7 +58,8 @@ func add_systems_to_scene():
 	add_child(splatter_canvas)
 	add_child(rendering_system)
 	add_child(particles_system)
-	add_child(tutorial_system) # Add the Director!
+	add_child(tutorial_system)
+	add_child(audio_system)
 	
 func _process(delta: float) -> void:
 	if Cache.is_ready and not player_spawned:
@@ -98,6 +99,8 @@ func _process(delta: float) -> void:
 	shockwave_system.update(delta)
 	camera_shake_system.update(delta)
 	camera.update()
+	
+	audio_system.update(delta)
 	
 	# The Director watches everything
 	tutorial_system.update(delta)

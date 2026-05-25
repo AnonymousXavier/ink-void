@@ -18,7 +18,7 @@ func _ready() -> void:
 	style.font_color = Color(1, 1, 1, 0.8)
 	instruction_label.label_settings = style
 	instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	instruction_label.text = "CALIBRATING...\nWASD TO MOVE. [L-CLICK] TO SLASH."
+	instruction_label.text = "TUTORIAL...\nWASD TO MOVE. [L-CLICK] TO SLASH. [R-CLICK] TO DASH"
 	
 	var canvas = CanvasLayer.new()
 	canvas.add_child(instruction_label)
@@ -55,7 +55,7 @@ func update(delta: float) -> void:
 				
 		Phase.DASH_FAILED:
 			# Explicit retry loop
-			instruction_label.text = "FAILED. YOU ARE ONLY INVINCIBLE *WHILE* DASHING.\n[ L-CLICK ] TO TRY AGAIN."
+			instruction_label.text = "FAILED. YOU ARE ONLY INVINCIBLE WHILE DASHING.\n[L-CLICK ] TO TRY AGAIN."
 			if input.fire_pressed:
 				input.fire_pressed = false # Consume the input
 				_transition_to_dash_test()
@@ -65,7 +65,7 @@ func update(delta: float) -> void:
 			
 		Phase.PARRY_FAILED:
 			# Explicit retry loop
-			instruction_label.text = "FAILED. SLASH THE BULLET *BEFORE* IT HITS YOU.\n[ L-CLICK ] TO TRY AGAIN."
+			instruction_label.text = "FAILED. SLASH THE BULLET BEFORE IT HITS YOU.\n[ L-CLICK ] TO TRY AGAIN."
 			if input.fire_pressed:
 				input.fire_pressed = false # Consume the input
 				_transition_to_parry_test()
@@ -77,7 +77,7 @@ func update(delta: float) -> void:
 func _transition_to_dash_test() -> void:
 	current_phase = Phase.DASH_TEST
 	phase_timer = 1.5 # Shortened to 1.5s so they have to react fast
-	instruction_label.text = "FATAL ANOMALY DETECTED.\n[SPACEBAR] TO QUICKSILVER DASH THROUGH IT."
+	instruction_label.text = "AVOID THE BULLETS.\n[R-CLICK] TO QUICKSILVER DASH THROUGH IT."
 	SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "intensity": 0.5})
 	
 	_spawn_bullet_wall()
@@ -105,7 +105,7 @@ func _transition_to_parry_test() -> void:
 
 func _transition_to_complete() -> void:
 	current_phase = Phase.COMPLETE
-	instruction_label.text = "CALIBRATION COMPLETE.\nGRANTING 100 SOULS. RETURNING TO LOBBY..."
+	instruction_label.text = "TUTORIAL COMPLETE.\nGRANTING 100 SOULS. RETURNING TO LOBBY..."
 	instruction_label.label_settings.font_color = Color(0.2, 1.0, 0.2) 
 	
 	SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "intensity": 1.0})
