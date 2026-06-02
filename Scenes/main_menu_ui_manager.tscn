@@ -53,4 +53,4 @@ size_flags_stretch_ratio = 14.22
 
 [node name="GridContainer" type="GridContainer" parent="Control/ShopOverlay/VBoxContainer/ScrollContainer" unique_id=305018191]
 layout_mode = 2
-columns = 3
+columns = 5

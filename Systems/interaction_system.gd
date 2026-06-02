@@ -34,7 +34,7 @@ func update() -> void:
 				i_render.modulate = i_data.base_color
 		
 		# If in range and player clicks/presses action button
-		if i_data.is_player_in_range and input.fire_pressed:
+		if i_data.is_player_in_range and input.parry_pressed:
 			# Freeze the player so they don't slide around while the shop is open
 			var p_vel = em.velocity_components.get(player_id)
 			if p_vel: p_vel.direction = Vector2.ZERO
@@ -46,4 +46,4 @@ func update() -> void:
 			})
 			
 			# Consume the input so we don't spam the event
-			input.fire_pressed = false
+			input.parry_pressed = false

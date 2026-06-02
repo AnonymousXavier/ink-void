@@ -13,27 +13,28 @@ func update(delta: float) -> void:
 	
 	if not dash or not input or not parry: return
 	
-	# Process the Cooldown
-	if dash.cooldown_time_left > 0:
-		dash.cooldown_time_left -= delta
-		
-	# Process an Active Speedster State
+	# 1. PROCESS ACTIVE DASH FIRST
 	if dash.is_dashing:
 		dash.dash_time_left -= delta # Uses real-time delta!
 		
 		if dash.dash_time_left <= 0:
 			SceneInstances.time_scale = 1.0 
 			dash.is_dashing = false
+			# START COOLDOWN ONLY WHEN DASH ENDS
+			dash.cooldown_time_left = dash.cooldown 
 		return 
 		
-	# Start Speedster Mode
+	# 2. PROCESS COOLDOWN (Only runs if NOT dashing)
+	if dash.cooldown_time_left > 0:
+		dash.cooldown_time_left -= delta
+		
+	# 3. START DASH
 	if input.dash_pressed and dash.cooldown_time_left <= 0 and parry.current_state != ParryData.State.PARRYING:
 		dash.is_dashing = true
 		SceneInstances.audio_system.play_sound("dash")
 		dash.dash_time_left = dash.dash_duration
-		dash.cooldown_time_left = dash.cooldown
 		
-		# Record where we started so the friction wake can calculate the distance traveled
+		# Record where we started
 		var p_trans = entity_manager.transform_components.get(player_id)
 		if p_trans:
 			dash.start_position = p_trans.position

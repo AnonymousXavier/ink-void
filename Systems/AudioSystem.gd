@@ -32,7 +32,6 @@ func _ready() -> void:
 		bgm_player.play()
 
 func update(_delta: float) -> void:
-	print("Processing Sound")
 	# --- HITSTOP PITCH MODULATION ---
 	var current_time = SceneInstances.time_scale
 	var target_pitch = max(0.1, current_time) 
@@ -57,7 +56,7 @@ func update(_delta: float) -> void:
 				play_sound("slash") # Layer the slash with the parry impact!
 
 func play_sound(sound_name: String) -> void:
-	if not Cache.audio_dict.has(sound_name): print("Sound doesnt existr"); return
+	if not Cache.audio_dict.has(sound_name): print("Sound doesnt exist"); return
 	
 	var player = sfx_pool[current_pool_index]
 	player.stream = Cache.audio_dict[sound_name]
