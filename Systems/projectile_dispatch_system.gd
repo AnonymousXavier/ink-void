@@ -14,13 +14,21 @@ func update(_delta: float) -> void:
 			var target_velocity = SceneInstances.entity_manager.velocity_components.get(event["target"])
 			
 			if target_velocity and target_velocity.direction != Vector2.ZERO:
-				# Calculate how many seconds the bullet takes to cross the current distance
+				# Calculate base naive time
 				var distance = parent_transform.position.distance_to(target_transform.position)
 				var travel_time = distance / bullet_speed
 				
-				# Multiply the player's current movement vector by the travel time to find the future point
-				var future_position = target_transform.position + (target_velocity.direction * target_velocity.speed * travel_time)
+				# Calculate the raw projected vector
+				var projected_movement = target_velocity.direction * target_velocity.speed * travel_time
 				
+				# THE FIX: Clamp the prediction length. 
+				# The AI is never allowed to predict a movement larger than 75% of the total distance between you.
+				# This guarantees the target point can never "cross behind" the sniper.
+				var max_prediction = distance * 0.75
+				if projected_movement.length() > max_prediction:
+					projected_movement = projected_movement.normalized() * max_prediction
+				
+				var future_position = target_transform.position + projected_movement
 				direction = (future_position - parent_transform.position).normalized()
 			else:
 				# If the player is standing completely still, just shoot straight at them

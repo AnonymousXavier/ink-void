@@ -131,126 +131,78 @@ func create_overlay_effect():
 	entity_manager.cell_overlay_id = id
 	return id
 	
-func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float, bullet_color: Color = Color("ff0033")):
-	var entity_manager: EntityManager = SceneInstances.entity_manager
-	
-	# Fetch Bullet from inactive list or create new data
-	var bullet_id = entity_manager.inactive_bullet_entities.pop_back()
-	
-	var transformData: TransformData
-	var renderingData: RenderingData
-	var meeleData: MeeleData
-	var velocityData: VelocityData
-	# var homingData: HomingData
-	var alignment_dta: AlignmentData
-	
-	if bullet_id != null:
-		transformData = entity_manager.inactive_bullet_transform_components[bullet_id]
-		renderingData = entity_manager.inactive_bullet_render_components[bullet_id]
-		meeleData = entity_manager.inactive_bullet_meele_components [bullet_id]
-		velocityData = entity_manager.inactive_bullet_velocity_components[bullet_id]
-		# homingData = entity_manager.inactive_bullet_homing_components[bullet_id]
-		alignment_dta = entity_manager.inactive_bullet_alignment_components[bullet_id]
-	else:
-		bullet_id = SceneInstances.entity_manager.next_entity_id
-		transformData = TransformData.new()
-		renderingData = RenderingData.new()
-		meeleData = MeeleData.new()
-		velocityData = VelocityData.new()
-		# homingData = HomingData.new()
-		alignment_dta = AlignmentData.new()
-		
-		SceneInstances.entity_manager.next_entity_id += 1
-	
-	# Transfer them to the main dict
-	entity_manager.active_entities.append(bullet_id)
-	SceneInstances.entity_manager.add_entity_to_a_chunk(pos, bullet_id)
-	
-	# Do the exact same thing inside create_enemy() using NORMAL_ENEMY!
-	
-	entity_manager.is_a_bullet[bullet_id] = true
-	entity_manager.transform_components[bullet_id] = transformData
-	entity_manager.render_components[bullet_id] = renderingData
-	entity_manager.meele_components[bullet_id] = meeleData
-	entity_manager.velocity_components[bullet_id] = velocityData
-	# entity_manager.homing_components[bullet_id] = homingData
-	entity_manager.alignment_components[bullet_id] = alignment_dta
-	
-	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
-	renderingData.modulate = bullet_color
-	
-	# Delete them
-	entity_manager.inactive_bullet_transform_components.erase(bullet_id)
-	entity_manager.inactive_bullet_render_components.erase(bullet_id)
-	entity_manager.inactive_bullet_meele_components.erase(bullet_id)
-	entity_manager.inactive_bullet_velocity_components.erase(bullet_id)
-	entity_manager.inactive_bullet_alignment_components.erase(bullet_id)
-	# entity_manager.inactive_bullet_homing_components.erase(bullet_id)
-	
-	# Modify the data
-	transformData.position = pos
-	velocityData.direction = direction
-	velocityData.speed = speed
-	meeleData.damage = damage
-	meeleData.target_id = target_id
-	alignment_dta.alignment = Enums.ALIGNMENTS.PLAYER
-	# homingData.target_id = target_id
-	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
-	
-func despawn_bullet(bullet_id: int):
-	var entity_manager = SceneInstances.entity_manager
-	
-	var transformData = entity_manager.transform_components[bullet_id]
-	var renderingData = entity_manager.render_components[bullet_id]
-	var meeleData = entity_manager.meele_components[bullet_id]
-	var velocityData = entity_manager.velocity_components.get(bullet_id)
-	var homingData = entity_manager.homing_components.get(bullet_id)
-	var alignmentData = entity_manager.alignment_components.get(bullet_id)
-	
-	# Transfer them to the inactive dict
-	entity_manager.inactive_bullet_entities.append(bullet_id)
-	entity_manager.inactive_bullet_transform_components[bullet_id] = transformData
-	entity_manager.inactive_bullet_render_components[bullet_id] = renderingData
-	entity_manager.inactive_bullet_alignment_components[bullet_id] = alignmentData
-	entity_manager.inactive_bullet_meele_components[bullet_id] = meeleData
-	entity_manager.inactive_bullet_homing_components[bullet_id] = homingData if homingData else HomingData.new()
-	entity_manager.inactive_bullet_velocity_components[bullet_id] = velocityData if velocityData else VelocityData.new()
-	
-	# Remove them from the main list
-	entity_manager.active_entities.erase(bullet_id)
-	entity_manager.is_a_bullet.erase(bullet_id)
-	entity_manager.transform_components.erase(bullet_id)
-	entity_manager.render_components.erase(bullet_id)
-	entity_manager.meele_components.erase(bullet_id)
-	entity_manager.velocity_components.erase(bullet_id)
-	entity_manager.homing_components.erase(bullet_id)
-	entity_manager.alignment_components.erase(bullet_id)
-	
-	SceneInstances.entity_manager.rmeove_entity_from_chunk(transformData.position, bullet_id)
-	
 func create_bullet_pool():
 	var number_of_bullets = 500
 	var start_id = SceneInstances.entity_manager.next_entity_id
 	var entity_manager: EntityManager = SceneInstances.entity_manager
 	
-	for id in number_of_bullets:
+	for id in range(number_of_bullets):
 		var current_bullet_id = start_id + id
 		
-		# Create datas
-		var transformData: TransformData = TransformData.new()
-		var renderingData: RenderingData = RenderingData.new()
-		var meeleData: MeeleData = MeeleData.new()
-		var velocityData: VelocityData = VelocityData.new()
-		var alignmentData: AlignmentData = AlignmentData.new()
+		# Instantiate the memory ONCE and store it in the main dictionaries permanently
+		entity_manager.transform_components[current_bullet_id] = TransformData.new()
+		entity_manager.render_components[current_bullet_id] = RenderingData.new()
+		entity_manager.meele_components[current_bullet_id] = MeeleData.new()
+		entity_manager.velocity_components[current_bullet_id] = VelocityData.new()
 		
+		var alignmentData = AlignmentData.new()
 		alignmentData.alignment = Enums.ALIGNMENTS.PLAYER
+		entity_manager.alignment_components[current_bullet_id] = alignmentData
 		
-		# Add them to the inactive pool
+		entity_manager.is_a_bullet[current_bullet_id] = true
+		
+		# Add the ID to the waiting list
 		entity_manager.inactive_bullet_entities.append(current_bullet_id)
-		entity_manager.inactive_bullet_meele_components[current_bullet_id] = meeleData
-		entity_manager.inactive_bullet_render_components[current_bullet_id] = renderingData
-		entity_manager.inactive_bullet_transform_components[current_bullet_id] = transformData
-		entity_manager.inactive_bullet_velocity_components[current_bullet_id] = velocityData
-		entity_manager.inactive_bullet_alignment_components[current_bullet_id] = alignmentData
 		
 	entity_manager.next_entity_id += number_of_bullets
+
+func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float, bullet_color: Color = Color("ff0033")):
+	var entity_manager: EntityManager = SceneInstances.entity_manager
+	
+	# 1. Grab an available ID
+	var bullet_id = entity_manager.inactive_bullet_entities.pop_back()
+	
+	# 2. Safety fallback if the pool runs empty
+	if bullet_id == null:
+		bullet_id = entity_manager.next_entity_id
+		entity_manager.next_entity_id += 1
+		entity_manager.is_a_bullet[bullet_id] = true
+		entity_manager.transform_components[bullet_id] = TransformData.new()
+		entity_manager.render_components[bullet_id] = RenderingData.new()
+		entity_manager.meele_components[bullet_id] = MeeleData.new()
+		entity_manager.velocity_components[bullet_id] = VelocityData.new()
+		entity_manager.alignment_components[bullet_id] = AlignmentData.new()
+
+	# 3. Overwrite the existing dormant data (Zero Memory Allocation!)
+	entity_manager.transform_components[bullet_id].position = pos
+	
+	var velocityData = entity_manager.velocity_components[bullet_id]
+	velocityData.direction = direction
+	velocityData.speed = speed
+	
+	var meeleData = entity_manager.meele_components[bullet_id]
+	meeleData.damage = damage
+	meeleData.target_id = target_id
+	
+	entity_manager.alignment_components[bullet_id].alignment = Enums.ALIGNMENTS.PLAYER
+	
+	var renderData = entity_manager.render_components[bullet_id]
+	renderData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
+	renderData.modulate = bullet_color
+	
+	# 4. Push the ID to the active processing loops
+	entity_manager.active_entities.append(bullet_id)
+	entity_manager.add_entity_to_a_chunk(pos, bullet_id)
+
+func despawn_bullet(bullet_id: int):
+	var entity_manager = SceneInstances.entity_manager
+	
+	# 1. Remove from active spatial chunking
+	var pos = entity_manager.transform_components[bullet_id].position
+	entity_manager.rmeove_entity_from_chunk(pos, bullet_id)
+	
+	# 2. Stop systems from processing it
+	entity_manager.active_entities.erase(bullet_id)
+	
+	# 3. Return ID to the pool (We DO NOT erase the components!)
+	entity_manager.inactive_bullet_entities.append(bullet_id)

@@ -18,13 +18,15 @@ func update(delta: float) -> void:
 		dash.dash_time_left -= delta # Uses real-time delta!
 		
 		if dash.dash_time_left <= 0:
-			SceneInstances.time_scale = 1.0 
 			dash.is_dashing = false
-			# START COOLDOWN ONLY WHEN DASH ENDS
 			dash.cooldown_time_left = dash.cooldown 
+			
+			# CHRONO-CLASH FIX: Only end Quicksilver if a HitStop isn't currently freezing the game!
+			if SceneInstances.time_scale != 0.0:
+				SceneInstances.time_scale = 1.0 
 		return 
 		
-	# 2. PROCESS COOLDOWN (Only runs if NOT dashing)
+	# 2. PROCESS COOLDOWN
 	if dash.cooldown_time_left > 0:
 		dash.cooldown_time_left -= delta
 		
@@ -34,11 +36,12 @@ func update(delta: float) -> void:
 		SceneInstances.audio_system.play_sound("dash")
 		dash.dash_time_left = dash.dash_duration
 		
-		# Record where we started
 		var p_trans = entity_manager.transform_components.get(player_id)
 		if p_trans:
 			dash.start_position = p_trans.position
 		
-		# Drop to 10% speed
-		SceneInstances.time_scale = 0.1 
 		SceneInstances.events_manager.add_event({"type": Enums.EVENT_TYPES.SCREEN_SHAKE, "amount": 0.4})
+		
+		# CHRONO-CLASH FIX: Don't accidentally speed the game up to 0.1 if a HitStop is currently at 0.0
+		if SceneInstances.time_scale != 0.0:
+			SceneInstances.time_scale = 0.1
