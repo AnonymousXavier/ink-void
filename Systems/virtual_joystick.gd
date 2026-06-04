@@ -20,20 +20,41 @@ func _ready() -> void:
 	center = base.global_position + (base.size / 2.0)
 	stick.position = (base.size / 2.0) - (stick.size / 2.0)
 
+# Add these two new variables at the top
+var is_dragging: bool = false
+var tap_start_pos: Vector2 = Vector2.ZERO
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed and touch_id == -1:
 			var dist = event.position.distance_to(center)
-			# Generous hitbox so thumbs don't have to be pixel-perfect
 			if dist < radius * 2.0: 
-				touch_id = event.index # Lock this specific finger to this stick!
+				touch_id = event.index 
+				
+				# TAP LOGIC: Record where the thumb started!
+				tap_start_pos = event.position
+				is_dragging = false
+				
 				_update_stick(event.position)
 				
 		elif not event.pressed and event.index == touch_id:
+			# TAP LOGIC: If they lifted their thumb without dragging, it's a click!
+			if not is_dragging:
+				Input.action_press("parry")
+				call_deferred("_release_tap_action") # Safely release it next frame
+				
 			_reset_stick()
 
 	elif event is InputEventScreenDrag and event.index == touch_id:
+		# TAP LOGIC: If they move their thumb more than 10 pixels, cancel the tap!
+		if event.position.distance_to(tap_start_pos) > 10.0:
+			is_dragging = true
+			
 		_update_stick(event.position)
+
+# Add this small helper function at the bottom of the script
+func _release_tap_action() -> void:
+	Input.action_release("parry")
 
 func _update_stick(pos: Vector2) -> void:
 	var offset = pos - center

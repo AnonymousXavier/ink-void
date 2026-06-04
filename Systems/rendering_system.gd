@@ -143,7 +143,7 @@ func _draw() -> void:
 		
 		# If the player is standing inside the activation zone, flash an input prompt!
 		if i_data.is_player_in_range:
-			var prompt = "[ L-CLICK ]"
+			var prompt = "[ TAP R-PAD ]"
 			var prompt_font_size = int(12 * zoom)
 			var prompt_size = default_font.get_string_size(prompt, HORIZONTAL_ALIGNMENT_CENTER, -1, prompt_font_size)
 			var prompt_pos = i_screen_pos + Vector2(-prompt_size.x / 2.0, 60.0 * zoom)

@@ -18,7 +18,7 @@ func _ready() -> void:
 	style.font_color = Color(1, 1, 1, 0.8)
 	instruction_label.label_settings = style
 	instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	instruction_label.text = "TUTORIAL...\nWASD/L-STICK TO MOVE.\n[L-CLICK / X] TO SLASH. [SPACE / A] TO DASH"
+	instruction_label.text = "TUTORIAL...\nL-PAD TO MOVE.\n[R-PAD] TO SLASH. [RED BTN] TO DASH"
 	
 	var canvas = CanvasLayer.new()
 	canvas.add_child(instruction_label)
@@ -55,7 +55,7 @@ func update(delta: float) -> void:
 				
 		Phase.DASH_FAILED:
 			# Explicit retry loop
-			instruction_label.text = "FAILED. YOU ARE ONLY INVINCIBLE WHILE DASHING.\n[L-CLICK / RT] TO TRY AGAIN."
+			instruction_label.text = "FAILED. YOU ARE ONLY INVINCIBLE WHILE DASHING.\n[R-PAD] TO TRY AGAIN."
 			if input.parry_pressed: # <--- FIX HERE
 				input.parry_pressed = false # Consume the input
 				_transition_to_dash_test()
@@ -65,7 +65,7 @@ func update(delta: float) -> void:
 			
 		Phase.PARRY_FAILED:
 			# Explicit retry loop
-			instruction_label.text = "FAILED. SLASH THE BULLET BEFORE IT HITS YOU.\n[ L-CLICK / RT] TO TRY AGAIN."
+			instruction_label.text = "FAILED. SLASH THE BULLET BEFORE IT HITS YOU.\n[R-PAD] TO TRY AGAIN."
 			if input.parry_pressed: # <--- FIX HERE
 				input.parry_pressed = false # Consume the input
 				_transition_to_parry_test()

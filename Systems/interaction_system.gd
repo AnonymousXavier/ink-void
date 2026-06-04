@@ -21,7 +21,19 @@ func update() -> void:
 		
 		# Check distance
 		var distance = p_transform.position.distance_to(i_transform.position)
+		
+		# 1. Remember what the state WAS last frame
+		var was_in_range = i_data.is_player_in_range 
+		
+		# 2. Calculate what the state IS this frame
 		i_data.is_player_in_range = (distance <= i_data.interaction_radius)
+		
+		# 3. THE FIX: ONLY broadcast an event if the player actually crossed the boundary!
+		if was_in_range != i_data.is_player_in_range:
+			SceneInstances.events_manager.add_event({
+				"type": Enums.EVENT_TYPES.TERMINAL_HOVER,
+				"is_hovering": i_data.is_player_in_range
+			})
 		
 		if i_render:
 			if i_data.is_player_in_range:

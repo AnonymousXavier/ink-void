@@ -1,13 +1,15 @@
 [gd_scene format=3 uid="uid://daq0t7qyipfb8"]
 
 [ext_resource type="Script" uid="uid://b3mdt6uh8xwg6" path="res://Systems/virtual_joystick.gd" id="1_625mh"]
+[ext_resource type="Script" uid="uid://c70rvf2fhfwn6" path="res://Scenes/mobile_ui.gd" id="1_dyh1m"]
 [ext_resource type="Texture2D" uid="uid://dmpoldpviig2y" path="res://Sprites/circle.png" id="2_dyh1m"]
 
 [node name="Mobile UI" type="CanvasLayer" unique_id=1496156308]
+script = ExtResource("1_dyh1m")
 
 [node name="DashButton" type="TouchScreenButton" parent="." unique_id=727714772]
 self_modulate = Color(1, 0, 0, 1)
-position = Vector2(1083, 330)
+position = Vector2(1062, 309)
 scale = Vector2(0.1132813, 0.11328129)
 texture_normal = ExtResource("2_dyh1m")
 action = "dash"
@@ -42,7 +44,7 @@ offset_bottom = 139.0
 texture = ExtResource("2_dyh1m")
 expand_mode = 5
 
-[node name="Left Joystick2" type="Control" parent="." unique_id=1499423655]
+[node name="Right Joystick" type="Control" parent="." unique_id=1499423655]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 3
 anchors_preset = 3
@@ -50,10 +52,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -273.0
-offset_top = -276.0
-offset_right = -73.0
-offset_bottom = -76.0
+offset_left = -292.0
+offset_top = -226.0
+offset_right = -92.0
+offset_bottom = -26.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 0
@@ -64,7 +66,7 @@ action_right = "aim_right"
 action_up = "aim_up"
 action_down = "aim_down"
 
-[node name="Base" type="TextureRect" parent="Left Joystick2" unique_id=1943795546]
+[node name="Base" type="TextureRect" parent="Right Joystick" unique_id=1943795546]
 self_modulate = Color(1, 1, 1, 0.101960786)
 layout_mode = 0
 offset_right = 200.0
@@ -72,7 +74,7 @@ offset_bottom = 200.0
 texture = ExtResource("2_dyh1m")
 expand_mode = 5
 
-[node name="Stick" type="TextureRect" parent="Left Joystick2/Base" unique_id=1923165971]
+[node name="Stick" type="TextureRect" parent="Right Joystick/Base" unique_id=1923165971]
 self_modulate = Color(1, 1, 1, 0.52156866)
 layout_mode = 0
 offset_left = 61.0
