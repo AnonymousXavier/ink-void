@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://3y4vwwekr1ep" path="res://Scenes/main_menu.gd" id="1_16hvj"]
 [ext_resource type="PackedScene" uid="uid://buwqxn44nviqv" path="res://Systems/modulo_background.tscn" id="2_vr1f0"]
 [ext_resource type="PackedScene" uid="uid://c5wciy8smshp8" path="res://Scenes/main_menu_ui_manager.tscn" id="3_5egv6"]
+[ext_resource type="PackedScene" uid="uid://daq0t7qyipfb8" path="res://Scenes/mobile_ui.tscn" id="4_ce3w2"]
 
 [node name="MainMenu" type="Node2D" unique_id=1958229470]
 script = ExtResource("1_16hvj")
@@ -11,3 +12,5 @@ script = ExtResource("1_16hvj")
 z_index = -2
 
 [node name="MainMenuUIManager" parent="." unique_id=1258719095 instance=ExtResource("3_5egv6")]
+
+[node name="Mobile UI" parent="." unique_id=1496156308 instance=ExtResource("4_ce3w2")]

@@ -30,7 +30,7 @@ SceneInstances="*uid://cfd242ejhsr4b"
 [display]
 
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_height"
+window/stretch/aspect="keep_width"
 
 [input]
 
@@ -97,12 +97,18 @@ aim_down={
 ]
 }
 
+[input_devices]
+
+pointing/emulate_mouse_from_touch=false
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

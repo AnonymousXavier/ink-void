@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d01mio1kofrqr" path="res://Scenes/world.gd" id="1_a02cp"]
 [ext_resource type="PackedScene" uid="uid://buwqxn44nviqv" path="res://Systems/modulo_background.tscn" id="4_8j60k"]
+[ext_resource type="PackedScene" uid="uid://daq0t7qyipfb8" path="res://Scenes/mobile_ui.tscn" id="4_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://do5e5lwlik3fo" path="res://Scenes/ui_manager.tscn" id="29_qebug"]
 
 [node name="World" type="Node2D" unique_id=626846320]
@@ -10,3 +11,5 @@ script = ExtResource("1_a02cp")
 [node name="BG" parent="." unique_id=459772523 instance=ExtResource("4_8j60k")]
 
 [node name="UIManager" parent="." unique_id=1258719095 instance=ExtResource("29_qebug")]
+
+[node name="Mobile UI" parent="." unique_id=1496156308 instance=ExtResource("4_fo5ed")]
