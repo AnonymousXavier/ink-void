@@ -45,7 +45,7 @@ func _ready() -> void:
 		p.process_material = mat
 		
 		p.top_level = false 
-		p.z_index = true
+		
 		p.process_material = mat
 		
 		# Create a solid 3x3 white square image buffer

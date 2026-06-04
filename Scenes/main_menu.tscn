@@ -8,5 +8,6 @@
 script = ExtResource("1_16hvj")
 
 [node name="BG" parent="." unique_id=459772523 instance=ExtResource("2_vr1f0")]
+z_index = -2
 
 [node name="MainMenuUIManager" parent="." unique_id=1258719095 instance=ExtResource("3_5egv6")]

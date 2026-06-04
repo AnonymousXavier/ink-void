@@ -51,9 +51,13 @@ func add_entity_to_a_chunk(pos: Vector2i, id: int):
 		
 	cluster_hash[chunk_id].append(id)
 	
-func rmeove_entity_from_chunk(pos: Vector2i, id: int):
+func rmeove_entity_from_chunk(pos: Vector2, id: int):
+	# Using Vector2 for 'pos' ensures the math matches your update_chunk_map_for function exactly
 	var chunk_id = Vector2i(pos / Constants.CHUNK_SIZE)
-	cluster_hash[chunk_id].erase(id)
+	
+	# SAFETY CHECK: Only try to erase if the chunk actually exists!
+	if cluster_hash.has(chunk_id):
+		cluster_hash[chunk_id].erase(id)
 
 func update_chunk_map_for(prev_position: Vector2, entity_id: int):
 	var entity_transform_data = transform_components[entity_id]

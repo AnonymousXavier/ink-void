@@ -6,8 +6,6 @@ var blood_count: int = 0
 var max_blood: int = 5000
 
 func _ready() -> void:
-	z_index = -1
-	
 	graveyard_multimesh = MultiMesh.new()
 	graveyard_multimesh.mesh = QuadMesh.new() # The 1x1 geometry
 	graveyard_multimesh.transform_format = MultiMesh.TRANSFORM_2D

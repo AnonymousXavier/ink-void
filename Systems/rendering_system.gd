@@ -4,8 +4,7 @@ class_name RenderingSystem
 var screen_center: Vector2
 var has_spawned_overlay: bool
 
-func _ready() -> void:
-	z_index = -1
+
 
 func update() -> void:
 	if not has_spawned_overlay and Cache.is_ready:
@@ -154,11 +153,8 @@ func _draw() -> void:
 			var pulse_color = Color(1.0, 0.8, 0.2, 0.4 + (0.6 * pulse)) # Golden glow
 			
 			draw_string(default_font, prompt_pos, prompt, HORIZONTAL_ALIGNMENT_CENTER, -1, prompt_font_size, pulse_color)
-					
-	if not (get_tree().current_scene and get_tree().current_scene.name == "World"):
-		return
-					
-	# PARRY SLASH ARC (Detached Flying Crescent)
+			
+		# PARRY SLASH ARC (Detached Flying Crescent)
 	if player_id != -1 and player_id in SceneInstances.entity_manager.transform_components:
 		var parry = SceneInstances.entity_manager.parry_components.get(player_id)
 		var input = SceneInstances.entity_manager.player_input_data
@@ -233,6 +229,9 @@ func _draw() -> void:
 			# Draw the flying blade!
 			if head_angle > tail_angle + 0.01: 
 				draw_polygon(points, PackedColorArray([slash_color]))
+					
+	if not (get_tree().current_scene and get_tree().current_scene.name == "World"):
+		return
 			
 	# ==========================================
 	# THE PLAYER OVERHEAD HUD (Health, Parry, Dash)

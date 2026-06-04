@@ -139,70 +139,99 @@ func create_bullet_pool():
 	for id in range(number_of_bullets):
 		var current_bullet_id = start_id + id
 		
-		# Instantiate the memory ONCE and store it in the main dictionaries permanently
-		entity_manager.transform_components[current_bullet_id] = TransformData.new()
-		entity_manager.render_components[current_bullet_id] = RenderingData.new()
-		entity_manager.meele_components[current_bullet_id] = MeeleData.new()
-		entity_manager.velocity_components[current_bullet_id] = VelocityData.new()
+		# Store them ONLY in the INACTIVE dictionaries so systems ignore them!
+		entity_manager.inactive_bullet_entities.append(current_bullet_id)
+		entity_manager.inactive_bullet_transform_components[current_bullet_id] = TransformData.new()
+		entity_manager.inactive_bullet_render_components[current_bullet_id] = RenderingData.new()
+		entity_manager.inactive_bullet_meele_components[current_bullet_id] = MeeleData.new()
+		entity_manager.inactive_bullet_velocity_components[current_bullet_id] = VelocityData.new()
 		
 		var alignmentData = AlignmentData.new()
 		alignmentData.alignment = Enums.ALIGNMENTS.PLAYER
-		entity_manager.alignment_components[current_bullet_id] = alignmentData
-		
-		entity_manager.is_a_bullet[current_bullet_id] = true
-		
-		# Add the ID to the waiting list
-		entity_manager.inactive_bullet_entities.append(current_bullet_id)
+		entity_manager.inactive_bullet_alignment_components[current_bullet_id] = alignmentData
 		
 	entity_manager.next_entity_id += number_of_bullets
 
 func spawn_bullet(pos: Vector2, direction: Vector2, damage: float, target_id: int, speed: float, bullet_color: Color = Color("ff0033")):
 	var entity_manager: EntityManager = SceneInstances.entity_manager
 	
-	# 1. Grab an available ID
 	var bullet_id = entity_manager.inactive_bullet_entities.pop_back()
 	
-	# 2. Safety fallback if the pool runs empty
-	if bullet_id == null:
+	var transformData: TransformData
+	var renderingData: RenderingData
+	var meeleData: MeeleData
+	var velocityData: VelocityData
+	var alignment_dta: AlignmentData
+	
+	if bullet_id != null:
+		# Pull the memory references safely out of the dormant pool
+		transformData = entity_manager.inactive_bullet_transform_components[bullet_id]
+		renderingData = entity_manager.inactive_bullet_render_components[bullet_id]
+		meeleData = entity_manager.inactive_bullet_meele_components[bullet_id]
+		velocityData = entity_manager.inactive_bullet_velocity_components[bullet_id]
+		alignment_dta = entity_manager.inactive_bullet_alignment_components[bullet_id]
+		
+		# Erase them from the inactive list
+		entity_manager.inactive_bullet_transform_components.erase(bullet_id)
+		entity_manager.inactive_bullet_render_components.erase(bullet_id)
+		entity_manager.inactive_bullet_meele_components.erase(bullet_id)
+		entity_manager.inactive_bullet_velocity_components.erase(bullet_id)
+		entity_manager.inactive_bullet_alignment_components.erase(bullet_id)
+	else:
+		# Emergency fallback if pool is empty
 		bullet_id = entity_manager.next_entity_id
 		entity_manager.next_entity_id += 1
-		entity_manager.is_a_bullet[bullet_id] = true
-		entity_manager.transform_components[bullet_id] = TransformData.new()
-		entity_manager.render_components[bullet_id] = RenderingData.new()
-		entity_manager.meele_components[bullet_id] = MeeleData.new()
-		entity_manager.velocity_components[bullet_id] = VelocityData.new()
-		entity_manager.alignment_components[bullet_id] = AlignmentData.new()
-
-	# 3. Overwrite the existing dormant data (Zero Memory Allocation!)
-	entity_manager.transform_components[bullet_id].position = pos
+		transformData = TransformData.new()
+		renderingData = RenderingData.new()
+		meeleData = MeeleData.new()
+		velocityData = VelocityData.new()
+		alignment_dta = AlignmentData.new()
 	
-	var velocityData = entity_manager.velocity_components[bullet_id]
+	# Push to active arrays
+	entity_manager.active_entities.append(bullet_id)
+	entity_manager.is_a_bullet[bullet_id] = true
+	entity_manager.add_entity_to_a_chunk(pos, bullet_id)
+	
+	entity_manager.transform_components[bullet_id] = transformData
+	entity_manager.render_components[bullet_id] = renderingData
+	entity_manager.meele_components[bullet_id] = meeleData
+	entity_manager.velocity_components[bullet_id] = velocityData
+	entity_manager.alignment_components[bullet_id] = alignment_dta
+	
+	# Modify the data
+	transformData.position = pos
 	velocityData.direction = direction
 	velocityData.speed = speed
-	
-	var meeleData = entity_manager.meele_components[bullet_id]
 	meeleData.damage = damage
 	meeleData.target_id = target_id
-	
-	entity_manager.alignment_components[bullet_id].alignment = Enums.ALIGNMENTS.PLAYER
-	
-	var renderData = entity_manager.render_components[bullet_id]
-	renderData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
-	renderData.modulate = bullet_color
-	
-	# 4. Push the ID to the active processing loops
-	entity_manager.active_entities.append(bullet_id)
-	entity_manager.add_entity_to_a_chunk(pos, bullet_id)
+	alignment_dta.alignment = Enums.ALIGNMENTS.PLAYER
+	renderingData.texture = Cache.textures_dict[Enums.ENTITY_TYPES.BULLET]
+	renderingData.modulate = bullet_color
 
 func despawn_bullet(bullet_id: int):
 	var entity_manager = SceneInstances.entity_manager
 	
-	# 1. Remove from active spatial chunking
-	var pos = entity_manager.transform_components[bullet_id].position
-	entity_manager.rmeove_entity_from_chunk(pos, bullet_id)
+	var transformData = entity_manager.transform_components[bullet_id]
+	var renderingData = entity_manager.render_components[bullet_id]
+	var meeleData = entity_manager.meele_components[bullet_id]
+	var velocityData = entity_manager.velocity_components[bullet_id]
+	var alignmentData = entity_manager.alignment_components[bullet_id]
 	
-	# 2. Stop systems from processing it
-	entity_manager.active_entities.erase(bullet_id)
+	entity_manager.rmeove_entity_from_chunk(transformData.position, bullet_id)
 	
-	# 3. Return ID to the pool (We DO NOT erase the components!)
+	# Transfer the memory references BACK to the inactive dicts
 	entity_manager.inactive_bullet_entities.append(bullet_id)
+	entity_manager.inactive_bullet_transform_components[bullet_id] = transformData
+	entity_manager.inactive_bullet_render_components[bullet_id] = renderingData
+	entity_manager.inactive_bullet_alignment_components[bullet_id] = alignmentData
+	entity_manager.inactive_bullet_meele_components[bullet_id] = meeleData
+	entity_manager.inactive_bullet_velocity_components[bullet_id] = velocityData
+	
+	# ERASE them from the main list so systems stop processing them!
+	entity_manager.active_entities.erase(bullet_id)
+	entity_manager.is_a_bullet.erase(bullet_id)
+	entity_manager.transform_components.erase(bullet_id)
+	entity_manager.render_components.erase(bullet_id)
+	entity_manager.meele_components.erase(bullet_id)
+	entity_manager.velocity_components.erase(bullet_id)
+	entity_manager.alignment_components.erase(bullet_id)
